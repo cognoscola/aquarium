@@ -9,6 +9,11 @@ struct Input{
     bool sPressed;
     bool aPressed;
     bool dPressed;
+
+    bool pageUpPressed = false;
+    bool pageDownPressed= false;
+    bool homePressed= false;
+    bool endPressed= false;
 };
 
 #endif //WATER_REFLECTION_INPUT_H

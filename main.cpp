@@ -23,6 +23,8 @@ int main() {
     glfwSetKeyCallback(hardware.window, key_callback);
     glfwSetInputMode(hardware.window,GLFW_STICKY_KEYS, 1);
 
+    Input fogInputs;
+
     Video video; //image/video capture components
     reserve_video_memory (&video, &hardware);
 
@@ -82,8 +84,8 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glDisable(GL_CLIP_DISTANCE0);
 //        meshRender(&terrain,&camera,1000.0f);
-        skyRender(&sky, &camera);
-        waterUpdate(&water);
+//        skyRender(&sky, &camera);
+//        waterUpdate(&water);
         waterRender(&water, &camera);
 
         glfwPollEvents();
@@ -98,6 +100,60 @@ int main() {
         if (GLFW_PRESS == glfwGetKey(hardware.window, GLFW_KEY_ESCAPE)) {
             glfwSetWindowShouldClose(hardware.window, 1);
         }
+
+        if (GLFW_PRESS== glfwGetKey(hardware.window, GLFW_KEY_PAGE_UP)) {
+            if(!fogInputs.pageUpPressed){
+                water.fogDensity += 0.0001f;
+                printf("Water Fog Density: %f\n", water.fogDensity);
+                fogInputs.pageUpPressed = true;
+            }
+        }
+        if (GLFW_RELEASE== glfwGetKey(hardware.window, GLFW_KEY_PAGE_UP)) {
+            if (fogInputs.pageUpPressed) {
+                fogInputs.pageUpPressed = false;
+            }
+        }
+
+        if (GLFW_PRESS== glfwGetKey(hardware.window, GLFW_KEY_PAGE_DOWN)) {
+            if (!fogInputs.pageDownPressed) {
+                water.fogDensity -= 0.0001f;
+                printf("Water Fog Density: %f\n", water.fogDensity);
+                fogInputs.pageDownPressed = true;
+            }
+        }
+        if (GLFW_RELEASE== glfwGetKey(hardware.window, GLFW_KEY_PAGE_DOWN)) {
+            if (fogInputs.pageDownPressed) {
+                fogInputs.pageDownPressed = false;
+            }
+        }
+
+        if (GLFW_PRESS == glfwGetKey(hardware.window, GLFW_KEY_HOME)) {
+            if (!fogInputs.homePressed) {
+                water.fogGradient += 1.0f;
+                printf("Water Fog Gradient: %f\n", water.fogGradient);
+                fogInputs.homePressed = true;
+            }
+        }
+
+        if (GLFW_RELEASE== glfwGetKey(hardware.window, GLFW_KEY_HOME)) {
+            if (fogInputs.homePressed) {
+                fogInputs.homePressed = false;
+            }
+        }
+
+        if (GLFW_PRESS == glfwGetKey(hardware.window, GLFW_KEY_END)) {
+            if (!fogInputs.endPressed) {
+                water.fogGradient -= 1.0f;
+                printf("Water Fog Gradient: %f\n", water.fogGradient);
+                fogInputs.endPressed = true;
+            }
+        }
+        if (GLFW_RELEASE== glfwGetKey(hardware.window, GLFW_KEY_END)) {
+            if (fogInputs.endPressed) {
+                fogInputs.endPressed = false;
+            }
+        }
+
 
         if (video.dump_video) { // check if recording mode is enabled
             while (video.video_dump_timer > video.frame_time) {

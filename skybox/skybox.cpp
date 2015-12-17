@@ -140,6 +140,7 @@ void skyGetUniforms(Skybox* sky){
     sky->location_projection_mat = glGetUniformLocation(sky->shader, "projectionMatrix");
     sky->location_view_mat = glGetUniformLocation(sky->shader, "viewMatrix");
     sky->location_model_mat = glGetUniformLocation(sky->shader, "modelMatrix");
+//    sky->location_skyColour = glGetUniformLocation(sky->shader, "skyColour");
 }
 
 void skyUpdate(Skybox *sky){
@@ -163,9 +164,13 @@ void skyRender(Skybox *sky, Camera* camera){
     camera->viewMatrix.m[13] = 0;
     camera->viewMatrix.m[14] = 0;
 
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
     glUseProgram(sky->shader);
     glUniformMatrix4fv(sky->location_model_mat, 1, GL_FALSE, sky->modelMatrix.m);
     glUniformMatrix4fv(sky->location_view_mat, 1, GL_FALSE, camera->viewMatrix.m);
+//    glUniform3f(sky->location_skyColour,0.1f,0.1f,0.1f);
     glBindVertexArray(sky->vao);
     glEnableVertexAttribArray(0);
     glBindTexture(GL_TEXTURE_CUBE_MAP, sky->texture);
@@ -176,6 +181,7 @@ void skyRender(Skybox *sky, Camera* camera){
     camera->viewMatrix.m[12] = x;
     camera->viewMatrix.m[13] = y;
     camera->viewMatrix.m[14] = z;
+    glDisable(GL_BLEND);
 }
 
 void skyCleanUp(Skybox* sky){

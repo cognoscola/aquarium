@@ -11,7 +11,7 @@
 void cameraInit(Camera * camera, Window *window){
 
     float near = 0.1f;
-    float far = 300.0f;
+    float far = 1000.0f;
     double fov = 67.0f * DEG_TO_RAD;
     float aspect = (float) window->vmode->width / (float) window->vmode->height;
 

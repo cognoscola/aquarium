@@ -10,8 +10,11 @@ out vec2 textureCoords;
 out vec4 clipSpace;
 out vec3 toCameraVector;
 out vec3 fromLightVector;
+out float visibility;
 
 const float tiling = 6.0;
+uniform float fogDensity;
+uniform float fogGradient;
 
 //Fesnel effect stuff
 uniform vec3 cameraPosition;
@@ -27,5 +30,10 @@ void main(void){
     //fresnel stuff
     toCameraVector = cameraPosition - worldPosition.xyz;
     fromLightVector = worldPosition.xyz - lightPosition;
+
+    //fog efffect
+    float distance = length(worldPosition.xyz);
+    visibility = exp(-pow((distance*fogDensity),fogGradient));
+    visibility = clamp(visibility,0.0,1.0);
 
 }

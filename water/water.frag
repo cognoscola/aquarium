@@ -4,6 +4,7 @@ in vec4 clipSpace;
 in vec2 textureCoords;
 in vec3 toCameraVector;
 in vec3 fromLightVector;
+in float visibility; //for fog effect
 
 out vec4 out_Color;
 
@@ -13,6 +14,7 @@ uniform sampler2D dudvMap;
 uniform sampler2D normalMap;
 uniform sampler2D depthMap;
 uniform vec3 lightColour;
+uniform vec3 skyColour;//for fog effect
 
 uniform float moveFactor;
 uniform vec3 cameraOrientation;
@@ -69,6 +71,11 @@ void main () {
 	vec3 specularHighlights = lightColour * specular * reflectivity * clamp(waterDepth/1.0, 0.0, 1.0);;
 
     out_Color = mix(reflectColour, refractColour,refractiveFactor);
+    //give it a blue tint
     out_Color = mix(out_Color, vec4(0.0,0.3,0.5,1.0),0.2) + vec4(specularHighlights, 0.0);
     out_Color.a = clamp(waterDepth/1.0, 0.0, 1.0);
+
+    //fog effect
+    out_Color.a = visibility;
+
 }

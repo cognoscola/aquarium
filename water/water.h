@@ -7,8 +7,8 @@
 #include <GL/gl.h>
 #include <utils/math_utils/maths_funcs.h>
 
-#define DUDV_FILE "/home/alvaregd/Documents/Games/water_reflection/assets/waterDUDV.png"
-#define NORMALMAP_FILE "/home/alvaregd/Documents/Games/water_reflection/assets/normalMap.png"
+#define DUDV_FILE "/home/alvaregd/Documents/Games/aquarium/assets/waterDUDV.png"
+#define NORMALMAP_FILE "/home/alvaregd/Documents/Games/aquarium/assets/normalMap.png"
 
 #define DUDV 0
 #define NORMAL 1
@@ -19,8 +19,8 @@
 #define REFRACTION_WIDTH 1280
 #define REFRACTION_HEIGHT 120
 
-#define WATER_VERTEX "/home/alvaregd/Documents/Games/water_reflection/water/water.vert"
-#define WATER_FRAGMENT "/home/alvaregd/Documents/Games/water_reflection/water/water.frag"
+#define WATER_VERTEX "/home/alvaregd/Documents/Games/aquarium/water/water.vert"
+#define WATER_FRAGMENT "/home/alvaregd/Documents/Games/aquarium/water/water.frag"
 
 #define WAVE_SPEED 0.03
 
@@ -58,7 +58,12 @@ struct Water {
     GLint location_lightColour;
     GLint location_lightPosition;
     GLint location_depthMap;
+    GLint location_skyColour;
+    GLint location_density;
+    GLint location_gradient;
 
+    GLfloat fogDensity = 0.005f;
+    GLfloat fogGradient = 25.0f;
 
     mat4 modelMatrix;
 //    mat4 modelMatrix2;

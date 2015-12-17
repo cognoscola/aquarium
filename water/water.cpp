@@ -46,8 +46,8 @@ void waterInit(Water *water, Window *hardware, GLfloat* proj_mat) {
     //calculate initial water position/orientation
     water->waterHeight = -5.0f;
     GLfloat quat[] = {0.0f,0.0f,0.0f,0.0f};
-    mat4 waterS = scale(identity_mat4(),vec3(1000.0f,1000.0f,0) );
-    mat4 waterT =  translate(identity_mat4(), vec3(500.0f,water->waterHeight,500.0f));
+    mat4 waterS = scale(identity_mat4(),vec3(500.0f,500.0f,0) );
+    mat4 waterT =  translate(identity_mat4(), vec3(250.0f,water->waterHeight,250.0f));
 //    mat4 waterT2 = translate(identity_mat4(), vec3(200.0f,water->waterHeight ,200.0f));
     mat4 waterR;
     create_versor(quat, 90, -1.0f, 0.0f, 0.0f);
@@ -194,6 +194,9 @@ void waterGetUniforms(Water* water) {
     water->location_lightColour          = glGetUniformLocation(water->shader, "lightColour");
     water->location_lightPosition        = glGetUniformLocation(water->shader, "lightPosition");
     water->location_depthMap             = glGetUniformLocation(water->shader, "depthMap");
+    water->location_skyColour            = glGetUniformLocation(water->shader, "skyColour");
+    water->location_density              = glGetUniformLocation(water->shader, "fogDensity");
+    water->location_gradient             = glGetUniformLocation(water->shader, "fogGradient");
 }
 
 void waterUpdate(Water* water){
@@ -203,12 +206,16 @@ void waterUpdate(Water* water){
 
 void waterRender(Water* water, Camera *camera){
 
-
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     glUseProgram(water->shader);
     glUniform1f(water->location_moveFactor,        (GLfloat)water->moveFactor);
     glUniform3f(water->location_cameraPosition,    camera->pos[0],camera->pos[1],camera->pos[2]);
     glUniformMatrix4fv(water->location_viewMatrix, 1, GL_FALSE, camera->viewMatrix.m);
+    glUniform3f(water->location_skyColour, 0.1f, 0.1f, 0.1f);
+    glUniform1f(water->location_density, (GLfloat)water->fogDensity);
+    glUniform1f(water->location_gradient, (GLfloat)water->fogGradient);
     glBindVertexArray(water->vao);
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
@@ -238,6 +245,7 @@ void waterRender(Water* water, Camera *camera){
     glDisableVertexAttribArray(4);
     glBindVertexArray(0);
 
+    glDisable(GL_BLEND);
 }
 
 void waterCleanUp(Water* water){
