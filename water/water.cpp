@@ -44,16 +44,16 @@ void waterInit(Water *water, Window *hardware, GLfloat* proj_mat) {
     glUniform1i(water->location_depthMap,4);
 
     //calculate initial water position/orientation
-    water->waterHeight = 5.0f;
+    water->waterHeight = -5.0f;
     GLfloat quat[] = {0.0f,0.0f,0.0f,0.0f};
-    mat4 waterS = scale(identity_mat4(),vec3(200.0f,140.0f,0) );
-    mat4 waterT = translate(identity_mat4(), vec3(100.0f,water->waterHeight,55.0f));
+    mat4 waterS = scale(identity_mat4(),vec3(1000.0f,1000.0f,0) );
+    mat4 waterT =  translate(identity_mat4(), vec3(500.0f,water->waterHeight,500.0f));
+//    mat4 waterT2 = translate(identity_mat4(), vec3(200.0f,water->waterHeight ,200.0f));
     mat4 waterR;
     create_versor(quat, 90, -1.0f, 0.0f, 0.0f);
     quat_to_mat4(waterR.m, quat);
     water->modelMatrix = waterT * waterR * waterS;
-    glUniformMatrix4fv(water->location_modelMatrix, 1, GL_FALSE, water->modelMatrix.m);
-
+//    water->modelMatrix2 = waterT2 * waterR * waterS;
 }
 
 
@@ -203,6 +203,8 @@ void waterUpdate(Water* water){
 
 void waterRender(Water* water, Camera *camera){
 
+
+
     glUseProgram(water->shader);
     glUniform1f(water->location_moveFactor,        (GLfloat)water->moveFactor);
     glUniform3f(water->location_cameraPosition,    camera->pos[0],camera->pos[1],camera->pos[2]);
@@ -223,13 +225,19 @@ void waterRender(Water* water, Camera *camera){
     glBindTexture(GL_TEXTURE_2D, water->normalMapTexture);
     glActiveTexture(GL_TEXTURE4);
     glBindTexture(GL_TEXTURE_2D, water->refractionDepthTexture);
+
+    glUniformMatrix4fv(water->location_modelMatrix, 1, GL_FALSE, water->modelMatrix.m);
     glDrawArrays(GL_TRIANGLES, 0, 6);
+//    glUniformMatrix4fv(water->location_modelMatrix, 1, GL_FALSE, water->modelMatrix2.m);
+//    glDrawArrays(GL_TRIANGLES, 0, 6);
+
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(2);
     glDisableVertexAttribArray(3);
     glDisableVertexAttribArray(4);
     glBindVertexArray(0);
+
 }
 
 void waterCleanUp(Water* water){

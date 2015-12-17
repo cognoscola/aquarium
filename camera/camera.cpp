@@ -43,8 +43,8 @@ void cameraInit(Camera * camera, Window *window){
 
     //create init view matrix
     camera->pos[0] = 0.0f; // don't start at zero, or we will be too close
-    camera->pos[1] = 10.0f; // don't start at zero, or we will be too close
-    camera->pos[2] = 0.5f; // don't start at zero, or we will be too close
+    camera->pos[1] = 5.0f; // don't start at zero, or we will be too close
+    camera->pos[2] = 0.0f; // don't start at zero, or we will be too close
     camera->T =translate (identity_mat4 (), vec3 (-camera->pos[0], -camera->pos[1], -camera->pos[2]));
     camera->Rpitch = rotate_y_deg (identity_mat4 (), -camera->yaw);
     camera->Ryaw = rotate_y_deg (identity_mat4 (), -camera->yaw);
