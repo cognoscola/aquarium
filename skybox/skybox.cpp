@@ -14,6 +14,8 @@ void skyInit(Skybox* sky, GLfloat* projection_matrix){
     skyLoadCubeMapTextures(sky);
     skyGetUniforms(sky);
     glUniformMatrix4fv(sky->location_projection_mat, 1, GL_FALSE, projection_matrix);
+    sky->skyS = scale(identity_mat4(), vec3(8.5f, 8.5f, 8.5f));
+
 }
 
 
@@ -151,6 +153,9 @@ void skyUpdate(Skybox *sky){
     if (sky->angle> 359) sky->angle= 0;
     create_versor(quat, sky->angle, 0.0f, 1.0f, 0.0f);
     quat_to_mat4(sky->modelMatrix.m, quat);
+    sky->modelMatrix = sky->modelMatrix * sky->skyS;
+
+
 }
 
 void skyRender(Skybox *sky, Camera* camera){

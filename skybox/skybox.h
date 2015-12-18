@@ -34,6 +34,7 @@ struct Skybox{
 //    GLint location_skyColour;
     mat4 modelMatrix;
 
+    mat4 skyS;
     GLfloat angle;
 };
 

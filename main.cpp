@@ -84,8 +84,8 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glDisable(GL_CLIP_DISTANCE0);
 //        meshRender(&terrain,&camera,1000.0f);
-//        skyRender(&sky, &camera);
-//        waterUpdate(&water);
+        skyRender(&sky, &camera);
+        waterUpdate(&water);
         waterRender(&water, &camera);
 
         glfwPollEvents();

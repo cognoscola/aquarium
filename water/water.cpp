@@ -46,13 +46,13 @@ void waterInit(Water *water, Window *hardware, GLfloat* proj_mat) {
     //calculate initial water position/orientation
     water->waterHeight = -5.0f;
     GLfloat quat[] = {0.0f,0.0f,0.0f,0.0f};
-    mat4 waterS = scale(identity_mat4(),vec3(500.0f,500.0f,0) );
-    mat4 waterT =  translate(identity_mat4(), vec3(250.0f,water->waterHeight,250.0f));
-//    mat4 waterT2 = translate(identity_mat4(), vec3(200.0f,water->waterHeight ,200.0f));
-    mat4 waterR;
+    water->waterS = scale(identity_mat4(),vec3(800.0f,800.0f,0) );
+//    mat4 waterT =  translate(identity_mat4(), vec3(400.0f,water->waterHeight,400.0f));
+//    mat4 waterT2 = translate(identity_mat4(), \vec3(200.0f,water->waterHeight ,200.0f));
+//    mat4 waterR;
     create_versor(quat, 90, -1.0f, 0.0f, 0.0f);
-    quat_to_mat4(waterR.m, quat);
-    water->modelMatrix = waterT * waterR * waterS;
+    quat_to_mat4(water->waterR.m, quat);
+//    water->modelMatrix = waterT * waterR * waterS;
 //    water->modelMatrix2 = waterT2 * waterR * waterS;
 }
 
@@ -206,6 +206,8 @@ void waterUpdate(Water* water){
 
 void waterRender(Water* water, Camera *camera){
 
+    mat4 waterT;
+
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -233,10 +235,31 @@ void waterRender(Water* water, Camera *camera){
     glActiveTexture(GL_TEXTURE4);
     glBindTexture(GL_TEXTURE_2D, water->refractionDepthTexture);
 
+    //1
+
+    waterT =  translate(identity_mat4(), vec3(200.0f,water->waterHeight,200.0f));
+    water->modelMatrix = waterT* water->waterR * water->waterS;
     glUniformMatrix4fv(water->location_modelMatrix, 1, GL_FALSE, water->modelMatrix.m);
     glDrawArrays(GL_TRIANGLES, 0, 6);
-//    glUniformMatrix4fv(water->location_modelMatrix, 1, GL_FALSE, water->modelMatrix2.m);
-//    glDrawArrays(GL_TRIANGLES, 0, 6);
+
+    //2
+    waterT =  translate(identity_mat4(), vec3(600.0f,water->waterHeight,200.0f));
+    water->modelMatrix = waterT* water->waterR * water->waterS;
+    glUniformMatrix4fv(water->location_modelMatrix, 1, GL_FALSE, water->modelMatrix.m);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+
+    //3
+    waterT =  translate(identity_mat4(), vec3(600.0f,water->waterHeight,600.0f));
+    water->modelMatrix = waterT* water->waterR * water->waterS;
+    glUniformMatrix4fv(water->location_modelMatrix, 1, GL_FALSE, water->modelMatrix.m);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+
+    //4
+    waterT =  translate(identity_mat4(), vec3(200.0f,water->waterHeight,600.0f));
+    water->modelMatrix = waterT* water->waterR * water->waterS;
+    glUniformMatrix4fv(water->location_modelMatrix, 1, GL_FALSE, water->modelMatrix.m);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+
 
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);

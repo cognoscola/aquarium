@@ -62,14 +62,18 @@ struct Water {
     GLint location_density;
     GLint location_gradient;
 
-    GLfloat fogDensity = 0.005f;
-    GLfloat fogGradient = 25.0f;
+    GLfloat fogDensity = 0.0032f;
+    GLfloat fogGradient = 60.0f;
 
     mat4 modelMatrix;
 //    mat4 modelMatrix2;
     GLfloat waterHeight;
     GLfloat reflectionDistance;
     double moveFactor;
+
+
+    mat4 waterS;
+    mat4 waterR;
 };
 
 void waterInit(Water *water, Window *hardware, GLfloat* proj_mat);
