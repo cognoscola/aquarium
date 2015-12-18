@@ -15,7 +15,6 @@ void skyInit(Skybox* sky, GLfloat* projection_matrix){
     skyGetUniforms(sky);
     glUniformMatrix4fv(sky->location_projection_mat, 1, GL_FALSE, projection_matrix);
     sky->skyS = scale(identity_mat4(), vec3(8.5f, 8.5f, 8.5f));
-
 }
 
 

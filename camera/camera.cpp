@@ -40,7 +40,6 @@ void cameraInit(Camera * camera, Window *window){
     camera->proj_mat[14] = Pz;
     camera->proj_mat[15] = 0.0f;
 
-
     //create init view matrix
     camera->pos[0] = 0.0f; // don't start at zero, or we will be too close
     camera->pos[1] = 5.0f; // don't start at zero, or we will be too close
@@ -94,9 +93,9 @@ void updateMovement(Camera* camera, Input* input) {
 
     //while we are moving (velocity is nonzero), update the camera's position
     if (camera->moving) {
-        camera->pos[0] += -camera->velocity.v[0] *0.6f;
-        camera->pos[2] += -camera->velocity.v[2] *0.6f;
-        camera->pos[1] += -camera->velocity.v[1] *0.6f;
+        camera->pos[0] += -camera->velocity.v[0] *camera->speedConstant;
+        camera->pos[2] += -camera->velocity.v[2] *camera->speedConstant;
+        camera->pos[1] += -camera->velocity.v[1] *camera->speedConstant;
         if(dot(camera->velocity,camera->velocity) < 1e-9) {
             camera->velocity.v[0] = camera->velocity.v[2] = camera->velocity.v[1] = 0.0f;
             camera->pushing = 0;

@@ -12,7 +12,7 @@ out vec3 toCameraVector;
 out vec3 fromLightVector;
 out float visibility;
 
-const float tiling = 6.0;
+const float tiling = 4;
 uniform float fogDensity;
 uniform float fogGradient;
 
@@ -25,7 +25,7 @@ void main(void){
     vec4 worldPosition = viewMatrix * modelMatrix * vec4(positions,1.0);
     clipSpace = projectionMatrix * worldPosition;
     gl_Position = clipSpace;
-    textureCoords = vec2(positions.x/2.0 + 0.5, positions.y/2.0 + 0.5);
+    textureCoords = vec2(positions.x/2.0 + 0.5, positions.y/2.0 + 0.5) *tiling ;
 
     //fresnel stuff
     toCameraVector = cameraPosition - worldPosition.xyz;

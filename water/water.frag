@@ -33,7 +33,6 @@ void main () {
     vec2 reflectTexCoords = vec2(ndc.x, -ndc.y);
 
     //sample before distortions happen
-
     float depth = texture(depthMap, refractTexCoords).r;
     float floorDistance = 2.0 * near * far / (far + near - (2.0 * depth - 1.0) * (far - near));
 
@@ -43,7 +42,7 @@ void main () {
 
     vec2 distortedTexCoords = texture(dudvMap, vec2(textureCoords.x + moveFactor, textureCoords.y)).rg*0.1;
 	distortedTexCoords = textureCoords + vec2(distortedTexCoords.x, distortedTexCoords.y+moveFactor);
-	vec2 totalDistortion = (texture(dudvMap, distortedTexCoords).rg * 2.0 - 1.0) * waveStrength *  clamp(waterDepth/20.0, 0.0, 1.0);;
+	vec2 totalDistortion = (texture(dudvMap, distortedTexCoords).rg * 2.0 - 1.0) * waveStrength *  clamp(waterDepth/20.0, 0.0, 1.0);
 
     refractTexCoords += totalDistortion;
 //    refractTexCoords  = clamp(reflectTexCoords, 0.001, 0.999);
@@ -74,8 +73,9 @@ void main () {
     //give it a blue tint
     out_Color = mix(out_Color, vec4(0.0,0.3,0.5,1.0),0.2) + vec4(specularHighlights, 0.0);
     out_Color.a = clamp(waterDepth/1.0, 0.0, 1.0);
-
     //fog effect
     out_Color.a = visibility;
+
+//    out_Color  = texture(dudvMap,textureCoords);
 
 }
