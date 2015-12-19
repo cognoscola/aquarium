@@ -12,7 +12,7 @@ out vec3 toCameraVector;
 out vec3 fromLightVector;
 out float visibility;
 
-const float tiling = 4;
+const float tiling = 8;
 uniform float fogDensity;
 uniform float fogGradient;
 

@@ -19,10 +19,16 @@ void meshInit(Mesh* mesh, GLfloat* proj_mat){
     meshGetUniforms(mesh);
     glUniform4f(mesh->location_clip_plane, 0.0f, -1.0f, 0.0f, 1.0f);
     glUniformMatrix4fv(mesh->location_projection_mat , 1, GL_FALSE, proj_mat);
-    mat4 s = scale(identity_mat4(), vec3(10,10,10));
-    mesh->modelMatrix = s;
-    glUniformMatrix4fv(mesh->location_model_mat , 1, GL_FALSE, mesh->modelMatrix.m);
 
+    //TODO mountain settings
+//    mat4 s = scale(identity_mat4(), vec3(50,100,10));
+//    mat4 T = translate(identity_mat4(), vec3(0.0f, -4.5f, -400.0f));
+//    mesh->modelMatrix = T * s;
+
+
+    mat4 T = translate(identity_mat4(), vec3(0.0f, -5.0f, 0.0f));
+    mesh->modelMatrix = T;
+    glUniformMatrix4fv(mesh->location_model_mat , 1, GL_FALSE, mesh->modelMatrix.m);
 }
 
 bool meshLoadMeshFile(const char *fileName, GLuint *vao, int *point_count){

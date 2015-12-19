@@ -9,8 +9,8 @@
 #include <utils/math_utils/maths_funcs.h>
 #include <camera/camera.h>
 
-#define TERRAIN_TEXTURE "/home/alvaregd/Documents/Games/aquarium/assets/ao_colour.png"
-#define MESH_FILE "/home/alvaregd/Documents/Games/aquarium/assets/floating_island.obj"
+#define TERRAIN_TEXTURE "/home/alvaregd/Documents/Games/aquarium/assets/mountainTexture.png"
+#define MESH_FILE "/home/alvaregd/Documents/Games/aquarium/assets/map.obj"
 
 #define MESH_VERTEX "/home/alvaregd/Documents/Games/aquarium/mesh/mesh.vert"
 #define MESH_FRAGMENT "/home/alvaregd/Documents/Games/aquarium/mesh/mesh.frag"

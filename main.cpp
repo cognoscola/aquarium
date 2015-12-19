@@ -37,6 +37,9 @@ int main() {
     Mesh terrain; // terrain object
     meshInit(&terrain, camera.proj_mat);
 
+    Mesh map;
+    meshInit(&map, camera.proj_mat);
+
     Water water; // water object
     waterInit(&water, &hardware, camera.proj_mat);
 
@@ -77,6 +80,9 @@ int main() {
         bindFrameBufer(water.refractionFrameBuffer, REFRACTION_WIDTH, REFRACTION_HEIGHT);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 //        meshRender(&terrain,&camera, 5.0f);
+        glDisable(GL_CULL_FACE);
+        meshRender(&map, &camera, 1000.0f);
+        glEnable(GL_CULL_FACE);
         skyRender(&sky, &camera);
         unbindCurrentFrameBuffer(&hardware);
 
@@ -84,6 +90,9 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glDisable(GL_CLIP_DISTANCE0);
 //        meshRender(&terrain,&camera,1000.0f);
+        glDisable(GL_CULL_FACE);
+        meshRender(&map, &camera, 1000.0f);
+        glEnable(GL_CULL_FACE);
         skyRender(&sky, &camera);
         waterUpdate(&water);
         waterRender(&water, &camera);
