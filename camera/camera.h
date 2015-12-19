@@ -37,7 +37,7 @@ struct Camera{
 
     vec3 velocity; //actor's velocity
 
-    GLfloat speedConstant = 0.03f;
+    GLfloat speedConstant = 0.3f;
     GLfloat* proj_mat;
 };
 

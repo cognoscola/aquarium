@@ -17,13 +17,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fbff9efc-910d-44a0-bc41-d0c1f792a3e0" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/screenshot.png" afterPath="$PROJECT_DIR$/build/screenshot.png" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/map.obj" afterPath="$PROJECT_DIR$/assets/map.obj" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/gl.log" afterPath="$PROJECT_DIR$/build/gl.log" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/camera/camera.h" afterPath="$PROJECT_DIR$/camera/camera.h" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/main.cpp" afterPath="$PROJECT_DIR$/main.cpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mesh/mesh.cpp" afterPath="$PROJECT_DIR$/mesh/mesh.cpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mesh/mesh.h" afterPath="$PROJECT_DIR$/mesh/mesh.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/water/water.vert" afterPath="$PROJECT_DIR$/water/water.vert" />
     </list>
     <ignored path="aquarium.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -44,11 +44,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="main.cpp" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/main.cpp">
+      <file leaf-file-name="mesh.cpp" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/mesh/mesh.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.40162602">
-              <caret line="75" column="39" selection-start-line="75" selection-start-column="39" selection-end-line="75" selection-end-column="39" />
+            <state vertical-scroll-proportion="0.63577235">
+              <caret line="39" column="5" selection-start-line="39" selection-start-column="5" selection-end-line="39" selection-end-column="5" />
               <folding />
             </state>
           </provider>
@@ -77,10 +77,10 @@
         <option value="$PROJECT_DIR$/camera/camera.cpp" />
         <option value="$PROJECT_DIR$/water/water.frag" />
         <option value="$PROJECT_DIR$/water/water.vert" />
-        <option value="$PROJECT_DIR$/mesh/mesh.h" />
-        <option value="$PROJECT_DIR$/mesh/mesh.cpp" />
         <option value="$PROJECT_DIR$/camera/camera.h" />
+        <option value="$PROJECT_DIR$/mesh/mesh.h" />
         <option value="$PROJECT_DIR$/main.cpp" />
+        <option value="$PROJECT_DIR$/mesh/mesh.cpp" />
       </list>
     </option>
   </component>
@@ -91,7 +91,7 @@
   </component>
   <component name="ProjectFrameBounds">
     <option name="x" value="65" />
-    <option name="y" value="-1084" />
+    <option name="y" value="-4" />
     <option name="width" value="1855" />
     <option name="height" value="1084" />
   </component>
@@ -279,7 +279,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="65" y="-1084" width="1855" height="1084" extended-state="6" />
+    <frame x="65" y="-4" width="1855" height="1084" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.27493262" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -494,38 +494,36 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/mesh/mesh.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.4390244">
-          <caret line="35" column="0" selection-start-line="35" selection-start-column="0" selection-end-line="35" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/mesh/mesh.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.5512195">
-          <caret line="143" column="13" selection-start-line="143" selection-start-column="13" selection-end-line="143" selection-end-column="13" />
-          <folding>
-            <element signature="e#43#61#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/camera/camera.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.47642276">
-          <caret line="39" column="32" selection-start-line="39" selection-start-column="32" selection-end-line="39" selection-end-column="32" />
+        <state vertical-scroll-proportion="0.22439024">
+          <caret line="6" column="0" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
           <folding>
             <element signature="e#112#136#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/mesh/mesh.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.027642276">
+          <caret line="24" column="0" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/main.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.40162602">
-          <caret line="75" column="39" selection-start-line="75" selection-start-column="39" selection-end-line="75" selection-end-column="39" />
+        <state vertical-scroll-proportion="0.4113821">
+          <caret line="17" column="5" selection-start-line="17" selection-start-column="5" selection-end-line="17" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mesh/mesh.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.63577235">
+          <caret line="39" column="5" selection-start-line="39" selection-start-column="5" selection-end-line="39" selection-end-column="5" />
           <folding />
         </state>
       </provider>

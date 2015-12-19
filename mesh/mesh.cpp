@@ -25,9 +25,9 @@ void meshInit(Mesh* mesh, GLfloat* proj_mat){
 //    mat4 T = translate(identity_mat4(), vec3(0.0f, -4.5f, -400.0f));
 //    mesh->modelMatrix = T * s;
 
-
+    mat4 s = scale(identity_mat4(), vec3(2,2,2));
     mat4 T = translate(identity_mat4(), vec3(0.0f, -5.0f, 0.0f));
-    mesh->modelMatrix = T;
+    mesh->modelMatrix = T * s;
     glUniformMatrix4fv(mesh->location_model_mat , 1, GL_FALSE, mesh->modelMatrix.m);
 }
 
