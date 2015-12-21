@@ -71,9 +71,10 @@ struct Water {
     GLfloat reflectionDistance;
     double moveFactor;
 
-
+    GLfloat waterAngle = 90;
     mat4 waterS;
     mat4 waterR;
+    mat4 waterT;
 };
 
 void waterInit(Water *water, Window *hardware, GLfloat* proj_mat);

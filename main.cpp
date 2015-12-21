@@ -80,9 +80,7 @@ int main() {
         bindFrameBufer(water.refractionFrameBuffer, REFRACTION_WIDTH, REFRACTION_HEIGHT);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 //        meshRender(&terrain,&camera, 5.0f);
-//        glDisable(GL_CULL_FACE);
         meshRender(&map, &camera, 1000.0f);
-//        glEnable(GL_CULL_FACE);
         skyRender(&sky, &camera);
         unbindCurrentFrameBuffer(&hardware);
 
@@ -90,9 +88,7 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glDisable(GL_CLIP_DISTANCE0);
 //        meshRender(&terrain,&camera,1000.0f);
-//        glDisable(GL_CULL_FACE);
         meshRender(&map, &camera, 1000.0f);
-//        glEnable(GL_CULL_FACE);
         skyRender(&sky, &camera);
         waterUpdate(&water);
         waterRender(&water, &camera);
@@ -112,7 +108,8 @@ int main() {
 
         if (GLFW_PRESS== glfwGetKey(hardware.window, GLFW_KEY_PAGE_UP)) {
             if(!fogInputs.pageUpPressed){
-                water.fogDensity += 0.0001f;
+
+                water.fogDensity += 0.001f;
                 printf("Water Fog Density: %f\n", water.fogDensity);
                 fogInputs.pageUpPressed = true;
             }
@@ -125,6 +122,8 @@ int main() {
 
         if (GLFW_PRESS== glfwGetKey(hardware.window, GLFW_KEY_PAGE_DOWN)) {
             if (!fogInputs.pageDownPressed) {
+
+
                 water.fogDensity -= 0.0001f;
                 printf("Water Fog Density: %f\n", water.fogDensity);
                 fogInputs.pageDownPressed = true;

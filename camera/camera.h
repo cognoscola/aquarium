@@ -16,7 +16,6 @@ struct Window;
  * its position, orientation and projection
  */
 struct Camera{
-
     float pos[3]; // don't start at zero, or we will be too close
     float yaw = 0.0f; // y-rotation in degrees
     float pitch = 0.0f;
@@ -37,7 +36,7 @@ struct Camera{
 
     vec3 velocity; //actor's velocity
 
-    GLfloat speedConstant = 0.3f;
+    GLfloat speedConstant = 2.0f;
     GLfloat* proj_mat;
 };
 
