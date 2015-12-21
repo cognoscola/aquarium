@@ -69,9 +69,9 @@ int main() {
         calculateViewMatrices(&camera);
         camera.viewMatrix.m[13] += (camera.pos[1] > water.waterHeight ? -1:1) *  water.reflectionDistance;
 //        meshRender(&terrain,&camera,0.5);
-        meshRender(&map, &camera,(camera.pos[1] > water.waterHeight ? -1:1) * 0.5f);
+        meshRender(&map, &camera, 0.5f);
         skyUpdate(&sky);
-        skyRender(&sky, &camera, camera.pos[1] > water.waterHeight);
+        skyRender(&sky, &camera, camera.pos[1] > water.waterHeight,true);
         camera.viewMatrix.m[13] -=  (camera.pos[1] > water.waterHeight ? -1:1) * water.reflectionDistance;
         calculateRotationMatrix(camera.pitch, &camera.Rpitch,PITCH);
         calculateViewMatrices(&camera);
@@ -81,8 +81,8 @@ int main() {
         bindFrameBufer(water.refractionFrameBuffer, REFRACTION_WIDTH, REFRACTION_HEIGHT);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 //        meshRender(&terrain,&camera, 5.0f);
-        meshRender(&map, &camera, (camera.pos[1] > water.waterHeight ? -1:1) * 1000.0f);
-        skyRender(&sky, &camera, camera.pos[1] > water.waterHeight);
+        meshRender(&map, &camera, (camera.pos[1] > water.waterHeight ? 1:-1) * 1000.0f);
+        skyRender(&sky, &camera, camera.pos[1] > water.waterHeight,true);
         unbindCurrentFrameBuffer(&hardware);
 
         //RENDER TO THE DEFAULT BUFFER
@@ -90,7 +90,7 @@ int main() {
         glDisable(GL_CLIP_DISTANCE0);
 //        meshRender(&terrain,&camera,1000.0f);
         meshRender(&map, &camera, (camera.pos[1] > water.waterHeight ? -1:1) * 1000.0f);
-        skyRender(&sky, &camera,camera.pos[1] > water.waterHeight);
+        skyRender(&sky, &camera,camera.pos[1] > water.waterHeight,false);
         waterUpdate(&water);
         waterRender(&water, &camera);
 
@@ -110,8 +110,8 @@ int main() {
         if (GLFW_PRESS== glfwGetKey(hardware.window, GLFW_KEY_PAGE_UP)) {
             if(!fogInputs.pageUpPressed){
 
-                water.fogDensity += 0.001f;
-                printf("Water Fog Density: %f\n", water.fogDensity);
+                water.fogDensity += 0.0001f;
+                printf(" Fog Density: %f\n", water.fogDensity);
                 fogInputs.pageUpPressed = true;
             }
         }
@@ -125,7 +125,7 @@ int main() {
             if (!fogInputs.pageDownPressed) {
 
                 water.fogDensity -= 0.0001f;
-                printf("Water Fog Density: %f\n", water.fogDensity);
+                printf(" Fog Density: %f\n", water.fogDensity);
                 fogInputs.pageDownPressed = true;
             }
         }
@@ -138,7 +138,7 @@ int main() {
         if (GLFW_PRESS == glfwGetKey(hardware.window, GLFW_KEY_HOME)) {
             if (!fogInputs.homePressed) {
                 water.fogGradient += 1.0f;
-                printf("Water Fog Gradient: %f\n", water.fogGradient);
+                printf(" Fog Gradient: %f\n", water.fogGradient);
                 fogInputs.homePressed = true;
             }
         }
@@ -152,7 +152,7 @@ int main() {
         if (GLFW_PRESS == glfwGetKey(hardware.window, GLFW_KEY_END)) {
             if (!fogInputs.endPressed) {
                 water.fogGradient -= 1.0f;
-                printf("Water Fog Gradient: %f\n", water.fogGradient);
+                printf(" Fog Gradient: %f\n", water.fogGradient);
                 fogInputs.endPressed = true;
             }
         }

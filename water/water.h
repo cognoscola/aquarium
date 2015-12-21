@@ -62,7 +62,8 @@ struct Water {
     GLint location_density;
     GLint location_gradient;
 
-    GLfloat fogDensity = 0.0032f;
+    GLfloat fogDensity = 0.0041f;
+//    GLfloat fogDensity = 0.0032f;
     GLfloat fogGradient = 60.0f;
 
     mat4 modelMatrix;

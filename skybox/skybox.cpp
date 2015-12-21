@@ -15,6 +15,8 @@ void skyInit(Skybox* sky, GLfloat* projection_matrix){
     skyGetUniforms(sky);
     glUniformMatrix4fv(sky->location_projection_mat, 1, GL_FALSE, projection_matrix);
     sky->skyS = scale(identity_mat4(), vec3(8.5f, 8.5f, 8.5f));
+
+
 }
 
 
@@ -157,7 +159,7 @@ void skyUpdate(Skybox *sky){
     sky->modelMatrix = sky->modelMatrix * sky->skyS;
 }
 
-void skyRender(Skybox *sky, Camera* camera, bool isAboveWater){
+void skyRender(Skybox *sky, Camera* camera, bool isAboveWater, bool isRefractionPass){
 
     float x = camera->viewMatrix.m[12];
     float y = camera->viewMatrix.m[13];
@@ -178,13 +180,20 @@ void skyRender(Skybox *sky, Camera* camera, bool isAboveWater){
     if(isAboveWater){
         glUniform3f(sky->location_skyColour,1.0f,1.0f,1.0f);
     }else{
-        sky->fogDensity = 0.0032f;
-        sky->fogGradient = 60.0f;
-        glUniform3f(sky->location_skyColour,0.1f,0.6f,1.0f);
+        glUniform3f(sky->location_skyColour,0.0f,0.7f,1.0f);
+    }
+
+    if (isRefractionPass) {
+        sky->fogDensity = 0.000f;
+        sky->fogGradient = 0.0f;
+
+    }else{
+        sky->fogDensity = 0.007f;
+        sky->fogGradient = 1.5f;
     }
 
     glUniform1f(sky->location_density, sky->fogDensity);
-    glUniform1f(sky->location_density, sky->fogGradient);
+    glUniform1f(sky->location_gradient, sky->fogGradient);
     glBindVertexArray(sky->vao);
     glEnableVertexAttribArray(0);
     glBindTexture(GL_TEXTURE_CUBE_MAP, sky->texture);

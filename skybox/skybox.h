@@ -40,8 +40,8 @@ struct Skybox{
     mat4 skyS;
     GLfloat angle;
 
-    GLfloat fogDensity = 0.0032f;
-    GLfloat fogGradient = 60.0f;
+    GLfloat fogDensity = 0.0056f;
+    GLfloat fogGradient = 1.5f;
 
 };
 
@@ -63,7 +63,7 @@ void skyGetUniforms(Skybox* sky);
  * in - sky object
  * in - camera
  */
-void skyRender(Skybox *sky, Camera* camera, bool isAboveWater);
+void skyRender(Skybox *sky, Camera* camera, bool isAboveWater, bool isRefractionPass);
 
 /** update the position and orientation of the sky **/
 void skyUpdate(Skybox *sky);
