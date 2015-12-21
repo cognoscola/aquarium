@@ -139,9 +139,11 @@ void skyCreateVao(Skybox* sky){
 
 void skyGetUniforms(Skybox* sky){
     sky->location_projection_mat = glGetUniformLocation(sky->shader, "projectionMatrix");
-    sky->location_view_mat = glGetUniformLocation(sky->shader, "viewMatrix");
+    sky->location_view_mat  = glGetUniformLocation(sky->shader, "viewMatrix");
     sky->location_model_mat = glGetUniformLocation(sky->shader, "modelMatrix");
-//    sky->location_skyColour = glGetUniformLocation(sky->shader, "skyColour");
+    sky->location_density   = glGetUniformLocation(sky->shader, "fogDensity");
+    sky->location_gradient  = glGetUniformLocation(sky->shader, "fogGradient");
+    sky->location_skyColour = glGetUniformLocation(sky->shader, "skyColour");
 }
 
 void skyUpdate(Skybox *sky){
@@ -153,11 +155,9 @@ void skyUpdate(Skybox *sky){
     create_versor(quat, sky->angle, 0.0f, 1.0f, 0.0f);
     quat_to_mat4(sky->modelMatrix.m, quat);
     sky->modelMatrix = sky->modelMatrix * sky->skyS;
-
-
 }
 
-void skyRender(Skybox *sky, Camera* camera){
+void skyRender(Skybox *sky, Camera* camera, bool isAboveWater){
 
     float x = camera->viewMatrix.m[12];
     float y = camera->viewMatrix.m[13];
@@ -174,7 +174,17 @@ void skyRender(Skybox *sky, Camera* camera){
     glUseProgram(sky->shader);
     glUniformMatrix4fv(sky->location_model_mat, 1, GL_FALSE, sky->modelMatrix.m);
     glUniformMatrix4fv(sky->location_view_mat, 1, GL_FALSE, camera->viewMatrix.m);
-//    glUniform3f(sky->location_skyColour,0.1f,0.1f,0.1f);
+
+    if(isAboveWater){
+        glUniform3f(sky->location_skyColour,1.0f,1.0f,1.0f);
+    }else{
+        sky->fogDensity = 0.0032f;
+        sky->fogGradient = 60.0f;
+        glUniform3f(sky->location_skyColour,0.1f,0.6f,1.0f);
+    }
+
+    glUniform1f(sky->location_density, sky->fogDensity);
+    glUniform1f(sky->location_density, sky->fogGradient);
     glBindVertexArray(sky->vao);
     glEnableVertexAttribArray(0);
     glBindTexture(GL_TEXTURE_CUBE_MAP, sky->texture);

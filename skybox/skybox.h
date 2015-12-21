@@ -31,11 +31,18 @@ struct Skybox{
     GLint location_projection_mat;
     GLint location_view_mat;
     GLint location_model_mat;
-//    GLint location_skyColour;
     mat4 modelMatrix;
+
+    GLint location_density;
+    GLint location_gradient;
+    GLint location_skyColour;
 
     mat4 skyS;
     GLfloat angle;
+
+    GLfloat fogDensity = 0.0032f;
+    GLfloat fogGradient = 60.0f;
+
 };
 
 void skyInit(Skybox* sky, GLfloat* projection_matrix);
@@ -56,7 +63,7 @@ void skyGetUniforms(Skybox* sky);
  * in - sky object
  * in - camera
  */
-void skyRender(Skybox *sky, Camera* camera);
+void skyRender(Skybox *sky, Camera* camera, bool isAboveWater);
 
 /** update the position and orientation of the sky **/
 void skyUpdate(Skybox *sky);

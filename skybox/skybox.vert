@@ -6,10 +6,10 @@ uniform mat4 modelMatrix;
 
 layout(location = 0)in vec3 positions;
 out vec3 textureCoords;
-//out float visibility;
+out float visibility;
 
-//const float density = 0.008;
-//const float gradient = 1.5;
+uniform float fogDensity;
+uniform float fogGradient;
 
 void main () {
 
@@ -18,8 +18,8 @@ void main () {
    gl_Position = projectionMatrix * positionRelativeToCam;
    textureCoords= positions;
 
-//   float distance = length(positionRelativeToCam.xyz);
-//   visibility = exp(-pow((distance*density),gradient));
-//   visibility = clamp(visibility,0.0,1.0);
+   float distance = length(positionRelativeToCam.xyz);
+   visibility = exp(-pow((distance*fogDensity),fogGradient));
+   visibility = clamp(visibility,0.0,1.0);
 
 }

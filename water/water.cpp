@@ -49,6 +49,7 @@ void waterInit(Water *water, Window *hardware, GLfloat* proj_mat) {
     water->waterS = scale(identity_mat4(),vec3(800.0f,800.0f,0) );
     create_versor(quat, 90, -1.0f, 0.0f, 0.0f);
     quat_to_mat4(water->waterR.m, quat);
+
 }
 
 
@@ -218,8 +219,8 @@ void waterRender(Water* water, Camera *camera){
     glUniform3f(water->location_cameraPosition,    camera->pos[0],camera->pos[1],camera->pos[2]);
     glUniformMatrix4fv(water->location_viewMatrix, 1, GL_FALSE, camera->viewMatrix.m);
     glUniform3f(water->location_skyColour, 0.1f, 0.1f, 0.1f);
-    glUniform1f(water->location_density, (GLfloat)water->fogDensity);
-    glUniform1f(water->location_gradient, (GLfloat)water->fogGradient);
+    glUniform1f(water->location_density, water->fogDensity);
+    glUniform1f(water->location_gradient,water->fogGradient);
     glBindVertexArray(water->vao);
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);

@@ -43,7 +43,6 @@ int main() {
     Water water; // water object
     waterInit(&water, &hardware, camera.proj_mat);
 
-    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     glEnable (GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
@@ -72,7 +71,7 @@ int main() {
 //        meshRender(&terrain,&camera,0.5);
         meshRender(&map, &camera,(camera.pos[1] > water.waterHeight ? -1:1) * 0.5f);
         skyUpdate(&sky);
-        skyRender(&sky, &camera);
+        skyRender(&sky, &camera, camera.pos[1] > water.waterHeight);
         camera.viewMatrix.m[13] -=  (camera.pos[1] > water.waterHeight ? -1:1) * water.reflectionDistance;
         calculateRotationMatrix(camera.pitch, &camera.Rpitch,PITCH);
         calculateViewMatrices(&camera);
@@ -83,7 +82,7 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 //        meshRender(&terrain,&camera, 5.0f);
         meshRender(&map, &camera, (camera.pos[1] > water.waterHeight ? -1:1) * 1000.0f);
-        skyRender(&sky, &camera);
+        skyRender(&sky, &camera, camera.pos[1] > water.waterHeight);
         unbindCurrentFrameBuffer(&hardware);
 
         //RENDER TO THE DEFAULT BUFFER
@@ -91,7 +90,7 @@ int main() {
         glDisable(GL_CLIP_DISTANCE0);
 //        meshRender(&terrain,&camera,1000.0f);
         meshRender(&map, &camera, (camera.pos[1] > water.waterHeight ? -1:1) * 1000.0f);
-        skyRender(&sky, &camera);
+        skyRender(&sky, &camera,camera.pos[1] > water.waterHeight);
         waterUpdate(&water);
         waterRender(&water, &camera);
 
@@ -124,7 +123,6 @@ int main() {
 
         if (GLFW_PRESS== glfwGetKey(hardware.window, GLFW_KEY_PAGE_DOWN)) {
             if (!fogInputs.pageDownPressed) {
-
 
                 water.fogDensity -= 0.0001f;
                 printf("Water Fog Density: %f\n", water.fogDensity);

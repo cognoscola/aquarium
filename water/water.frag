@@ -76,6 +76,4 @@ void main () {
     //fog effect
     out_Color.a = visibility;
 
-//    out_Color  = texture(dudvMap,textureCoords);
-
 }

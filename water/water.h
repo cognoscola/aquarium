@@ -75,7 +75,6 @@ struct Water {
     mat4 waterS;
     mat4 waterR;
     mat4 waterT;
-    bool waterRLatch;
 };
 
 void waterInit(Water *water, Window *hardware, GLfloat* proj_mat);

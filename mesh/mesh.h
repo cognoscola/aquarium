@@ -32,6 +32,8 @@ struct Mesh{
 
     int vertexCount;
 
+
+
 };
 
 void meshInit(Mesh* mesh, GLfloat* proj_mat);
