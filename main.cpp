@@ -61,17 +61,19 @@ int main() {
         glEnable(GL_CLIP_DISTANCE0);
         updateMovement(&camera, &input);
 
+
         //RENDER THE REFLECTION BUFFER
         bindFrameBufer(water.reflectionFrameBuffer, REFLECTION_WIDTH, REFLECTION_HEIGHT);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         water.reflectionDistance = 2 * (camera.pos[1] - water.waterHeight); //save the camera height
         calculateRotationMatrix(-camera.pitch, &camera.Rpitch, PITCH);
         calculateViewMatrices(&camera);
-        camera.viewMatrix.m[13] +=water.reflectionDistance;
+        camera.viewMatrix.m[13] += (camera.pos[1] > water.waterHeight ? -1:1) *  water.reflectionDistance;
 //        meshRender(&terrain,&camera,0.5);
+        meshRender(&map, &camera,(camera.pos[1] > water.waterHeight ? -1:1) * 0.5f);
         skyUpdate(&sky);
         skyRender(&sky, &camera);
-        camera.viewMatrix.m[13] -=water.reflectionDistance;
+        camera.viewMatrix.m[13] -=  (camera.pos[1] > water.waterHeight ? -1:1) * water.reflectionDistance;
         calculateRotationMatrix(camera.pitch, &camera.Rpitch,PITCH);
         calculateViewMatrices(&camera);
         unbindCurrentFrameBuffer(&hardware);
@@ -80,7 +82,7 @@ int main() {
         bindFrameBufer(water.refractionFrameBuffer, REFRACTION_WIDTH, REFRACTION_HEIGHT);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 //        meshRender(&terrain,&camera, 5.0f);
-        meshRender(&map, &camera, 1000.0f);
+        meshRender(&map, &camera, (camera.pos[1] > water.waterHeight ? -1:1) * 1000.0f);
         skyRender(&sky, &camera);
         unbindCurrentFrameBuffer(&hardware);
 
@@ -88,7 +90,7 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glDisable(GL_CLIP_DISTANCE0);
 //        meshRender(&terrain,&camera,1000.0f);
-        meshRender(&map, &camera, 1000.0f);
+        meshRender(&map, &camera, (camera.pos[1] > water.waterHeight ? -1:1) * 1000.0f);
         skyRender(&sky, &camera);
         waterUpdate(&water);
         waterRender(&water, &camera);

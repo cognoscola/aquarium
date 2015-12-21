@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="BookmarkManager">
-    <bookmark url="file://$PROJECT_DIR$/main.cpp" line="108" mnemonic="1" />
+    <bookmark url="file://$PROJECT_DIR$/main.cpp" line="110" mnemonic="1" />
     <bookmark url="file://$PROJECT_DIR$/input/input.h" line="12" mnemonic="2" />
   </component>
   <component name="CMakeRunConfigurationManager" shouldGenerate="true" assignedExecutableTargets="true" buildAllGenerated="true">
@@ -17,13 +17,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fbff9efc-910d-44a0-bc41-d0c1f792a3e0" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/assets/ao_colour.png" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/aquarium.iml" afterPath="$PROJECT_DIR$/.idea/aquarium.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/gl.log" afterPath="$PROJECT_DIR$/build/gl.log" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/camera/camera.h" afterPath="$PROJECT_DIR$/camera/camera.h" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/main.cpp" afterPath="$PROJECT_DIR$/main.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/water/water.cpp" afterPath="$PROJECT_DIR$/water/water.cpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/water/water.h" afterPath="$PROJECT_DIR$/water/water.h" />
     </list>
     <ignored path="aquarium.iws" />
@@ -48,8 +44,8 @@
       <file leaf-file-name="main.cpp" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.31345826">
-              <caret line="206" column="47" selection-start-line="206" selection-start-column="47" selection-end-line="206" selection-end-column="47" />
+            <state vertical-scroll-proportion="0.7649063">
+              <caret line="73" column="14" selection-start-line="73" selection-start-column="14" selection-end-line="73" selection-end-column="14" />
               <folding />
             </state>
           </provider>
@@ -79,8 +75,8 @@
         <option value="$PROJECT_DIR$/mesh/mesh.h" />
         <option value="$PROJECT_DIR$/mesh/mesh.cpp" />
         <option value="$PROJECT_DIR$/camera/camera.h" />
-        <option value="$PROJECT_DIR$/water/water.h" />
         <option value="$PROJECT_DIR$/water/water.cpp" />
+        <option value="$PROJECT_DIR$/water/water.h" />
         <option value="$PROJECT_DIR$/main.cpp" />
       </list>
     </option>
@@ -327,7 +323,7 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#43#61#0" expanded="true" />
+            <element signature="e#43#61#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -337,7 +333,7 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#43#61#0" expanded="true" />
+            <element signature="e#43#61#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -347,7 +343,7 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#43#61#0" expanded="true" />
+            <element signature="e#43#61#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -357,7 +353,7 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#43#61#0" expanded="true" />
+            <element signature="e#43#61#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -532,7 +528,7 @@
         <state vertical-scroll-proportion="-3.6747968">
           <caret line="12" column="0" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
           <folding>
-            <element signature="e#43#61#0" expanded="true" />
+            <element signature="e#43#61#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -555,24 +551,32 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/water/water.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.19931857">
-          <caret line="239" column="20" selection-start-line="239" selection-start-column="20" selection-end-line="239" selection-end-column="20" />
+        <state vertical-scroll-proportion="0.66950595">
+          <caret line="239" column="37" selection-start-line="239" selection-start-column="37" selection-end-line="239" selection-end-column="37" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/utils/math_utils/quat_funcs.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.5689949">
+          <caret line="73" column="6" selection-start-line="73" selection-start-column="6" selection-end-line="73" selection-end-column="6" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/water/water.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.09540034">
-          <caret line="72" column="0" selection-start-line="72" selection-start-column="0" selection-end-line="72" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.3321976">
+          <caret line="18" column="8" selection-start-line="18" selection-start-column="8" selection-end-line="18" selection-end-column="8" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/main.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.31345826">
-          <caret line="206" column="47" selection-start-line="206" selection-start-column="47" selection-end-line="206" selection-end-column="47" />
+        <state vertical-scroll-proportion="0.7649063">
+          <caret line="73" column="14" selection-start-line="73" selection-start-column="14" selection-end-line="73" selection-end-column="14" />
           <folding />
         </state>
       </provider>
