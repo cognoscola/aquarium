@@ -48,6 +48,13 @@ struct Mesh{
     GLint location_baseTexture;
     GLint location_luminanceTexture;
 
+    GLint location_skyColour;
+    GLint location_fogDensity;
+    GLint location_fogGradient;
+
+    GLfloat fogDensity = 0.007f;
+    GLfloat fogGradient = 1.5f;
+
     mat4 modelMatrix;
     int vertexCount;
 
@@ -63,7 +70,7 @@ void meshSetInitialTransformation(Mesh* mesh, mat4* T, mat4* S,mat4* R );
 void meshLoadTexture(Mesh* mesh, char* filename);
 void meshLoadShaderProgram(Mesh * mesh);
 void meshGetUniforms(Mesh* mesh);
-void meshRender(Mesh* mesh, Camera* camera, GLfloat planeHeight);
+void meshRender(Mesh* mesh, Camera* camera, GLfloat planeHeight, bool isAboveWater);
 void meshCleanUp(Mesh *mesh);
 void meshLoadCausticTexture(Mesh* mesh);
 void meshUpdate(Mesh *mesh, double elapsed_seconds);

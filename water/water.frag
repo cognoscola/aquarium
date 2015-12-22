@@ -76,5 +76,4 @@ void main () {
     out_Color.a = clamp(waterDepth/1.0, 0.0, 1.0);
     //fog effect
     out_Color.a = visibility;
-
 }

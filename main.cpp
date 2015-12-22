@@ -51,6 +51,7 @@ int main() {
     Mesh floor;
     meshInit(&floor, camera.proj_mat,FLOOR_FILE,MESH_TERRAIN_UNDERWATER);
     T = translate(identity_mat4(), vec3(0.0f, -64.0f, 0.0f));
+    S = scale(identity_mat4(), vec3(4,2,4));
     meshSetInitialTransformation(&floor, &T, &S, &R);
 
     Water water; // water object
@@ -74,6 +75,10 @@ int main() {
         updateMovement(&camera, &input);
         meshUpdate(&floor, elapsed_seconds);
 
+        bool isAboveWater = camera.pos[1] > water.waterHeight;
+
+
+
         //RENDER THE REFLECTION BUFFER
         bindFrameBufer(water.reflectionFrameBuffer, REFLECTION_WIDTH, REFLECTION_HEIGHT);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -82,7 +87,7 @@ int main() {
         calculateViewMatrices(&camera);
         camera.viewMatrix.m[13] += (camera.pos[1] > water.waterHeight ? -1:1) *  water.reflectionDistance;
 //        meshRender(&terrain,&camera,0.5);
-        meshRender(&map, &camera, 0.5f);
+        meshRender(&map, &camera, 0.5f,isAboveWater);
         skyUpdate(&sky);
         skyRender(&sky, &camera, camera.pos[1] > water.waterHeight,true);
         camera.viewMatrix.m[13] -=  (camera.pos[1] > water.waterHeight ? -1:1) * water.reflectionDistance;
@@ -94,7 +99,7 @@ int main() {
         bindFrameBufer(water.refractionFrameBuffer, REFRACTION_WIDTH, REFRACTION_HEIGHT);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 //        meshRender(&terrain,&camera, 5.0f);
-        meshRender(&map, &camera, (camera.pos[1] > water.waterHeight ? 1:-1) * 1000.0f);
+        meshRender(&map, &camera, (isAboveWater ? 1:-1) * 1000.0f,isAboveWater);
         skyRender(&sky, &camera, camera.pos[1] > water.waterHeight,true);
         unbindCurrentFrameBuffer(&hardware);
 
@@ -102,8 +107,8 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glDisable(GL_CLIP_DISTANCE0);
 //        meshRender(&terrain,&camera,1000.0f);
-        meshRender(&map, &camera, (camera.pos[1] > water.waterHeight ? -1:1) * 1000.0f);
-        meshRender(&floor, &camera, (camera.pos[1] > water.waterHeight ? -1 : 1) * 1000.0f);
+        meshRender(&map, &camera, (isAboveWater ? -1:1) * 1000.0f, isAboveWater);
+        meshRender(&floor, &camera, (isAboveWater ? -1 : 1) * 1000.0f,isAboveWater);
         skyRender(&sky, &camera,camera.pos[1] > water.waterHeight,false);
         waterUpdate(&water);
         waterRender(&water, &camera);

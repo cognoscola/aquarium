@@ -8,8 +8,10 @@ uniform samplerCube cubeMap;
 uniform vec3 skyColour;
 
 void main () {
+
      out_Color = texture(cubeMap, textureCoords);
-     if(skyColour.r !=1.0 ){
+
+     if(skyColour.r != 1.0 ){
          out_Color = mix(vec4(skyColour, 1.0),out_Color,visibility);
      }
 

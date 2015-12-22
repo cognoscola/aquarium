@@ -5,9 +5,11 @@ uniform mat4 viewMatrix;
 uniform mat4 modelMatrix;
 
 layout(location = 0)in vec3 positions;
-out vec3 textureCoords;
-out float visibility;
 
+out vec3 textureCoords;
+
+//fog stuff
+out float visibility;
 uniform float fogDensity;
 uniform float fogGradient;
 

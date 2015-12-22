@@ -1,14 +1,23 @@
 #version 410
 
-in vec2 pass_textureCoords;
+in vec2 baseTexCoords;
+in vec2 luminanceTexCoords;
+
 out vec4 out_Color;
 
 uniform sampler2D baseMap;
 uniform sampler2D luminanceMap;
+uniform vec3 skyColour;
+
+in float visibility;
 
 void main () {
 
-//    out_Color = texture(baseMap, pass_textureCoords);
-    out_Color  = texture(luminanceMap, pass_textureCoords);
+    out_Color = texture(baseMap, baseTexCoords);
+    vec4 light = texture(luminanceMap, luminanceTexCoords);
+    out_Color = mix(out_Color, light, light.r/2);
+
+    out_Color = mix(vec4(skyColour, 1.0),out_Color,visibility);
+    out_Color.a = visibility;
 
 }

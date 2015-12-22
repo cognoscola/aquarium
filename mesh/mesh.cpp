@@ -31,6 +31,10 @@ void meshInit(Mesh* mesh, GLfloat* proj_mat, char* filename, int type){
     if (mesh->meshType == MESH_TERRAIN_UNDERWATER) {
         glUniform1i(mesh->location_baseTexture, 0);
         glUniform1i(mesh->location_luminanceTexture,1 );
+
+        glUniform1f(mesh->location_fogDensity, mesh->fogDensity);
+        glUniform1f(mesh->location_fogGradient,mesh->fogGradient);
+        glUniform3f(mesh->location_skyColour,0.0f,0.7f,1.0f);
     }
 
     //TODO mountain settings
@@ -217,7 +221,10 @@ void meshGetUniforms(Mesh* mesh){
 
     if (mesh->meshType == MESH_TERRAIN_UNDERWATER) {
         mesh->location_baseTexture      = glGetUniformLocation(mesh->shader, "baseMap");
-        mesh->location_luminanceTexture      = glGetUniformLocation(mesh->shader, "luminanceMap");
+        mesh->location_luminanceTexture = glGetUniformLocation(mesh->shader, "luminanceMap");
+        mesh->location_skyColour        = glGetUniformLocation(mesh->shader, "skyColour");
+        mesh->location_fogDensity        = glGetUniformLocation(mesh->shader, "fogDensity");
+        mesh->location_fogGradient       = glGetUniformLocation(mesh->shader, "fogGradient");
     }
 
 }
@@ -233,20 +240,39 @@ void meshUpdate(Mesh *mesh, double elapsed_seconds){
             mesh->causticIndex = 0;
         }
     }
+
+
+
 }
 
-void meshRender(Mesh* mesh, Camera* camera, GLfloat planeHeight){
+void meshRender(Mesh* mesh, Camera* camera, GLfloat planeHeight, bool isAboveWater){
 
     glUseProgram(mesh->shader);
     glUniform4f(mesh->location_clip_plane, 0.0f, 1.0f, 0.0f, planeHeight);
     glUniformMatrix4fv(mesh->location_view_mat, 1, GL_FALSE, camera->viewMatrix.m);
     glUniformMatrix4fv(mesh->location_model_mat, 1, GL_FALSE, mesh->modelMatrix.m);
+
     glBindVertexArray(mesh->vao);
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
     glEnableVertexAttribArray(2);
 
+
     if (mesh->meshType == MESH_TERRAIN_UNDERWATER) {
+
+        if (isAboveWater) {
+//            mesh->fogDensity = 0.0041f;
+//            mesh->fogGradient = 60.0f;
+            glUniform3f(mesh->location_skyColour,0.6f,0.6f,0.6f);
+        }else{
+            mesh->fogDensity = 0.007f;
+            mesh->fogGradient = 1.5f;
+            glUniform3f(mesh->location_skyColour,0.0f,0.7f,1.0f);
+        }
+        glUniform1f(mesh->location_fogDensity, mesh->fogDensity);
+        glUniform1f(mesh->location_fogGradient,mesh->fogGradient);
+
+
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, mesh->texture);
         glActiveTexture(GL_TEXTURE1);
