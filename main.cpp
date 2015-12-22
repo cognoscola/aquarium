@@ -108,7 +108,9 @@ int main() {
         glDisable(GL_CLIP_DISTANCE0);
 //        meshRender(&terrain,&camera,1000.0f);
         meshRender(&map, &camera, (isAboveWater ? -1:1) * 1000.0f, isAboveWater);
-        meshRender(&floor, &camera, (isAboveWater ? -1 : 1) * 1000.0f,isAboveWater);
+        if (!isAboveWater) {
+            meshRender(&floor, &camera, (isAboveWater ? -1 : 1) * 1000.0f,isAboveWater);
+        }
         skyRender(&sky, &camera,camera.pos[1] > water.waterHeight,false);
         waterUpdate(&water);
         waterRender(&water, &camera);

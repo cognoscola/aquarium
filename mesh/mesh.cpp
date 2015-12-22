@@ -240,12 +240,12 @@ void meshUpdate(Mesh *mesh, double elapsed_seconds){
             mesh->causticIndex = 0;
         }
     }
-
-
-
 }
 
 void meshRender(Mesh* mesh, Camera* camera, GLfloat planeHeight, bool isAboveWater){
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_ONE, GL_ONE);
 
     glUseProgram(mesh->shader);
     glUniform4f(mesh->location_clip_plane, 0.0f, 1.0f, 0.0f, planeHeight);
@@ -272,7 +272,6 @@ void meshRender(Mesh* mesh, Camera* camera, GLfloat planeHeight, bool isAboveWat
         glUniform1f(mesh->location_fogDensity, mesh->fogDensity);
         glUniform1f(mesh->location_fogGradient,mesh->fogGradient);
 
-
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, mesh->texture);
         glActiveTexture(GL_TEXTURE1);
@@ -289,6 +288,8 @@ void meshRender(Mesh* mesh, Camera* camera, GLfloat planeHeight, bool isAboveWat
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(2);
     glBindVertexArray(0);
+
+    glDisable(GL_BLEND);
 
 }
 
