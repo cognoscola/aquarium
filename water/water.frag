@@ -13,6 +13,7 @@ uniform sampler2D refractionTexture;
 uniform sampler2D dudvMap;
 uniform sampler2D normalMap;
 uniform sampler2D depthMap;
+
 uniform vec3 lightColour;
 uniform vec3 skyColour;//for fog effect
 

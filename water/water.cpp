@@ -89,7 +89,7 @@ void waterCreateVao(Water* water){
             0.0f,1.0f,
             0.0f,0.0f,
             0.0f,0.0f,
-            1.0f,0.0f,
+            1.0f, 0.0f,
             1.0f,1.0f,
     };
 
@@ -227,6 +227,7 @@ void waterRender(Water* water, Camera *camera){
     glEnableVertexAttribArray(2);
     glEnableVertexAttribArray(3);
     glEnableVertexAttribArray(4);
+
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, water->reflectionTexture);
     glActiveTexture(GL_TEXTURE1);
@@ -237,6 +238,7 @@ void waterRender(Water* water, Camera *camera){
     glBindTexture(GL_TEXTURE_2D, water->normalMapTexture);
     glActiveTexture(GL_TEXTURE4);
     glBindTexture(GL_TEXTURE_2D, water->refractionDepthTexture);
+
     isAboveWater = camera->pos[1] > water->waterHeight;
 
     create_versor(quat, water->waterAngle, isAboveWater ? -1.0f:1.0f, 0.0f, 0.0f);

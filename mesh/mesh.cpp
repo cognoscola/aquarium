@@ -10,6 +10,7 @@
 #include "mesh.h"
 
 void meshInit(Mesh* mesh, GLfloat* proj_mat, char* filename, int type){
+
     mesh->meshType = type;
     assert(meshLoadMeshFile(filename, &mesh->vao, &mesh->vertexCount));
 
@@ -166,20 +167,20 @@ void meshLoadCausticTexture(Mesh* mesh) {
 
 #define CAUSTIC "/home/alvaregd/Documents/Games/aquarium/assets/caustics/caust"
 
-    mesh->causticTextureIds = (GLuint *) malloc(32 * sizeof(GLuint));
+    mesh->causticTextureIds = (GLuint *) malloc(1 * sizeof(GLuint));
 
     for (int i = 0; i < 32; i++) {
         glGenTextures(1, &mesh->causticTextureIds[i]);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, mesh->causticTextureIds[i]);
 
-        char* name = (char*) malloc(100 * sizeof(char));
+        char *name = (char *) malloc(100 * sizeof(char));
         sprintf(name, "%s%02d.bw", CAUSTIC, i);
 
-        GLubyte * image_data;
+        GLubyte *image_data;
         int x, y;
 
-        image_data = read_alpha_texture(name,&x, &y);
+        image_data = read_alpha_texture(name, &x, &y);
         if (image_data == NULL) {
             fprintf(stderr, "\n%s: could not load caustic image file\n", CAUSTIC);
             exit(1);
@@ -191,7 +192,6 @@ void meshLoadCausticTexture(Mesh* mesh) {
         free(image_data);
     }
 }
-
 
 void meshLoadShaderProgram(Mesh * mesh) {
 
@@ -234,27 +234,23 @@ void meshRender(Mesh* mesh, Camera* camera, GLfloat planeHeight){
     glEnableVertexAttribArray(2);
 
     if (mesh->meshType == MESH_TERRAIN_UNDERWATER) {
-//        glEnable(GL_TEXTURE_GEN_S);
-//        glEnable(GL_TEXTURE_GEN_T);
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, mesh->texture);
-//        glActiveTexture(GL_TEXTURE0);
-//        glBindTexture(GL_TEXTURE_2D, mesh->causticTextureIds[mesh->causticIndex]);
-
+//        glBindTexture(GL_TEXTURE_2D, mesh->texture);
+//        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, mesh->causticTextureIds[mesh->causticIndex]);
         glDrawArrays(GL_TRIANGLES, 0, mesh->vertexCount);
-//        glDisable(GL_TEXTURE_GEN_S);
-//        glDisable(GL_TEXTURE_GEN_T);
 
-    }else{
+    }else if(mesh->meshType == MESH_MAP){
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, mesh->texture);
         glDrawArrays(GL_TRIANGLES, 0, mesh->vertexCount);
-
     }
 
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(2);
+    glBindVertexArray(0);
+
 }
 
 void meshCleanUp(Mesh *mesh){
