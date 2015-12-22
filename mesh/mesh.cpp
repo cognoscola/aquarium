@@ -1,6 +1,3 @@
-//
-// Created by alvaregd on 06/12/15.
-//
 
 #include <stdio.h>
 #include <assimp/cimport.h>
@@ -167,29 +164,32 @@ void meshLoadTexture(Mesh* mesh, char* filename){
 
 void meshLoadCausticTexture(Mesh* mesh) {
 
-#define CAUSTIC "/home/alvaregd/Documents/Games/aquarium/assets/caustics/caust03.bw"
+#define CAUSTIC "/home/alvaregd/Documents/Games/aquarium/assets/caustics/caust"
 
-    mesh->causticTextureIds = (GLuint *) malloc(1 * sizeof(GLuint));
-    glGenTextures(1, &mesh->causticTextureIds[0]);
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, mesh->causticTextureIds[0]);
+    mesh->causticTextureIds = (GLuint *) malloc(32 * sizeof(GLuint));
 
-    char* name = (char*) malloc(100 * sizeof(char));
-    sprintf(name, "%s", CAUSTIC);
+    for (int i = 0; i < 32; i++) {
+        glGenTextures(1, &mesh->causticTextureIds[i]);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, mesh->causticTextureIds[i]);
 
-    GLubyte * image_data;
-    int x, y;
+        char* name = (char*) malloc(100 * sizeof(char));
+        sprintf(name, "%s%02d.bw", CAUSTIC, i);
 
-    image_data = read_alpha_texture(name,&x, &y);
-    if (image_data == NULL) {
-        fprintf(stderr, "\n%s: could not load caustic image file\n", CAUSTIC);
-        exit(1);
+        GLubyte * image_data;
+        int x, y;
+
+        image_data = read_alpha_texture(name,&x, &y);
+        if (image_data == NULL) {
+            fprintf(stderr, "\n%s: could not load caustic image file\n", CAUSTIC);
+            exit(1);
+        }
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, x, y, 0,
+                     GL_LUMINANCE, GL_UNSIGNED_BYTE, image_data);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        free(image_data);
     }
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, x, y, 0,
-                 GL_LUMINANCE, GL_UNSIGNED_BYTE, image_data);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    free(image_data);
 }
 
 
@@ -209,6 +209,19 @@ void meshGetUniforms(Mesh* mesh){
     mesh->location_clip_plane      = glGetUniformLocation(mesh->shader, "plane");
 }
 
+void meshUpdate(Mesh *mesh, double elapsed_seconds){
+
+    mesh->timer += elapsed_seconds;
+    if (mesh->timer > mesh->MAX_COUSTIC_TIME) {
+        mesh->timer =0;
+
+        mesh->causticIndex++;
+        if (mesh->causticIndex > 31) {
+            mesh->causticIndex = 0;
+        }
+    }
+}
+
 void meshRender(Mesh* mesh, Camera* camera, GLfloat planeHeight){
 
     glUseProgram(mesh->shader);
@@ -221,16 +234,24 @@ void meshRender(Mesh* mesh, Camera* camera, GLfloat planeHeight){
     glEnableVertexAttribArray(2);
 
     if (mesh->meshType == MESH_TERRAIN_UNDERWATER) {
-        glBindTexture(GL_TEXTURE_2D, mesh->texture);
+//        glEnable(GL_TEXTURE_GEN_S);
+//        glEnable(GL_TEXTURE_GEN_T);
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, mesh->causticTextureIds[0]);
-        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, mesh->texture);
+//        glActiveTexture(GL_TEXTURE0);
+//        glBindTexture(GL_TEXTURE_2D, mesh->causticTextureIds[mesh->causticIndex]);
+
+        glDrawArrays(GL_TRIANGLES, 0, mesh->vertexCount);
+//        glDisable(GL_TEXTURE_GEN_S);
+//        glDisable(GL_TEXTURE_GEN_T);
+
     }else{
-        glBindTexture(GL_TEXTURE_2D, mesh->texture);
         glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, mesh->texture);
+        glDrawArrays(GL_TRIANGLES, 0, mesh->vertexCount);
+
     }
 
-    glDrawArrays(GL_TRIANGLES, 0, mesh->vertexCount);
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(2);

@@ -49,7 +49,9 @@ struct Mesh{
     int vertexCount;
 
     GLuint* causticTextureIds;
-
+    int causticIndex = 0;
+    double MAX_COUSTIC_TIME = 0.05f;
+    double timer;
 };
 
 void meshInit(Mesh* mesh, GLfloat* proj_mat, char* filename, int type);
@@ -61,4 +63,5 @@ void meshGetUniforms(Mesh* mesh);
 void meshRender(Mesh* mesh, Camera* camera, GLfloat planeHeight);
 void meshCleanUp(Mesh *mesh);
 void meshLoadCausticTexture(Mesh* mesh);
+void meshUpdate(Mesh *mesh, double elapsed_seconds);
 #endif //WATER_REFLECTION_MESH_H

@@ -53,7 +53,6 @@ int main() {
     T = translate(identity_mat4(), vec3(0.0f, -64.0f, 0.0f));
     meshSetInitialTransformation(&floor, &T, &S, &R);
 
-
     Water water; // water object
     waterInit(&water, &hardware, camera.proj_mat);
 
@@ -73,6 +72,7 @@ int main() {
 
         glEnable(GL_CLIP_DISTANCE0);
         updateMovement(&camera, &input);
+        meshUpdate(&floor, elapsed_seconds);
 
         //RENDER THE REFLECTION BUFFER
         bindFrameBufer(water.reflectionFrameBuffer, REFLECTION_WIDTH, REFLECTION_HEIGHT);
@@ -97,7 +97,6 @@ int main() {
         meshRender(&map, &camera, (camera.pos[1] > water.waterHeight ? 1:-1) * 1000.0f);
         skyRender(&sky, &camera, camera.pos[1] > water.waterHeight,true);
         unbindCurrentFrameBuffer(&hardware);
-
 
         //RENDER TO THE DEFAULT BUFFER
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
