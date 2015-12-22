@@ -19,12 +19,19 @@ void meshInit(Mesh* mesh, GLfloat* proj_mat, char* filename, int type){
     }else if (mesh->meshType == MESH_TERRAIN_UNDERWATER) {
         meshLoadTexture(mesh, FLOOR_TEXTURE);
         meshLoadCausticTexture(mesh);
+
     }
     meshLoadShaderProgram(mesh);
     glUseProgram(mesh->shader);
     meshGetUniforms(mesh);
     glUniform4f(mesh->location_clip_plane, 0.0f, -1.0f, 0.0f, 1.0f);
     glUniformMatrix4fv(mesh->location_projection_mat , 1, GL_FALSE, proj_mat);
+
+
+    if (mesh->meshType == MESH_TERRAIN_UNDERWATER) {
+        glUniform1i(mesh->location_baseTexture, 0);
+        glUniform1i(mesh->location_luminanceTexture,1 );
+    }
 
     //TODO mountain settings
 //    mat4 s = scale(identity_mat4(), vec3(50,100,10));
@@ -207,6 +214,12 @@ void meshGetUniforms(Mesh* mesh){
     mesh->location_view_mat        = glGetUniformLocation(mesh->shader, "viewMatrix");
     mesh->location_projection_mat  = glGetUniformLocation(mesh->shader, "projectionMatrix");
     mesh->location_clip_plane      = glGetUniformLocation(mesh->shader, "plane");
+
+    if (mesh->meshType == MESH_TERRAIN_UNDERWATER) {
+        mesh->location_baseTexture      = glGetUniformLocation(mesh->shader, "baseMap");
+        mesh->location_luminanceTexture      = glGetUniformLocation(mesh->shader, "luminanceMap");
+    }
+
 }
 
 void meshUpdate(Mesh *mesh, double elapsed_seconds){
@@ -235,8 +248,8 @@ void meshRender(Mesh* mesh, Camera* camera, GLfloat planeHeight){
 
     if (mesh->meshType == MESH_TERRAIN_UNDERWATER) {
         glActiveTexture(GL_TEXTURE0);
-//        glBindTexture(GL_TEXTURE_2D, mesh->texture);
-//        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, mesh->texture);
+        glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, mesh->causticTextureIds[mesh->causticIndex]);
         glDrawArrays(GL_TRIANGLES, 0, mesh->vertexCount);
 

@@ -11,15 +11,15 @@ uniform mat4 modelMatrix;
 uniform mat4 projectionMatrix;
 uniform vec4 plane;
 
-const float tiling = 8;
+const float tiling = 16;
 
 void main(void){
 
     vec4 vsPos = vec4 (positions, 1.0);
     gl_Position = projectionMatrix  *  viewMatrix * modelMatrix * vsPos;
 
-     pass_textureCoords = vec2(textureCoords.x/2.0 + 0.5, textureCoords.y/2.0 + 0.5) *tiling ;
-
+    pass_textureCoords = textureCoords;
+//     pass_textureCoords = vec2(textureCoords.x/2.0 + 0.5, textureCoords.y/2.0 + 0.5) *tiling ;
     gl_ClipDistance[0] = dot(plane,vsPos);
 
 }

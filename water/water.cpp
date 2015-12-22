@@ -16,6 +16,7 @@ void waterInit(Water *water, Window *hardware, GLfloat* proj_mat) {
     //create texture objects for water effects
     waterLoadTexture(water, DUDV_FILE, DUDV);
     waterLoadTexture(water, NORMALMAP_FILE, NORMAL);
+
     waterCreateVao(water);
 
     //create frame buffer stuff
@@ -37,6 +38,7 @@ void waterInit(Water *water, Window *hardware, GLfloat* proj_mat) {
     glUniformMatrix4fv(water->location_projMatrix, 1, GL_FALSE, proj_mat);
     glUniform3f(water->location_lightColour , 1.0f,1.0f,1.0f);
     glUniform3f(water->location_lightPosition , 50.0f,100.0f,50.0f);
+
     glUniform1i(water->location_reflectionTexture,0 );
     glUniform1i(water->location_refractionTexture,1 );
     glUniform1i(water->location_dudv,2 );

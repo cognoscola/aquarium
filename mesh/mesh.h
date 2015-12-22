@@ -45,6 +45,9 @@ struct Mesh{
     GLint location_model_mat;
     GLint location_clip_plane;
 
+    GLint location_baseTexture;
+    GLint location_luminanceTexture;
+
     mat4 modelMatrix;
     int vertexCount;
 
