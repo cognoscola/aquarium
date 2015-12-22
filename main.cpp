@@ -34,11 +34,25 @@ int main() {
     Skybox sky; // sky object
     skyInit(&sky, camera.proj_mat);
 
-    Mesh terrain; // terrain object
-    meshInit(&terrain, camera.proj_mat);
+//    Mesh terrain; // terrain object
+//    meshInit(&terrain, camera.proj_mat);
+
+    mat4 S;
+    mat4 T;
+    mat4 R;
 
     Mesh map;
-    meshInit(&map, camera.proj_mat);
+    meshInit(&map, camera.proj_mat, MAP_FILE, MESH_MAP);
+    S = scale(identity_mat4(), vec3(2,2,2));
+    T = translate(identity_mat4(), vec3(0.0f, -5.0f, 0.0f));
+    R = identity_mat4();
+    meshSetInitialTransformation(&map, &T, &S, &R);
+
+    Mesh floor;
+    meshInit(&floor, camera.proj_mat,FLOOR_FILE,MESH_TERRAIN_UNDERWATER);
+    T = translate(identity_mat4(), vec3(0.0f, -64.0f, 0.0f));
+    meshSetInitialTransformation(&floor, &T, &S, &R);
+
 
     Water water; // water object
     waterInit(&water, &hardware, camera.proj_mat);
@@ -59,7 +73,6 @@ int main() {
 
         glEnable(GL_CLIP_DISTANCE0);
         updateMovement(&camera, &input);
-
 
         //RENDER THE REFLECTION BUFFER
         bindFrameBufer(water.reflectionFrameBuffer, REFLECTION_WIDTH, REFLECTION_HEIGHT);
@@ -85,12 +98,14 @@ int main() {
         skyRender(&sky, &camera, camera.pos[1] > water.waterHeight,true);
         unbindCurrentFrameBuffer(&hardware);
 
+
         //RENDER TO THE DEFAULT BUFFER
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glDisable(GL_CLIP_DISTANCE0);
 //        meshRender(&terrain,&camera,1000.0f);
         meshRender(&map, &camera, (camera.pos[1] > water.waterHeight ? -1:1) * 1000.0f);
         skyRender(&sky, &camera,camera.pos[1] > water.waterHeight,false);
+        meshRender(&floor, &camera, (camera.pos[1] > water.waterHeight ? -1 : 1) * 1000.0f);
         waterUpdate(&water);
         waterRender(&water, &camera);
 
@@ -173,7 +188,9 @@ int main() {
     }
 
     waterCleanUp(&water);
-    meshCleanUp(&terrain);
+    meshCleanUp(&map);
+    meshCleanUp(&floor);
+//    meshCleanUp(&terrain);
     skyCleanUp(&sky);
 
     if(video.dump_video) {

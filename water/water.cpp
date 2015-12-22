@@ -266,7 +266,6 @@ void waterRender(Water* water, Camera *camera){
     glUniformMatrix4fv(water->location_modelMatrix, 1, GL_FALSE, water->modelMatrix.m);
     glDrawArrays(GL_TRIANGLES, 0, 6);
 
-
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(2);

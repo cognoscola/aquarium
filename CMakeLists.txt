@@ -33,12 +33,16 @@ set(SOURCE_FILES
         utils/io/stb_image.cpp utils/io/stb_image.h
         skybox/skybox.h skybox/skybox.cpp
         camera/camera.cpp camera/camera.h
+        utils/io/texload.cpp utils/io/texload.h
         utils/io/stb_image_write.cpp utils/io/stb_image_write.h
         mesh/mesh.cpp mesh/mesh.h
         utils/io/texture.cpp utils/io/texture.h
         water/water.cpp water/water.h
         input/input.h
-        utils/io/video.cpp utils/io/video.h)
+        utils/io/video.cpp utils/io/video.h
+
+        )
+
 #set(SOURCE_FILES main.cpp __add_other_cpp_files_here__)
 
 #set additional libraries

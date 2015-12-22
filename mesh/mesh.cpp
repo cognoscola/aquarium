@@ -9,11 +9,19 @@
 #include <GL/glew.h>
 #include <utils/io/texture.h>
 #include <utils/io/shader_loader.h>
+#include <utils/io/texload.h>
 #include "mesh.h"
 
-void meshInit(Mesh* mesh, GLfloat* proj_mat){
-    assert(meshLoadMeshFile(MESH_FILE, &mesh->vao, &mesh->vertexCount));
-    meshLoadTexture(mesh);
+void meshInit(Mesh* mesh, GLfloat* proj_mat, char* filename, int type){
+    mesh->meshType = type;
+    assert(meshLoadMeshFile(filename, &mesh->vao, &mesh->vertexCount));
+
+    if (mesh->meshType == MESH_MAP) {
+        meshLoadTexture(mesh, MAP_TEXTURE);
+    }else if (mesh->meshType == MESH_TERRAIN_UNDERWATER) {
+        meshLoadTexture(mesh, FLOOR_TEXTURE);
+        meshLoadCausticTexture(mesh);
+    }
     meshLoadShaderProgram(mesh);
     glUseProgram(mesh->shader);
     meshGetUniforms(mesh);
@@ -25,11 +33,14 @@ void meshInit(Mesh* mesh, GLfloat* proj_mat){
 //    mat4 T = translate(identity_mat4(), vec3(0.0f, -4.5f, -400.0f));
 //    mesh->modelMatrix = T * s;
 
-    mat4 s = scale(identity_mat4(), vec3(2,2,2));
-    mat4 T = translate(identity_mat4(), vec3(0.0f, -5.0f, 0.0f));
-    mesh->modelMatrix = T * s;
+}
+
+void meshSetInitialTransformation(Mesh* mesh, mat4* T, mat4* S,mat4* R ){
+    mesh->modelMatrix = *T * *S * *R;
     glUniformMatrix4fv(mesh->location_model_mat , 1, GL_FALSE, mesh->modelMatrix.m);
 }
+
+
 
 bool meshLoadMeshFile(const char *fileName, GLuint *vao, int *point_count){
 
@@ -133,7 +144,7 @@ bool meshLoadMeshFile(const char *fileName, GLuint *vao, int *point_count){
 }
 
 
-void meshLoadTexture(Mesh* mesh){
+void meshLoadTexture(Mesh* mesh, char* filename){
 
     GLuint texID;
     glGenTextures(1, &texID);
@@ -142,7 +153,7 @@ void meshLoadTexture(Mesh* mesh){
 
     unsigned char* image_data;
     int x ,y;
-    loadImageFile(TERRAIN_TEXTURE, true, &image_data, &x,&y);
+    loadImageFile(filename, true, &image_data, &x, &y);
 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, x, y, 0, GL_RGBA, GL_UNSIGNED_BYTE, image_data);
     free(image_data);
@@ -154,14 +165,46 @@ void meshLoadTexture(Mesh* mesh){
     mesh->texture = texID;
 }
 
-void meshLoadShaderProgram(Mesh * mesh){
+void meshLoadCausticTexture(Mesh* mesh) {
 
-    mesh->shader = create_programme_from_files(MESH_VERTEX, MESH_FRAGMENT);
+#define CAUSTIC "/home/alvaregd/Documents/Games/aquarium/assets/caustics/caust03.bw"
+
+    mesh->causticTextureIds = (GLuint *) malloc(1 * sizeof(GLuint));
+    glGenTextures(1, &mesh->causticTextureIds[0]);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, mesh->causticTextureIds[0]);
+
+    char* name = (char*) malloc(100 * sizeof(char));
+    sprintf(name, "%s", CAUSTIC);
+
+    GLubyte * image_data;
+    int x, y;
+
+    image_data = read_alpha_texture(name,&x, &y);
+    if (image_data == NULL) {
+        fprintf(stderr, "\n%s: could not load caustic image file\n", CAUSTIC);
+        exit(1);
+    }
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, x, y, 0,
+                 GL_LUMINANCE, GL_UNSIGNED_BYTE, image_data);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    free(image_data);
+}
+
+
+void meshLoadShaderProgram(Mesh * mesh) {
+
+    if (mesh->meshType == MESH_MAP) {
+        mesh->shader = create_programme_from_files(MESH_VERTEX, MESH_FRAGMENT);
+    }else if (mesh->meshType == MESH_TERRAIN_UNDERWATER) {
+        mesh->shader = create_programme_from_files(MESH_TERRAIN_UNDER_VERTEX, MESH_TERRAIN_UNDER_FRAG);
+    }
 }
 
 void meshGetUniforms(Mesh* mesh){
-    mesh->location_model_mat   = glGetUniformLocation(mesh->shader, "modelMatrix");
-    mesh->location_view_mat   = glGetUniformLocation(mesh->shader, "viewMatrix");
+    mesh->location_model_mat       = glGetUniformLocation(mesh->shader, "modelMatrix");
+    mesh->location_view_mat        = glGetUniformLocation(mesh->shader, "viewMatrix");
     mesh->location_projection_mat  = glGetUniformLocation(mesh->shader, "projectionMatrix");
     mesh->location_clip_plane      = glGetUniformLocation(mesh->shader, "plane");
 }
@@ -176,17 +219,25 @@ void meshRender(Mesh* mesh, Camera* camera, GLfloat planeHeight){
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
     glEnableVertexAttribArray(2);
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, mesh->texture);
+
+    if (mesh->meshType == MESH_TERRAIN_UNDERWATER) {
+        glBindTexture(GL_TEXTURE_2D, mesh->texture);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, mesh->causticTextureIds[0]);
+        glActiveTexture(GL_TEXTURE1);
+    }else{
+        glBindTexture(GL_TEXTURE_2D, mesh->texture);
+        glActiveTexture(GL_TEXTURE0);
+    }
+
     glDrawArrays(GL_TRIANGLES, 0, mesh->vertexCount);
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(2);
-
 }
 
 void meshCleanUp(Mesh *mesh){
     glDeleteVertexArrays(1, &mesh->vao);
     glDeleteBuffers(1, &mesh->vbo);
-
 }
+

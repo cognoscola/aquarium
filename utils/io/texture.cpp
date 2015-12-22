@@ -1,6 +1,7 @@
 //
 // Created by alvaregd on 06/12/15.
 //
+#include <malloc.h>
 #include "texture.h"
 #include "stb_image.h"
 
@@ -43,3 +44,6 @@ void loadImageFile(const char* filename, bool flip, unsigned char ** data, int* 
     *width = x;
     *height = y;
 }
+
+
+
