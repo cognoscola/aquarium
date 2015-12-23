@@ -7,7 +7,7 @@
 #define RAY_VERTEX "/home/alvaregd/Documents/Games/aquarium/ray/ray.vert"
 #define RAY_FRAGMENT "/home/alvaregd/Documents/Games/aquarium/ray/ray.frag"
 
-#define RAY_TEX "home/alvaregd/Documents/Games/aquarium/assets/right.png"
+#define RAY_TEX "home/alvaregd/Documents/Games/aquarium/assets/terrain_texture.png"
 
 struct Ray {
 

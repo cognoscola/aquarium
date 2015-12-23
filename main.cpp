@@ -20,7 +20,7 @@ int main() {
 
     //Assign the input callbacks
     glfwSetCursorPosCallback(hardware.window,cursor_position_callback);
-    glfwSetInputMode(hardware.window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetInputMode(hardware.window, GLFW_CURSOR,GLFW_CURSOR_DISABLED);
     glfwSetKeyCallback(hardware.window, key_callback);
     glfwSetInputMode(hardware.window,GLFW_STICKY_KEYS, 1);
 
@@ -36,7 +36,7 @@ int main() {
     skyInit(&sky, camera.proj_mat);
 
     Ray ray;
-    rayInit(&ray, camera.proj_mat);
+//    rayInit(&ray, camera.proj_mat);
 
 //    Mesh terrain; // terrain object
 //    meshInit(&terrain, camera.proj_mat);
@@ -111,14 +111,13 @@ int main() {
 //        meshRender(&terrain,&camera,1000.0f);
         meshRender(&map, &camera, (isAboveWater ? -1:1) * 1000.0f, isAboveWater);
         if (!isAboveWater) {
-            meshRender(&floor, &camera, (isAboveWater ? -1 : 1) * 1000.0f,isAboveWater);
+            meshRender(&floor, &camera, 1000.0f,isAboveWater);
         }
 
-        skyRender(&sky, &camera,camera.pos[1] > water.waterHeight,false);
+        skyRender(&sky, &camera,isAboveWater,false);
         waterUpdate(&water);
         waterRender(&water, &camera);
-        rayRender(&ray, &camera,isAboveWater);
-
+//        rayRender(&ray, &camera,isAboveWater);
 
         glfwPollEvents();
 

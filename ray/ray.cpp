@@ -7,7 +7,7 @@
 
 void rayInit(Ray *ray, GLfloat *proj_mat) {
 
-    rayLoadTexture(ray, RAY_TEX);
+//    rayLoadTexture(ray, RAY_TEX);
     rayCreateVao(ray);
     ray->shader = create_programme_from_files(RAY_VERTEX, RAY_FRAGMENT);
 
@@ -16,8 +16,7 @@ void rayInit(Ray *ray, GLfloat *proj_mat) {
 
     glUniformMatrix4fv(ray->location_projectionMatrix, 1, GL_FALSE, proj_mat);
     glUniform1i(ray->location_baseTexture,0);
-    ray->modelMatrix = scale(identity_mat4(), vec3(5.0f, 5.0f,5.0f));
-    glUniformMatrix4fv(ray->location_modelMatrix, 1, GL_FALSE, ray->modelMatrix.m);
+
 
 }
 
@@ -72,11 +71,12 @@ void rayGetUniforms(Ray * ray) {
     ray->location_projectionMatrix  = glGetUniformLocation(ray->shader, "projectionMatrix");
 }
 
-
 void rayRender(Ray* ray, Camera* camera, bool isAboveWater){
 
+    ray->modelMatrix = scale(identity_mat4(), vec3(5.0f, 5.0f,5.0f)) * rotate_y_deg(identity_mat4(),-camera->yaw);
 
     glUseProgram(ray->shader);
+    glUniformMatrix4fv(ray->location_modelMatrix, 1, GL_FALSE, ray->modelMatrix.m);
     glUniformMatrix4fv(ray->location_viewMatrix, 1, GL_FALSE, camera->viewMatrix.m);
     glBindVertexArray(ray->vao);
     glEnableVertexAttribArray(0);
@@ -103,12 +103,12 @@ void rayLoadTexture(Ray* ray, const char* name){
     int x ,y;
     loadImageFile(name, true, &image_data, &x,&y);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, x, y, 0, GL_RGBA, GL_UNSIGNED_BYTE, image_data);
-    free(image_data);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    ray->tex = texID;
+//    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, x, y, 0, GL_RGBA, GL_UNSIGNED_BYTE, image_data);
+//    free(image_data);
+//
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+//    ray->tex = texID;
 }

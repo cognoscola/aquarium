@@ -178,7 +178,7 @@ void meshLoadCausticTexture(Mesh* mesh) {
 
 #define CAUSTIC "/home/alvaregd/Documents/Games/aquarium/assets/caustics/caust"
 
-    mesh->causticTextureIds = (GLuint *) malloc(1 * sizeof(GLuint));
+    mesh->causticTextureIds = (GLuint *) malloc(32 * sizeof(GLuint));
 
     for (int i = 0; i < 32; i++) {
         glGenTextures(1, &mesh->causticTextureIds[i]);
@@ -196,6 +196,8 @@ void meshLoadCausticTexture(Mesh* mesh) {
             fprintf(stderr, "\n%s: could not load caustic image file\n", CAUSTIC);
             exit(1);
         }
+        free(name);
+
         glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, x, y, 0,
                      GL_LUMINANCE, GL_UNSIGNED_BYTE, image_data);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
