@@ -246,6 +246,7 @@ void waterRender(Water* water, Camera *camera){
     create_versor(quat, water->waterAngle, isAboveWater ? -1.0f:1.0f, 0.0f, 0.0f);
     quat_to_mat4(water->waterR.m, quat);
 
+    //1
     water->waterT =  translate(identity_mat4(), vec3(200.0f,water->waterHeight,isAboveWater ? 200.0f: -200.0f));
     water->modelMatrix = water->waterT* water->waterR *water->waterS  ;
     glUniformMatrix4fv(water->location_modelMatrix, 1, GL_FALSE, water->modelMatrix.m);

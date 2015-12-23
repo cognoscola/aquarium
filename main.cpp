@@ -5,6 +5,7 @@
 #include <mesh/mesh.h>
 #include <water/water.h>
 #include <utils/io/video.h>
+#include <ray/ray.h>
 
 int main() {
 
@@ -33,6 +34,9 @@ int main() {
 
     Skybox sky; // sky object
     skyInit(&sky, camera.proj_mat);
+
+    Ray ray;
+    rayInit(&ray, camera.proj_mat);
 
 //    Mesh terrain; // terrain object
 //    meshInit(&terrain, camera.proj_mat);
@@ -77,20 +81,18 @@ int main() {
 
         bool isAboveWater = camera.pos[1] > water.waterHeight;
 
-
-
         //RENDER THE REFLECTION BUFFER
         bindFrameBufer(water.reflectionFrameBuffer, REFLECTION_WIDTH, REFLECTION_HEIGHT);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         water.reflectionDistance = 2 * (camera.pos[1] - water.waterHeight); //save the camera height
         calculateRotationMatrix(-camera.pitch, &camera.Rpitch, PITCH);
         calculateViewMatrices(&camera);
-        camera.viewMatrix.m[13] += (camera.pos[1] > water.waterHeight ? -1:1) *  water.reflectionDistance;
+        camera.viewMatrix.m[13] += (isAboveWater ? -1:1) *  water.reflectionDistance;
 //        meshRender(&terrain,&camera,0.5);
         meshRender(&map, &camera, 0.5f,isAboveWater);
         skyUpdate(&sky);
-        skyRender(&sky, &camera, camera.pos[1] > water.waterHeight,true);
-        camera.viewMatrix.m[13] -=  (camera.pos[1] > water.waterHeight ? -1:1) * water.reflectionDistance;
+        skyRender(&sky, &camera, isAboveWater,true);
+        camera.viewMatrix.m[13] -=  (isAboveWater ? -1:1) * water.reflectionDistance;
         calculateRotationMatrix(camera.pitch, &camera.Rpitch,PITCH);
         calculateViewMatrices(&camera);
         unbindCurrentFrameBuffer(&hardware);
@@ -111,9 +113,12 @@ int main() {
         if (!isAboveWater) {
             meshRender(&floor, &camera, (isAboveWater ? -1 : 1) * 1000.0f,isAboveWater);
         }
+
         skyRender(&sky, &camera,camera.pos[1] > water.waterHeight,false);
         waterUpdate(&water);
         waterRender(&water, &camera);
+        rayRender(&ray, &camera,isAboveWater);
+
 
         glfwPollEvents();
 

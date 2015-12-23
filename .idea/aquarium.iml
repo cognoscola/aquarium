@@ -13,6 +13,8 @@
       <sourceFolder url="file://$MODULE_DIR$/platform/glfw_launcher.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/platform/glfw_launcher.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/platform/hardware.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/ray/ray.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/ray/ray.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/skybox/skybox.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/skybox/skybox.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/utils/io/shader_loader.cpp" isTestSource="false" />

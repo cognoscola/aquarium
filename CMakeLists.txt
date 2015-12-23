@@ -41,7 +41,7 @@ set(SOURCE_FILES
         input/input.h
         utils/io/video.cpp utils/io/video.h
 
-        )
+        ray/ray.cpp ray/ray.h)
 
 #set(SOURCE_FILES main.cpp __add_other_cpp_files_here__)
 

@@ -244,8 +244,6 @@ void meshUpdate(Mesh *mesh, double elapsed_seconds){
 
 void meshRender(Mesh* mesh, Camera* camera, GLfloat planeHeight, bool isAboveWater){
 
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_ONE, GL_ONE);
 
     glUseProgram(mesh->shader);
     glUniform4f(mesh->location_clip_plane, 0.0f, 1.0f, 0.0f, planeHeight);
@@ -257,9 +255,7 @@ void meshRender(Mesh* mesh, Camera* camera, GLfloat planeHeight, bool isAboveWat
     glEnableVertexAttribArray(1);
     glEnableVertexAttribArray(2);
 
-
     if (mesh->meshType == MESH_TERRAIN_UNDERWATER) {
-
         if (isAboveWater) {
 //            mesh->fogDensity = 0.0041f;
 //            mesh->fogGradient = 60.0f;
@@ -289,12 +285,14 @@ void meshRender(Mesh* mesh, Camera* camera, GLfloat planeHeight, bool isAboveWat
     glDisableVertexAttribArray(2);
     glBindVertexArray(0);
 
-    glDisable(GL_BLEND);
-
 }
 
 void meshCleanUp(Mesh *mesh){
     glDeleteVertexArrays(1, &mesh->vao);
     glDeleteBuffers(1, &mesh->vbo);
 }
+
+
+
+
 
