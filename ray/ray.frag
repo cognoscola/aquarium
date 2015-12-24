@@ -60,8 +60,7 @@ void main () {
 
 
 	out_Color = rays1 * 0.6 + rays2 * 0.6;
-//	out_Color.a *= 0.5;
-
+	out_Color.a *= 0.5;
 
 	float fadeVertical;
 

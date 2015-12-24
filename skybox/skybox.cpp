@@ -150,7 +150,7 @@ void skyUpdate(Skybox *sky){
 
     //calculate new sky ngle
     GLfloat quat[] = {0.0f,0.0f,0.0f,0.0f};
-    sky->angle += 0.001f;
+    sky->angle += 0.0001f;
     if (sky->angle> 359) sky->angle= 0;
     create_versor(quat, sky->angle, 0.0f, 1.0f, 0.0f);
     quat_to_mat4(sky->modelMatrix.m, quat);

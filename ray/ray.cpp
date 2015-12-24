@@ -16,9 +16,9 @@ void rayInit(Ray *ray, GLfloat *proj_mat) {
 
     glUniformMatrix4fv(ray->location_projectionMatrix, 1, GL_FALSE, proj_mat);
     glUniform1i(ray->location_baseTexture,0);
-    ray->T = translate(identity_mat4(), vec3(0.0f,-50.0f, 0.0f));
+    ray->T = translate(identity_mat4(), vec3(0.0f,-30.0f, 0.0f));
 //    ray->T = translate(identity_mat4(), vec3(0.0f,0.0f, -15.0f));
-    ray->S = scale(identity_mat4(), vec3(20.0f, 20.0f,20.0f));
+    ray->S = scale(identity_mat4(), vec3(40.0f, 20.0f,20.0f));
 
     glUniform2f(ray->location_resolution, 1.0f, 1.0f);
 
@@ -35,7 +35,6 @@ void rayCreateVao(Ray *ray){
             0.0f,1.0f,
             0.0f,0.0f
 
-
             /*1.0f,1.0f,
             0.0f,1.0f,
             0.0f,0.0f,
@@ -45,12 +44,13 @@ void rayCreateVao(Ray *ray){
     };
 
     GLfloat world_coordinates[] = {
-            -0.75f, 0.25f,  0.0f,
-            -0.25f, 0.25f,  0.0f,
-            -0.25f, 0.75f,  0.0f,
-            -0.25f, 0.75f,  0.0f,
-            -0.75f, 0.75f,  0.0f,
-            -0.75f, 0.25f,  0.0f
+
+            -1.0f, -1.0f, 0.0f,
+             1.0f, -1.0f, 0.0f,
+             1.0f,  1.0f,  0.0f,
+             1.0f,  1.0f,  0.0f,
+            -1.0f,  1.0f,  0.0f,
+            -1.0f, -1.0f,  0.0f
     };
 
     GLuint vbo = 0;
@@ -92,7 +92,7 @@ void rayRender(Ray *ray, Camera *camera, bool isAboveWater, GLfloat globalTime) 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    ray->modelMatrix = ray->T * rotate_y_deg(identity_mat4(), -camera->yaw) * ray->S ;
+    ray->modelMatrix = ray->T * ray->S  *rotate_y_deg(identity_mat4(), -camera->yaw);
     glUseProgram(ray->shader);
     glUniformMatrix4fv(ray->location_modelMatrix, 1, GL_FALSE, ray->modelMatrix.m);
     glUniformMatrix4fv(ray->location_viewMatrix, 1, GL_FALSE, camera->viewMatrix.m);
@@ -111,7 +111,6 @@ void rayRender(Ray *ray, Camera *camera, bool isAboveWater, GLfloat globalTime) 
     glBindVertexArray(0);
 
     glDisable(GL_BLEND);
-
 }
 
 void rayLoadTexture(Ray* ray, const char* name){

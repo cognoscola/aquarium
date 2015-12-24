@@ -20,6 +20,7 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/gl.log" afterPath="$PROJECT_DIR$/build/gl.log" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ray/ray.cpp" afterPath="$PROJECT_DIR$/ray/ray.cpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ray/ray.frag" afterPath="$PROJECT_DIR$/ray/ray.frag" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/skybox/skybox.cpp" afterPath="$PROJECT_DIR$/skybox/skybox.cpp" />
     </list>
     <ignored path="aquarium.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -43,8 +44,8 @@
       <file leaf-file-name="ray.cpp" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/ray/ray.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.6266234">
-              <caret line="94" column="85" selection-start-line="94" selection-start-column="85" selection-end-line="94" selection-end-column="85" />
+            <state vertical-scroll-proportion="0.48538962">
+              <caret line="127" column="21" selection-start-line="127" selection-start-column="21" selection-end-line="127" selection-end-column="21" />
               <folding>
                 <element signature="e#0#20#0" expanded="true" />
               </folding>
@@ -62,7 +63,6 @@
       <list>
         <option value="$PROJECT_DIR$/skybox/skybox.vert" />
         <option value="$PROJECT_DIR$/skybox/skybox.frag" />
-        <option value="$PROJECT_DIR$/skybox/skybox.cpp" />
         <option value="$PROJECT_DIR$/mesh/mesh.h" />
         <option value="$PROJECT_DIR$/mesh/terrain_underwater.vert" />
         <option value="$PROJECT_DIR$/water/water.frag" />
@@ -78,8 +78,9 @@
         <option value="$PROJECT_DIR$/mesh/mesh.cpp" />
         <option value="$PROJECT_DIR$/main.cpp" />
         <option value="$PROJECT_DIR$/ray/ray.h" />
-        <option value="$PROJECT_DIR$/ray/ray.frag" />
+        <option value="$PROJECT_DIR$/skybox/skybox.cpp" />
         <option value="$PROJECT_DIR$/ray/ray.cpp" />
+        <option value="$PROJECT_DIR$/ray/ray.frag" />
       </list>
     </option>
   </component>
@@ -395,13 +396,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/skybox/skybox.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.5493631">
-          <caret line="171" column="54" selection-start-line="170" selection-start-column="2" selection-end-line="171" selection-end-column="54" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/water/water.frag">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="1.1098726">
@@ -532,6 +526,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.26136363">
           <caret line="10" column="74" selection-start-line="10" selection-start-column="17" selection-end-line="10" selection-end-column="74" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -582,16 +577,24 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/ray/ray.frag">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.44805196">
-          <caret line="24" column="0" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.36525974">
+          <caret line="63" column="0" selection-start-line="63" selection-start-column="0" selection-end-line="63" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/skybox/skybox.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="1.336039">
+          <caret line="205" column="1" selection-start-line="205" selection-start-column="1" selection-end-line="205" selection-end-column="1" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/ray/ray.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.6266234">
-          <caret line="94" column="85" selection-start-line="94" selection-start-column="85" selection-end-line="94" selection-end-column="85" />
+        <state vertical-scroll-proportion="0.48538962">
+          <caret line="127" column="21" selection-start-line="127" selection-start-column="21" selection-end-line="127" selection-end-column="21" />
           <folding>
             <element signature="e#0#20#0" expanded="true" />
           </folding>
