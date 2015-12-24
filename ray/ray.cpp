@@ -7,7 +7,7 @@
 
 void rayInit(Ray *ray, GLfloat *proj_mat) {
 
-//    rayLoadTexture(ray, RAY_TEX);
+    rayLoadTexture(ray, RAY_TEX);
     rayCreateVao(ray);
     ray->shader = create_programme_from_files(RAY_VERTEX, RAY_FRAGMENT);
 
@@ -16,19 +16,32 @@ void rayInit(Ray *ray, GLfloat *proj_mat) {
 
     glUniformMatrix4fv(ray->location_projectionMatrix, 1, GL_FALSE, proj_mat);
     glUniform1i(ray->location_baseTexture,0);
+    ray->T = translate(identity_mat4(), vec3(0.0f,-50.0f, 0.0f));
+//    ray->T = translate(identity_mat4(), vec3(0.0f,0.0f, -15.0f));
+    ray->S = scale(identity_mat4(), vec3(50.0f, 50.0f,20.0f));
 
+    glUniform2f(ray->location_resolution, 1.0f, 1.0f);
 
 }
 
 void rayCreateVao(Ray *ray){
 
     GLfloat texcoords[] = {
+
+            0.0f,0.0f,
+            1.0f, 0.0f,
             1.0f,1.0f,
+            1.0f,1.0f,
+            0.0f,1.0f,
+            0.0f,0.0f
+
+
+            /*1.0f,1.0f,
             0.0f,1.0f,
             0.0f,0.0f,
             0.0f,0.0f,
             1.0f, 0.0f,
-            1.0f,1.0f,
+            1.0f,1.0f,*/
     };
 
     GLfloat world_coordinates[] = {
@@ -69,15 +82,21 @@ void rayGetUniforms(Ray * ray) {
     ray->location_modelMatrix       = glGetUniformLocation(ray->shader, "modelMatrix");
     ray->location_viewMatrix        = glGetUniformLocation(ray->shader, "viewMatrix");
     ray->location_projectionMatrix  = glGetUniformLocation(ray->shader, "projectionMatrix");
+    ray->location_resolution = glGetUniformLocation(ray->shader, "resolution");
+    ray->location_globalTime  = glGetUniformLocation(ray->shader, "globalTime");
 }
 
-void rayRender(Ray* ray, Camera* camera, bool isAboveWater){
 
-    ray->modelMatrix = scale(identity_mat4(), vec3(5.0f, 5.0f,5.0f)) * rotate_y_deg(identity_mat4(),-camera->yaw);
+void rayRender(Ray *ray, Camera *camera, bool isAboveWater, GLfloat globalTime) {
 
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    ray->modelMatrix = ray->T * ray->S * rotate_y_deg(identity_mat4(), -camera->yaw);
     glUseProgram(ray->shader);
     glUniformMatrix4fv(ray->location_modelMatrix, 1, GL_FALSE, ray->modelMatrix.m);
     glUniformMatrix4fv(ray->location_viewMatrix, 1, GL_FALSE, camera->viewMatrix.m);
+    glUniform1f(ray->location_globalTime, globalTime);
     glBindVertexArray(ray->vao);
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
@@ -90,6 +109,9 @@ void rayRender(Ray* ray, Camera* camera, bool isAboveWater){
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
     glBindVertexArray(0);
+
+    glDisable(GL_BLEND);
+
 }
 
 void rayLoadTexture(Ray* ray, const char* name){
@@ -103,12 +125,13 @@ void rayLoadTexture(Ray* ray, const char* name){
     int x ,y;
     loadImageFile(name, true, &image_data, &x,&y);
 
-//    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, x, y, 0, GL_RGBA, GL_UNSIGNED_BYTE, image_data);
-//    free(image_data);
-//
-//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-//    ray->tex = texID;
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, x, y, 0, GL_RGBA, GL_UNSIGNED_BYTE, image_data);
+    free(image_data);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    ray->tex = texID;
+
 }

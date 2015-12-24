@@ -21,6 +21,7 @@ void meshInit(Mesh* mesh, GLfloat* proj_mat, char* filename, int type){
         meshLoadCausticTexture(mesh);
 
     }
+
     meshLoadShaderProgram(mesh);
     glUseProgram(mesh->shader);
     meshGetUniforms(mesh);

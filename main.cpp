@@ -36,7 +36,7 @@ int main() {
     skyInit(&sky, camera.proj_mat);
 
     Ray ray;
-//    rayInit(&ray, camera.proj_mat);
+    rayInit(&ray, camera.proj_mat);
 
 //    Mesh terrain; // terrain object
 //    meshInit(&terrain, camera.proj_mat);
@@ -117,7 +117,7 @@ int main() {
         skyRender(&sky, &camera,isAboveWater,false);
         waterUpdate(&water);
         waterRender(&water, &camera);
-//        rayRender(&ray, &camera,isAboveWater);
+        rayRender(&ray, &camera,isAboveWater, (GLfloat)current_seconds);
 
         glfwPollEvents();
 
