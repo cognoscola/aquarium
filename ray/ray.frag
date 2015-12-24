@@ -17,8 +17,8 @@ float rayStrength(vec2 raySource, vec2 rayRefDirection, vec2 coord, float seedA,
 	vec2 sourceToCoord = coord - raySource;
 	float cosAngle = dot(normalize(sourceToCoord), rayRefDirection);
 
-	return clamp((0.45 + 0.15 * sin(cosAngle * seedA + globalTime * speed)) +
-		(0.3 + 0.2 * cos(-cosAngle * seedB + globalTime * speed)),
+	return clamp((0.45  + 0.65 * sin(cosAngle * seedA + globalTime * speed)) +
+		(0.1 + 0.5 * cos(-cosAngle * seedB + globalTime * speed)),
 		0.0, 1.0) *
 		clamp((resolution.x - length(sourceToCoord)) / resolution.x, 0.9, 1.0);
 }
@@ -43,13 +43,13 @@ void main () {
 	vec2 rayRefDir1 = normalize(vec2(1.0, -0.116)); //spin direction
 	 float raySeedA1 = 36.2214;
 	 float raySeedB1 = 21.11349;
-	 float raySpeed1 = 1.5; //spin speed
+	 float raySpeed1 = 4; //spin speed
 
 	vec2 rayPos2 = vec2(resolution.x * 0.6, resolution.y * -2);
     vec2 rayRefDir2 = normalize(vec2(1.0, 0.241));
     const float raySeedA2 = 22.39910;
     const float raySeedB2 = 18.0234;
-    const float raySpeed2 = 1.1;
+    const float raySpeed2 = 4.1;
 
 	// Calculate the colour of the sun rays on the current fragment
 	vec4 rays1 =
@@ -60,39 +60,41 @@ void main () {
 
 
 	out_Color = rays1 * 0.6 + rays2 * 0.6;
+//	out_Color.a *= 0.5;
 
-//    out_Color.a *= 0.5;
-	// Attenuate brightness towards the bottom, simulating light-loss due to depth.
-	// Give the whole thing a blue-green tinge as well.
 
-	float fade;
-    if(baseTexCoords.y < 0.5  ){
-        fade = 1-((coord.y - 0.8) / (resolution.y - 0.8) );
+	float fadeVertical;
+
+    if(baseTexCoords.y < 0.5 ){
+        fadeVertical = 1-((coord.y - 0.8) / (resolution.y - 0.8) );
     }else if(baseTexCoords.y > 0.5  ){
-        fade = ((  coord.y ) / (  resolution.y - 0.8 ));
+        fadeVertical = ((  coord.y ) / (  resolution.y - 0.8 ));
     }else {
-        fade = 1;
+        fadeVertical = 1;
     }
-    fade = clamp(fade, 0.0, 1.0);
+    fadeVertical = clamp(fadeVertical, 0.0, 1.0);
 
-//	float brightnessWidth  = 1.0 - (coord.x / resolution.x );
+	float fadeHorizontal;
+	if(baseTexCoords.x > 0.5 ){
+        fadeHorizontal = 1- ((coord.x - 0.8) / (resolution.x - 0.8) );
+    }else if(baseTexCoords.x < 0.5  ){
+        fadeHorizontal = ((  coord.x ) / (  resolution.x - 0.8 ));
+    }else {
+        fadeHorizontal = 1;
+     }
+    fadeHorizontal = clamp(fadeHorizontal, 0.0, 1.0);
 
-//	if(baseTexCoords.y < 0.5  ){
-	    out_Color.a *=  fade;
+    if((baseTexCoords.x > 0.8 && baseTexCoords.y > 0.8) ||
+       (baseTexCoords.x < 0.2 && baseTexCoords.y > 0.8) ||
+       (baseTexCoords.x < 0.2 && baseTexCoords.y < 0.2) ||
+       (baseTexCoords.x > 0.8 && baseTexCoords.y < 0.2) )
+    {
+        out_Color.a *= fadeHorizontal * fadeVertical;
+    }else{
+        out_Color.a *=  min(fadeHorizontal, fadeVertical);
 
-//	}else if (baseTexCoords.y > 0.5){
-//	    out_Color.a *=  1 - bottomFade;
-//	}
+    }
 
-  /* if( baseTexCoords.x > 0.5){
-   	    out_Color.a *= brightnessWidth;
-   }else if(baseTexCoords.x < 0.5){
-   	    out_Color.a *=  1- brightnessWidth;
-   }*/
-
-//	out_Color.x *= 0.1 + (brightness * 0.8);
-//	out_Color.y *= 0.3 + (brightness * 0.6);
-//	out_Color.z *= 0.5 + (brightness * 0.5);
 
 }
 
