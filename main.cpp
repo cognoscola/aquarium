@@ -117,7 +117,7 @@ int main() {
         skyRender(&sky, &camera,isAboveWater,false);
         waterUpdate(&water);
         waterRender(&water, &camera);
-        rayRender(&ray, &camera,isAboveWater, (GLfloat)current_seconds);
+        rayRender(&ray, &camera,isAboveWater, current_seconds,elapsed_seconds);
 
         glfwPollEvents();
 

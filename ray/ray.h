@@ -9,6 +9,9 @@
 
 #define RAY_TEX "/home/alvaregd/Documents/Games/aquarium/assets/back.png"
 
+#define RAY_LIFE_SPAN 3.14
+#define RAY_COUNT 1
+
 struct Ray {
 
     GLint location_baseTexture;
@@ -17,6 +20,7 @@ struct Ray {
     GLint location_projectionMatrix;
     GLint location_resolution;
     GLint location_globalTime;
+    GLint location_life;
 
     GLuint shader;
     GLuint vao;
@@ -27,11 +31,20 @@ struct Ray {
     mat4 modelMatrix;
     mat4 T;
     mat4 S;
+
+    float rayHeight = -30.0f;
+    float rayWidth = 500.0f;
+    float rayDepth = 500.0f;
+    float rayDensity = 100.0f;
+
+    float* rayTimers;
 };
 
 void rayInit(Ray *ray, GLfloat *proj_mat);
 void rayCreateVao(Ray *ray);
 void rayGetUniforms(Ray * ray);
 void rayLoadTexture(Ray* ray, const char* name);
-void rayRender(Ray *ray, Camera *camera, bool isAboveWater, GLfloat globalTime);
+void rayRender(Ray *ray, Camera *camera, bool isAboveWater, double globalTime, double elapsedTime) ;
+void rayUpdate(GLint location_life, float* time, double elapsedSeconds);
+
 #endif //AQUARIUM_LIGHTRAYS_H

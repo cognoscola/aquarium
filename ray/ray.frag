@@ -11,6 +11,7 @@ uniform sampler2D baseMap;
 
 uniform vec2 resolution;
 uniform float globalTime;
+uniform float life; //deteremined by the lifespan
 
 float rayStrength(vec2 raySource, vec2 rayRefDirection, vec2 coord, float seedA, float seedB, float speed)
 {
@@ -41,9 +42,9 @@ void main () {
 // Set the parameters of the sun rays
 	vec2 rayPos1 = vec2(resolution.x * 0.4, resolution.y * -2); //position of center
 	vec2 rayRefDir1 = normalize(vec2(1.0, -0.116)); //spin direction
-	 float raySeedA1 = 36.2214;
-	 float raySeedB1 = 21.11349;
-	 float raySpeed1 = 4; //spin speed
+	float raySeedA1 = 36.2214;
+	float raySeedB1 = 21.11349;
+	float raySpeed1 = 4; //spin speed
 
 	vec2 rayPos2 = vec2(resolution.x * 0.6, resolution.y * -2);
     vec2 rayRefDir2 = normalize(vec2(1.0, 0.241));
@@ -80,7 +81,7 @@ void main () {
         fadeHorizontal = ((  coord.x ) / (  resolution.x - 0.8 ));
     }else {
         fadeHorizontal = 1;
-     }
+    }
     fadeHorizontal = clamp(fadeHorizontal, 0.0, 1.0);
 
     if((baseTexCoords.x > 0.8 && baseTexCoords.y > 0.8) ||
@@ -91,10 +92,9 @@ void main () {
         out_Color.a *= fadeHorizontal * fadeVertical;
     }else{
         out_Color.a *=  min(fadeHorizontal, fadeVertical);
-
     }
 
-
+    out_Color.a *= clamp(sin(life),0.0,1.0);
 }
 
 

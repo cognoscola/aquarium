@@ -16,11 +16,16 @@ void rayInit(Ray *ray, GLfloat *proj_mat) {
 
     glUniformMatrix4fv(ray->location_projectionMatrix, 1, GL_FALSE, proj_mat);
     glUniform1i(ray->location_baseTexture,0);
-    ray->T = translate(identity_mat4(), vec3(0.0f,-30.0f, 0.0f));
-//    ray->T = translate(identity_mat4(), vec3(0.0f,0.0f, -15.0f));
     ray->S = scale(identity_mat4(), vec3(40.0f, 20.0f,20.0f));
 
     glUniform2f(ray->location_resolution, 1.0f, 1.0f);
+
+    //create
+    ray->rayTimers = (float*) malloc(RAY_COUNT * sizeof(float));
+
+    for (int i = 0; i < RAY_COUNT; i++) {
+        ray->rayTimers[i] = (float)(2.0f * (double) rand() / (double)((unsigned)RAND_MAX + 1));
+    }
 
 }
 
@@ -34,13 +39,6 @@ void rayCreateVao(Ray *ray){
             1.0f,1.0f,
             0.0f,1.0f,
             0.0f,0.0f
-
-            /*1.0f,1.0f,
-            0.0f,1.0f,
-            0.0f,0.0f,
-            0.0f,0.0f,
-            1.0f, 0.0f,
-            1.0f,1.0f,*/
     };
 
     GLfloat world_coordinates[] = {
@@ -82,35 +80,56 @@ void rayGetUniforms(Ray * ray) {
     ray->location_modelMatrix       = glGetUniformLocation(ray->shader, "modelMatrix");
     ray->location_viewMatrix        = glGetUniformLocation(ray->shader, "viewMatrix");
     ray->location_projectionMatrix  = glGetUniformLocation(ray->shader, "projectionMatrix");
-    ray->location_resolution = glGetUniformLocation(ray->shader, "resolution");
-    ray->location_globalTime  = glGetUniformLocation(ray->shader, "globalTime");
+    ray->location_resolution        = glGetUniformLocation(ray->shader, "resolution");
+    ray->location_globalTime        = glGetUniformLocation(ray->shader, "globalTime");
+    ray->location_life = glGetUniformLocation(ray->shader, "life");
 }
 
 
-void rayRender(Ray *ray, Camera *camera, bool isAboveWater, GLfloat globalTime) {
+void rayRender(Ray *ray, Camera *camera, bool isAboveWater, double globalTime, double elapsedTime) {
 
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    if(!isAboveWater) {
 
-    ray->modelMatrix = ray->T * ray->S  *rotate_y_deg(identity_mat4(), -camera->yaw);
-    glUseProgram(ray->shader);
-    glUniformMatrix4fv(ray->location_modelMatrix, 1, GL_FALSE, ray->modelMatrix.m);
-    glUniformMatrix4fv(ray->location_viewMatrix, 1, GL_FALSE, camera->viewMatrix.m);
-    glUniform1f(ray->location_globalTime, globalTime);
-    glBindVertexArray(ray->vao);
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
+        glDisable(GL_DEPTH_TEST);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, ray->tex);
+        glUseProgram(ray->shader);
 
-    glDrawArrays(GL_TRIANGLES, 0, 6);
+        glUniformMatrix4fv(ray->location_viewMatrix, 1, GL_FALSE, camera->viewMatrix.m);
+        glUniform1f(ray->location_globalTime, globalTime);
+        glBindVertexArray(ray->vao);
+        glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(1);
 
-    glDisableVertexAttribArray(0);
-    glDisableVertexAttribArray(1);
-    glBindVertexArray(0);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, ray->tex);
 
-    glDisable(GL_BLEND);
+//        for (int i = 0; i < ray->rayDepth / ray->rayDensity; i++) {
+//            for (int j = 0; j < ray->raywidth / ray->rayDensity; j++) {
+//                ray->T = translate(identity_mat4(),
+//                                   vec3(ray->rayX + ray->rayDensity * i, ray->rayHeight,
+//                                        ray->rayZ + ray->rayDensity * j));
+
+        for (int i = 0; i < RAY_COUNT; i++) {
+            rayUpdate(ray->location_life,&ray->rayTimers[i], elapsedTime);
+        }
+
+        ray->T = translate(identity_mat4(),
+                                   vec3(0.0f, ray->rayHeight,
+                                        0.0f));
+                ray->modelMatrix = ray->T * ray->S * rotate_y_deg(identity_mat4(), -camera->yaw);
+                glUniformMatrix4fv(ray->location_modelMatrix, 1, GL_FALSE, ray->modelMatrix.m);
+                glDrawArrays(GL_TRIANGLES, 0, 6);
+//            }
+//        }
+
+        glDisableVertexAttribArray(0);
+        glDisableVertexAttribArray(1);
+        glBindVertexArray(0);
+        glEnable(GL_DEPTH_TEST);
+        glDisable(GL_BLEND);
+    }
 }
 
 void rayLoadTexture(Ray* ray, const char* name){
@@ -132,5 +151,14 @@ void rayLoadTexture(Ray* ray, const char* name){
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     ray->tex = texID;
+}
 
+void rayUpdate(GLint location_life, float* time, double elapsedSeconds){
+
+    *time += elapsedSeconds;
+    if (*time > RAY_LIFE_SPAN) {
+        *time = 0.0f;
+    }
+//    printf("Time:%f\n", *time);
+    glUniform1f(location_life, *time);
 }
