@@ -14,7 +14,6 @@
 #define RAY_AREA_WIDTH 500.0f
 #define RAY_AREA_HEIGHT 500.0f
 
-
 struct Ray {
 
     GLint location_baseTexture;
@@ -24,12 +23,19 @@ struct Ray {
     GLint location_resolution;
     GLint location_globalTime;
     GLint location_life;
+    GLint location_skyColour;
+    GLint location_fogDensity;
+    GLint location_fogGradient;
 
     GLuint shader;
     GLuint vao;
     GLuint texCoordinateVbo;
     GLuint positionsVbo;
     GLuint tex;
+
+    GLfloat fogDensity = 0.007f;
+    GLfloat fogGradient = 1.5f;
+
 
     mat4 modelMatrix;
     mat4 T;

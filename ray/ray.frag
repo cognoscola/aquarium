@@ -5,13 +5,13 @@ in vec2 baseTexCoords;
 out vec4 out_Color;
 
 uniform sampler2D baseMap;
-//uniform sampler2D luminanceMap;
-//uniform vec3 skyColour;
-//in float visibility;
 
 uniform vec2 resolution;
 uniform float globalTime;
 uniform float life; //deteremined by the lifespan
+uniform vec3 skyColour;
+
+in float visibility;
 
 float rayStrength(vec2 raySource, vec2 rayRefDirection, vec2 coord, float seedA, float seedB, float speed)
 {
@@ -40,17 +40,17 @@ void main () {
     vec2 coord = vec2(baseTexCoords.x, resolution.y - baseTexCoords.y);
 
 // Set the parameters of the sun rays
-	vec2 rayPos1 = vec2(resolution.x * 0.4, resolution.y * -2); //position of center
+	vec2 rayPos1 = vec2(resolution.x * 0.4, resolution.y * -1.5); //position of center
 	vec2 rayRefDir1 = normalize(vec2(1.0, -0.116)); //spin direction
 	float raySeedA1 = 36.2214;
 	float raySeedB1 = 21.11349;
-	float raySpeed1 = 4; //spin speed
+	float raySpeed1 = 1; //spin speed
 
-	vec2 rayPos2 = vec2(resolution.x * 0.6, resolution.y * -2);
+	vec2 rayPos2 = vec2(resolution.x * 0.6, resolution.y * -1.5);
     vec2 rayRefDir2 = normalize(vec2(1.0, 0.241));
     const float raySeedA2 = 22.39910;
     const float raySeedB2 = 18.0234;
-    const float raySpeed2 = 4.1;
+    const float raySpeed2 = 1;
 
 	// Calculate the colour of the sun rays on the current fragment
 	vec4 rays1 =
@@ -95,6 +95,13 @@ void main () {
     }
 
     out_Color.a *= clamp(sin(life),0.0,1.0);
+
+    //fog effect
+    out_Color = mix(vec4(skyColour, out_Color.a),out_Color,visibility);
+
+
+
+
 }
 
 

@@ -19,6 +19,10 @@ void rayInit(Ray *ray, GLfloat *proj_mat) {
     ray->S = scale(identity_mat4(), vec3(40.0f, 20.0f,20.0f));
 
     glUniform2f(ray->location_resolution, 1.0f, 1.0f);
+    glUniform3f(ray->location_skyColour,0.0f,0.7f,1.0f);
+    glUniform1f(ray->location_fogDensity, ray->fogDensity);
+    glUniform1f(ray->location_fogGradient,ray->fogGradient);
+
 
     //create
     ray->rayTimers = (float*) malloc(RAY_COUNT * sizeof(float));
@@ -30,7 +34,6 @@ void rayInit(Ray *ray, GLfloat *proj_mat) {
         ray->rayX[i] = (float)(RAY_AREA_HEIGHT * (double) rand() / (double)((unsigned)RAND_MAX + 1) ) - RAY_AREA_HEIGHT/2;
         ray->rayZ[i] = (float)(RAY_AREA_WIDTH * (double) rand() / (double)((unsigned)RAND_MAX + 1) ) - RAY_AREA_WIDTH/2;
     }
-
 }
 
 void rayCreateVao(Ray *ray){
@@ -87,6 +90,9 @@ void rayGetUniforms(Ray * ray) {
     ray->location_resolution        = glGetUniformLocation(ray->shader, "resolution");
     ray->location_globalTime        = glGetUniformLocation(ray->shader, "globalTime");
     ray->location_life = glGetUniformLocation(ray->shader, "life");
+    ray->location_skyColour        = glGetUniformLocation(ray->shader, "skyColour");
+    ray->location_fogDensity        = glGetUniformLocation(ray->shader, "fogDensity");
+    ray->location_fogGradient       = glGetUniformLocation(ray->shader, "fogGradient");
 }
 
 
@@ -101,7 +107,6 @@ void rayRender(Ray *ray, Camera *camera, bool isAboveWater, double globalTime, d
         glUseProgram(ray->shader);
 
         glUniformMatrix4fv(ray->location_viewMatrix, 1, GL_FALSE, camera->viewMatrix.m);
-        glUniform1f(ray->location_globalTime, globalTime);
         glBindVertexArray(ray->vao);
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
@@ -119,9 +124,9 @@ void rayRender(Ray *ray, Camera *camera, bool isAboveWater, double globalTime, d
             rayUpdate(ray,i, elapsedTime);
             ray->modelMatrix = ray->T * ray->S * rotate_y_deg(identity_mat4(), -camera->yaw);
             glUniformMatrix4fv(ray->location_modelMatrix, 1, GL_FALSE, ray->modelMatrix.m);
+            glUniform1f(ray->location_globalTime,(float) globalTime + ray->rayTimers[i]);
             glDrawArrays(GL_TRIANGLES, 0, 6);
         }
-
 
         glDisableVertexAttribArray(0);
         glDisableVertexAttribArray(1);
