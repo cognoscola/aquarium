@@ -10,7 +10,10 @@
 #define RAY_TEX "/home/alvaregd/Documents/Games/aquarium/assets/back.png"
 
 #define RAY_LIFE_SPAN 3.14
-#define RAY_COUNT 1
+#define RAY_COUNT 50
+#define RAY_AREA_WIDTH 500.0f
+#define RAY_AREA_HEIGHT 500.0f
+
 
 struct Ray {
 
@@ -33,11 +36,9 @@ struct Ray {
     mat4 S;
 
     float rayHeight = -30.0f;
-    float rayWidth = 500.0f;
-    float rayDepth = 500.0f;
-    float rayDensity = 100.0f;
-
     float* rayTimers;
+    float* rayX;
+    float* rayZ;
 };
 
 void rayInit(Ray *ray, GLfloat *proj_mat);
@@ -45,6 +46,6 @@ void rayCreateVao(Ray *ray);
 void rayGetUniforms(Ray * ray);
 void rayLoadTexture(Ray* ray, const char* name);
 void rayRender(Ray *ray, Camera *camera, bool isAboveWater, double globalTime, double elapsedTime) ;
-void rayUpdate(GLint location_life, float* time, double elapsedSeconds);
+void rayUpdate(Ray * ray ,int index, double elapsedSeconds);
 
 #endif //AQUARIUM_LIGHTRAYS_H

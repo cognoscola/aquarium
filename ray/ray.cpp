@@ -22,9 +22,13 @@ void rayInit(Ray *ray, GLfloat *proj_mat) {
 
     //create
     ray->rayTimers = (float*) malloc(RAY_COUNT * sizeof(float));
+    ray->rayX = (float*) malloc(RAY_COUNT * sizeof(float));
+    ray->rayZ = (float*) malloc(RAY_COUNT * sizeof(float));
 
     for (int i = 0; i < RAY_COUNT; i++) {
         ray->rayTimers[i] = (float)(2.0f * (double) rand() / (double)((unsigned)RAND_MAX + 1));
+        ray->rayX[i] = (float)(RAY_AREA_HEIGHT * (double) rand() / (double)((unsigned)RAND_MAX + 1) ) - RAY_AREA_HEIGHT/2;
+        ray->rayZ[i] = (float)(RAY_AREA_WIDTH * (double) rand() / (double)((unsigned)RAND_MAX + 1) ) - RAY_AREA_WIDTH/2;
     }
 
 }
@@ -112,17 +116,12 @@ void rayRender(Ray *ray, Camera *camera, bool isAboveWater, double globalTime, d
 //                                        ray->rayZ + ray->rayDensity * j));
 
         for (int i = 0; i < RAY_COUNT; i++) {
-            rayUpdate(ray->location_life,&ray->rayTimers[i], elapsedTime);
+            rayUpdate(ray,i, elapsedTime);
+            ray->modelMatrix = ray->T * ray->S * rotate_y_deg(identity_mat4(), -camera->yaw);
+            glUniformMatrix4fv(ray->location_modelMatrix, 1, GL_FALSE, ray->modelMatrix.m);
+            glDrawArrays(GL_TRIANGLES, 0, 6);
         }
 
-        ray->T = translate(identity_mat4(),
-                                   vec3(0.0f, ray->rayHeight,
-                                        0.0f));
-                ray->modelMatrix = ray->T * ray->S * rotate_y_deg(identity_mat4(), -camera->yaw);
-                glUniformMatrix4fv(ray->location_modelMatrix, 1, GL_FALSE, ray->modelMatrix.m);
-                glDrawArrays(GL_TRIANGLES, 0, 6);
-//            }
-//        }
 
         glDisableVertexAttribArray(0);
         glDisableVertexAttribArray(1);
@@ -153,12 +152,15 @@ void rayLoadTexture(Ray* ray, const char* name){
     ray->tex = texID;
 }
 
-void rayUpdate(GLint location_life, float* time, double elapsedSeconds){
+void rayUpdate(Ray * ray ,int index, double elapsedSeconds){
 
-    *time += elapsedSeconds;
-    if (*time > RAY_LIFE_SPAN) {
-        *time = 0.0f;
+    ray->rayTimers[index] += elapsedSeconds;
+    if (ray->rayTimers[index] > RAY_LIFE_SPAN) {
+        ray->rayTimers[index] = 0.0f;
+        ray->rayX[index] = (float)(RAY_AREA_HEIGHT * (double) rand() / (double)((unsigned)RAND_MAX + 1) ) - RAY_AREA_HEIGHT/2;
+        ray->rayZ[index] = (float)(RAY_AREA_WIDTH * (double) rand() / (double)((unsigned)RAND_MAX + 1) ) - RAY_AREA_WIDTH/2;
     }
-//    printf("Time:%f\n", *time);
-    glUniform1f(location_life, *time);
+
+    ray->T = translate(identity_mat4(), vec3(ray->rayX[index], ray->rayHeight, ray->rayZ[index]));
+    glUniform1f(ray->location_life, ray->rayTimers[index]);
 }
