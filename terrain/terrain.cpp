@@ -12,17 +12,12 @@
 #include <utils/io/texload.h>
 #include "terrain.h"
 
-void terrainInit(Terrain* terrain, GLfloat* proj_mat, char* filename, int type){
+void terrainInit(Terrain* terrain, GLfloat* proj_mat, char* filename){
 
-    terrain->meshType = type;
     assert(terrainLoadTerrainFile(filename, &terrain->vao, &terrain->vertexCount));
 
-    if (terrain->meshType == MESH_MAP) {
-        terrainLoadTexture(terrain, MAP_TEXTURE);
-    }else if (terrain->meshType == MESH_TERRAIN_UNDERWATER) {
-        terrainLoadTexture(terrain, FLOOR_TEXTURE);
-        terrainLoadCausticTexture(terrain);
-    }
+    terrainLoadTexture(terrain, FLOOR_TEXTURE);
+    terrainLoadCausticTexture(terrain);
 
     terrainLoadShaderProgram(terrain);
     glUseProgram(terrain->shader);
@@ -30,19 +25,13 @@ void terrainInit(Terrain* terrain, GLfloat* proj_mat, char* filename, int type){
     glUniform4f(terrain->location_clip_plane, 0.0f, -1.0f, 0.0f, 1.0f);
     glUniformMatrix4fv(terrain->location_projection_mat , 1, GL_FALSE, proj_mat);
 
-    if (terrain->meshType == MESH_TERRAIN_UNDERWATER) {
-        glUniform1i(terrain->location_baseTexture, 0);
-        glUniform1i(terrain->location_luminanceTexture,1 );
+    glUniform1i(terrain->location_baseTexture, 0);
+    glUniform1i(terrain->location_luminanceTexture,1 );
 
-        glUniform1f(terrain->location_fogDensity, terrain->fogDensity);
-        glUniform1f(terrain->location_fogGradient,terrain->fogGradient);
-        glUniform3f(terrain->location_skyColour,0.0f,0.7f,1.0f);
-    }
+    glUniform1f(terrain->location_fogDensity, terrain->fogDensity);
+    glUniform1f(terrain->location_fogGradient,terrain->fogGradient);
+    glUniform3f(terrain->location_skyColour,0.0f,0.7f,1.0f);
 
-    //TODO mountain settings
-//    mat4 s = scale(identity_mat4(), vec3(50,100,10));
-//    mat4 T = translate(identity_mat4(), vec3(0.0f, -4.5f, -400.0f));
-//    terrain->modelMatrix = T * s;
 
 }
 
@@ -200,8 +189,7 @@ void terrainLoadCausticTexture(Terrain* terrain) {
         }
         free(name);
 
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, x, y, 0,
-                     GL_LUMINANCE, GL_UNSIGNED_BYTE, image_data);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, x, y, 0,GL_LUMINANCE, GL_UNSIGNED_BYTE, image_data);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         free(image_data);
@@ -209,12 +197,7 @@ void terrainLoadCausticTexture(Terrain* terrain) {
 }
 
 void terrainLoadShaderProgram(Terrain * terrain) {
-
-    if (terrain->meshType == MESH_MAP) {
-        terrain->shader = create_programme_from_files(MESH_VERTEX, MESH_FRAGMENT);
-    }else if (terrain->meshType == MESH_TERRAIN_UNDERWATER) {
-        terrain->shader = create_programme_from_files(MESH_TERRAIN_UNDER_VERTEX, MESH_TERRAIN_UNDER_FRAG);
-    }
+    terrain->shader = create_programme_from_files(MESH_TERRAIN_UNDER_VERTEX, MESH_TERRAIN_UNDER_FRAG);
 }
 
 void terrainGetUniforms(Terrain* terrain){
@@ -222,15 +205,11 @@ void terrainGetUniforms(Terrain* terrain){
     terrain->location_view_mat        = glGetUniformLocation(terrain->shader, "viewMatrix");
     terrain->location_projection_mat  = glGetUniformLocation(terrain->shader, "projectionMatrix");
     terrain->location_clip_plane      = glGetUniformLocation(terrain->shader, "plane");
-
-    if (terrain->meshType == MESH_TERRAIN_UNDERWATER) {
-        terrain->location_baseTexture      = glGetUniformLocation(terrain->shader, "baseMap");
-        terrain->location_luminanceTexture = glGetUniformLocation(terrain->shader, "luminanceMap");
-        terrain->location_skyColour        = glGetUniformLocation(terrain->shader, "skyColour");
-        terrain->location_fogDensity        = glGetUniformLocation(terrain->shader, "fogDensity");
-        terrain->location_fogGradient       = glGetUniformLocation(terrain->shader, "fogGradient");
-    }
-
+    terrain->location_baseTexture      = glGetUniformLocation(terrain->shader, "baseMap");
+    terrain->location_luminanceTexture = glGetUniformLocation(terrain->shader, "luminanceMap");
+    terrain->location_skyColour        = glGetUniformLocation(terrain->shader, "skyColour");
+    terrain->location_fogDensity        = glGetUniformLocation(terrain->shader, "fogDensity");
+    terrain->location_fogGradient       = glGetUniformLocation(terrain->shader, "fogGradient");
 }
 
 void terrainUpdate(Terrain *terrain, double elapsed_seconds){
@@ -246,8 +225,7 @@ void terrainUpdate(Terrain *terrain, double elapsed_seconds){
     }
 }
 
-void terrainRender(Terrain* terrain, Camera* camera, GLfloat planeHeight, bool isAboveWater){
-
+void terrainRender(Terrain* terrain, Camera* camera, GLfloat planeHeight, bool isAboveWater) {
 
     glUseProgram(terrain->shader);
     glUniform4f(terrain->location_clip_plane, 0.0f, 1.0f, 0.0f, planeHeight);
@@ -259,28 +237,21 @@ void terrainRender(Terrain* terrain, Camera* camera, GLfloat planeHeight, bool i
     glEnableVertexAttribArray(1);
     glEnableVertexAttribArray(2);
 
-    if (terrain->meshType == MESH_TERRAIN_UNDERWATER) {
-        if (isAboveWater) {
-            glUniform3f(terrain->location_skyColour,0.6f,0.6f,0.6f);
-        }else{
-            terrain->fogDensity = 0.007f;
-            terrain->fogGradient = 1.5f;
-            glUniform3f(terrain->location_skyColour,0.0f,0.7f,1.0f);
-        }
-        glUniform1f(terrain->location_fogDensity, terrain->fogDensity);
-        glUniform1f(terrain->location_fogGradient,terrain->fogGradient);
-
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, terrain->texture);
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, terrain->causticTextureIds[terrain->causticIndex]);
-        glDrawArrays(GL_TRIANGLES, 0, terrain->vertexCount);
-
-    }else if(terrain->meshType == MESH_MAP){
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, terrain->texture);
-        glDrawArrays(GL_TRIANGLES, 0, terrain->vertexCount);
+    if (isAboveWater) {
+        glUniform3f(terrain->location_skyColour, 0.6f, 0.6f, 0.6f);
+    } else {
+        terrain->fogDensity = 0.007f;
+        terrain->fogGradient = 1.5f;
+        glUniform3f(terrain->location_skyColour, 0.0f, 0.7f, 1.0f);
     }
+    glUniform1f(terrain->location_fogDensity, terrain->fogDensity);
+    glUniform1f(terrain->location_fogGradient, terrain->fogGradient);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, terrain->texture);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, terrain->causticTextureIds[terrain->causticIndex]);
+    glDrawArrays(GL_TRIANGLES, 0, terrain->vertexCount);
 
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);

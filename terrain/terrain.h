@@ -20,19 +20,16 @@
 #define MESH_TERRAIN_UNDER_VERTEX "/home/alvaregd/Documents/Games/aquarium/mesh/terrain_underwater.vert"
 #define MESH_TERRAIN_UNDER_FRAG "/home/alvaregd/Documents/Games/aquarium/mesh/terrain_underwater.frag"
 
-
 #define MESH_TERRAIN 0
 #define MESH_MAP 1
 #define MESH_STATIC_OBJECT 2
 #define MESH_DYNAMIC_OJBECT 3
-#define MESH_TERRAIN_UNDERWATER 4
 #define MESH_MAP_UNDERWATER 5
 #define MESH_STATIC_OBJECT_UNDERWATER 6
 #define MESH_DYNAMIC_OJBECT_UNDERWATER 7
 
 struct Terrain{
 
-    int meshType;
     bool isUnderwater;
 
     GLuint shader;
@@ -64,7 +61,7 @@ struct Terrain{
     double timer;
 };
 
-void terrainInit(Terrain* mesh, GLfloat* proj_mat, char* filename, int type);
+void terrainInit(Terrain* terrain, GLfloat* proj_mat, char* filename);
 bool terrainLoadTerrainFile(const char *fileName, GLuint *vao, int *point_count);
 void terrainSetInitialTransformation(Terrain* mesh, mat4* T, mat4* S,mat4* R );
 void terrainLoadTexture(Terrain* mesh, char* filename);

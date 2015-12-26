@@ -3,6 +3,7 @@
 #include <skybox/skybox.h>
 #include <platform/glfw_launcher.h>
 #include <mesh/mesh.h>
+#include <terrain/terrain.h>
 #include <water/water.h>
 #include <utils/io/video.h>
 #include <ray/ray.h>
@@ -38,25 +39,23 @@ int main() {
     Ray ray;
     rayInit(&ray, camera.proj_mat);
 
-//    Mesh terrain; // terrain object
-//    meshInit(&terrain, camera.proj_mat);
-
     mat4 S;
     mat4 T;
     mat4 R;
 
-    Mesh map;
-    meshInit(&map, camera.proj_mat, MAP_FILE, MESH_MAP);
-    S = scale(identity_mat4(), vec3(2,2,2));
-    T = translate(identity_mat4(), vec3(0.0f, -5.0f, 0.0f));
-    R = identity_mat4();
-    meshSetInitialTransformation(&map, &T, &S, &R);
+//    Mesh map;
+//    meshInit(&map, camera.proj_mat, MAP_FILE, MESH_MAP);
+//    S = scale(identity_mat4(), vec3(2,2,2));
+//    T = translate(identity_mat4(), vec3(0.0f, -5.0f, 0.0f));
+//    R = identity_mat4();
+//    meshSetInitialTransformation(&map, &T, &S, &R);
 
-    Mesh floor;
-    meshInit(&floor, camera.proj_mat,FLOOR_FILE,MESH_TERRAIN_UNDERWATER);
+    Terrain terrain;
+    terrainInit(&terrain, camera.proj_mat, FLOOR_FILE);
     T = translate(identity_mat4(), vec3(0.0f, -64.0f, 0.0f));
     S = scale(identity_mat4(), vec3(4,2,4));
-    meshSetInitialTransformation(&floor, &T, &S, &R);
+    R = identity_mat4();
+    terrainSetInitialTransformation(&terrain, &T, &S, &R);
 
     Water water; // water object
     waterInit(&water, &hardware, camera.proj_mat);
@@ -77,7 +76,7 @@ int main() {
 
         glEnable(GL_CLIP_DISTANCE0);
         updateMovement(&camera, &input);
-        meshUpdate(&floor, elapsed_seconds);
+        terrainUpdate(&terrain, elapsed_seconds);
 
         bool isAboveWater = camera.pos[1] > water.waterHeight;
 
@@ -88,8 +87,7 @@ int main() {
         calculateRotationMatrix(-camera.pitch, &camera.Rpitch, PITCH);
         calculateViewMatrices(&camera);
         camera.viewMatrix.m[13] += (isAboveWater ? -1:1) *  water.reflectionDistance;
-//        meshRender(&terrain,&camera,0.5);
-        meshRender(&map, &camera, 0.5f,isAboveWater);
+//        meshRender(&map, &camera, 0.5f,isAboveWater);
         skyUpdate(&sky);
         skyRender(&sky, &camera, isAboveWater,true);
         camera.viewMatrix.m[13] -=  (isAboveWater ? -1:1) * water.reflectionDistance;
@@ -100,18 +98,16 @@ int main() {
         //RENDER THE REFRACTION BUFFER
         bindFrameBufer(water.refractionFrameBuffer, REFRACTION_WIDTH, REFRACTION_HEIGHT);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-//        meshRender(&terrain,&camera, 5.0f);
-        meshRender(&map, &camera, (isAboveWater ? 1:-1) * 1000.0f,isAboveWater);
+//        meshRender(&map, &camera, (isAboveWater ? 1:-1) * 1000.0f,isAboveWater);
         skyRender(&sky, &camera, camera.pos[1] > water.waterHeight,true);
         unbindCurrentFrameBuffer(&hardware);
 
         //RENDER TO THE DEFAULT BUFFER
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glDisable(GL_CLIP_DISTANCE0);
-//        meshRender(&terrain,&camera,1000.0f);
-        meshRender(&map, &camera, (isAboveWater ? -1:1) * 1000.0f, isAboveWater);
+//        meshRender(&map, &camera, (isAboveWater ? -1:1) * 1000.0f, isAboveWater);
         if (!isAboveWater) {
-            meshRender(&floor, &camera, 1000.0f,isAboveWater);
+            terrainRender(&terrain, &camera, 1000.0f, isAboveWater);
         }
 
         skyRender(&sky, &camera,isAboveWater,false);
@@ -187,7 +183,6 @@ int main() {
             }
         }
 
-
         if (video.dump_video) { // check if recording mode is enabled
             while (video.video_dump_timer > video.frame_time) {
                 grab_video_frame (&video, &hardware); // 25 Hz so grab a frame
@@ -198,9 +193,8 @@ int main() {
     }
 
     waterCleanUp(&water);
-    meshCleanUp(&map);
-    meshCleanUp(&floor);
-//    meshCleanUp(&terrain);
+//    meshCleanUp(&map);
+    terrainCleanUp(&terrain);
     skyCleanUp(&sky);
 
     if(video.dump_video) {
