@@ -97,10 +97,8 @@ void main () {
     out_Color.a *= clamp(sin(life),0.0,1.0);
 
     //fog effect
-    out_Color = mix(vec4(skyColour, out_Color.a),out_Color,visibility);
-
-
-
+//    out_Color = mix(vec4(skyColour, out_Color.a),out_Color,visibility);
+    out_Color.a *=  visibility;
 
 }
 

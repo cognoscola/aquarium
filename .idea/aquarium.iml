@@ -17,6 +17,8 @@
       <sourceFolder url="file://$MODULE_DIR$/ray/ray.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/skybox/skybox.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/skybox/skybox.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/terrain/terrain.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/terrain/terrain.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/utils/io/shader_loader.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/utils/io/shader_loader.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/utils/io/stb_image.cpp" isTestSource="false" />

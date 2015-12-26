@@ -19,7 +19,6 @@ void meshInit(Mesh* mesh, GLfloat* proj_mat, char* filename, int type){
     }else if (mesh->meshType == MESH_TERRAIN_UNDERWATER) {
         meshLoadTexture(mesh, FLOOR_TEXTURE);
         meshLoadCausticTexture(mesh);
-
     }
 
     meshLoadShaderProgram(mesh);
@@ -27,7 +26,6 @@ void meshInit(Mesh* mesh, GLfloat* proj_mat, char* filename, int type){
     meshGetUniforms(mesh);
     glUniform4f(mesh->location_clip_plane, 0.0f, -1.0f, 0.0f, 1.0f);
     glUniformMatrix4fv(mesh->location_projection_mat , 1, GL_FALSE, proj_mat);
-
 
     if (mesh->meshType == MESH_TERRAIN_UNDERWATER) {
         glUniform1i(mesh->location_baseTexture, 0);
@@ -260,8 +258,6 @@ void meshRender(Mesh* mesh, Camera* camera, GLfloat planeHeight, bool isAboveWat
 
     if (mesh->meshType == MESH_TERRAIN_UNDERWATER) {
         if (isAboveWater) {
-//            mesh->fogDensity = 0.0041f;
-//            mesh->fogGradient = 60.0f;
             glUniform3f(mesh->location_skyColour,0.6f,0.6f,0.6f);
         }else{
             mesh->fogDensity = 0.007f;
