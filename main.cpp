@@ -110,7 +110,7 @@ int main() {
         calculateViewMatrices(&camera);
         camera.viewMatrix.m[13] += (isAboveWater ? -1:1) *  water.reflectionDistance;
 //        meshRender(&map, &camera, 0.5f,isAboveWater);
-        collectionRender(&collection, &camera, (isAboveWater ? -1 : 1) * 1000.0f, isAboveWater);
+//        collectionRender(&collection, &camera, (isAboveWater ? -1 : 1) * 1000.0f, isAboveWater);
         skyUpdate(&sky);
         skyRender(&sky, &camera, isAboveWater,true);
         camera.viewMatrix.m[13] -=  (isAboveWater ? -1:1) * water.reflectionDistance;
@@ -122,7 +122,7 @@ int main() {
         bindFrameBufer(water.refractionFrameBuffer, REFRACTION_WIDTH, REFRACTION_HEIGHT);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 //        meshRender(&map, &camera, (isAboveWater ? 1:-1) * 1000.0f,isAboveWater);
-        collectionRender(&collection, &camera, (!isAboveWater ? -1 : 1) * 1000.0f, isAboveWater);
+//        collectionRender(&collection, &camera, (!isAboveWater ? -1 : 1) * 1000.0f, isAboveWater);
         skyRender(&sky, &camera, camera.pos[1] > water.waterHeight,true);
         unbindCurrentFrameBuffer(&hardware);
 
@@ -130,7 +130,7 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glDisable(GL_CLIP_DISTANCE0);
 //        meshRender(&map, &camera, (isAboveWater ? -1:1) * 1000.0f, isAboveWater);
-        collectionRender(&collection, &camera, (isAboveWater ? -1 : 1) * 1000.0f, isAboveWater);
+//        collectionRender(&collection, &camera, (isAboveWater ? -1 : 1) * 1000.0f, isAboveWater);
         if (!isAboveWater) {
             terrainRender(&terrain, &camera, 1000.0f, isAboveWater);
         }
@@ -337,6 +337,10 @@ void parseLine(char* line, MeshCollection*col) {
         col->numberOfFiles =  atoi(value);
         col->meshObject = (MeshObject *) malloc(col->numberOfFiles * sizeof(MeshObject));
 
+        for (int i = 0; i < col->numberOfFiles; i++) {
+            col->meshObject[i].index = 0;
+        }
+
         printf("Allocating new mesh space for %i files\n", col->numberOfFiles);
     }
 
@@ -370,7 +374,6 @@ void parseLine(char* line, MeshCollection*col) {
     }
 
     if (strstr(line, "-t") != NULL) {
-
         float input[3];
         getValues(input, line);
 
@@ -391,10 +394,8 @@ void parseLine(char* line, MeshCollection*col) {
 
         //check that all matrices have been instantiated
         if (!col->hasR) {
-            printf("created identity mat for R at %i", obj->index);
+            printf("created identity mat for R at %i\n", obj->index);
             obj->R[obj->index] = identity_mat4();
-        }else{
-            printf("WTF");
         }
 
         if (!col->hasT) {

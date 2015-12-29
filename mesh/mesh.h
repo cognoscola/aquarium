@@ -53,7 +53,7 @@ struct MeshObject{
     char* objfilename;
     char* texFilenames;
 
-    int index;
+    int index = 0;
     int numberOfCopies;
     mat4* T;
     mat4* S;
