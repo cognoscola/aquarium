@@ -41,7 +41,10 @@ void meshInit(Mesh* mesh, char* filename, char* texFilename ,GLfloat* proj_mat){
 void meshSetInitialTransformation(Mesh* mesh, mat4* T, mat4* S,mat4* R ) {
 
     for (int i = 0; i < mesh->numCopies; i++) {
+
+        printf("created a model matrix at %i\n", i);
         mesh->modelMatrix[i] = T[i] * S[i] * R[i];
+
     }
 //    glUniformMatrix4fv(mesh->location_model_mat , 1, GL_FALSE, mesh->modelMatrix.m);
 }

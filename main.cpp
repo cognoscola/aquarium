@@ -110,7 +110,7 @@ int main() {
         calculateViewMatrices(&camera);
         camera.viewMatrix.m[13] += (isAboveWater ? -1:1) *  water.reflectionDistance;
 //        meshRender(&map, &camera, 0.5f,isAboveWater);
-//        meshRender(&coral, &camera, 0.5f,isAboveWater);
+        collectionRender(&collection, &camera, (isAboveWater ? -1 : 1) * 1000.0f, isAboveWater);
         skyUpdate(&sky);
         skyRender(&sky, &camera, isAboveWater,true);
         camera.viewMatrix.m[13] -=  (isAboveWater ? -1:1) * water.reflectionDistance;
@@ -122,7 +122,7 @@ int main() {
         bindFrameBufer(water.refractionFrameBuffer, REFRACTION_WIDTH, REFRACTION_HEIGHT);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 //        meshRender(&map, &camera, (isAboveWater ? 1:-1) * 1000.0f,isAboveWater);
-//        meshRender(&coral, &camera, (isAboveWater ? 1:-1) * 1000.0f,isAboveWater);
+        collectionRender(&collection, &camera, (!isAboveWater ? -1 : 1) * 1000.0f, isAboveWater);
         skyRender(&sky, &camera, camera.pos[1] > water.waterHeight,true);
         unbindCurrentFrameBuffer(&hardware);
 
@@ -130,8 +130,6 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glDisable(GL_CLIP_DISTANCE0);
 //        meshRender(&map, &camera, (isAboveWater ? -1:1) * 1000.0f, isAboveWater);
-//        meshRender(&coral, &camera, (isAboveWater ? -1:1) * 1000.0f, isAboveWater);
-
         collectionRender(&collection, &camera, (isAboveWater ? -1 : 1) * 1000.0f, isAboveWater);
         if (!isAboveWater) {
             terrainRender(&terrain, &camera, 1000.0f, isAboveWater);
@@ -367,13 +365,11 @@ void parseLine(char* line, MeshCollection*col) {
                 (mat4 *) malloc(col->meshObject[col->fileIndex].numberOfCopies * sizeof(mat4));
     }
 
-
     if (strstr(line, "-r") != NULL) {
-        col->hasR = true;
+        col->hasR = false;
     }
 
     if (strstr(line, "-t") != NULL) {
-
 
         float input[3];
         getValues(input, line);
@@ -391,12 +387,16 @@ void parseLine(char* line, MeshCollection*col) {
         MeshObject* obj =&col->meshObject[col->fileIndex];
 
         obj->S[obj->index] = scale(identity_mat4(), vec3(input[0], input[1], input[2]));
-        col->hasR = true;
+        col->hasS = true;
 
         //check that all matrices have been instantiated
         if (!col->hasR) {
+            printf("created identity mat for R at %i", obj->index);
             obj->R[obj->index] = identity_mat4();
+        }else{
+            printf("WTF");
         }
+
         if (!col->hasT) {
             obj->T[obj->index] = identity_mat4();
         }
@@ -409,9 +409,7 @@ void parseLine(char* line, MeshCollection*col) {
         col->hasR = false;
         col->hasS = false;
         col->hasT = false;
-
     }
-
 
 }
 

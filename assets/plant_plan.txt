@@ -1,6 +1,8 @@
 -N 1
 -f /home/alvaregd/Documents/Games/aquarium/assets/red_coral.obj
--n 1
+-n 2
 -t 0.0, -55.0, 0.0
+-s 3,3,3
+-t 10.0, -55.0, 0.0
 -s 3,3,3
 

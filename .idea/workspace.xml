@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="BookmarkManager">
-    <bookmark url="file://$PROJECT_DIR$/main.cpp" line="458" mnemonic="1" />
+    <bookmark url="file://$PROJECT_DIR$/main.cpp" line="456" mnemonic="1" />
   </component>
   <component name="CMakeRunConfigurationManager" shouldGenerate="true" assignedExecutableTargets="true" buildAllGenerated="true">
     <generated>
@@ -15,21 +15,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="148a83b9-cc04-415d-8c80-84fbc1c15f22" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/assets/plant_plan.txt" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/assets/back2.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/assets/caustics.tar.gz" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/assets/floor.rgb" afterPath="" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/mesh/terrain_underwater.frag" afterPath="$PROJECT_DIR$/terrain/terrain_underwater.frag" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/mesh/terrain_underwater.vert" afterPath="$PROJECT_DIR$/terrain/terrain_underwater.vert" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/plant_plan.txt" afterPath="$PROJECT_DIR$/assets/plant_plan.txt" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/gl.log" afterPath="$PROJECT_DIR$/build/gl.log" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/main.cpp" afterPath="$PROJECT_DIR$/main.cpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mesh/mesh.cpp" afterPath="$PROJECT_DIR$/mesh/mesh.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mesh/mesh.h" afterPath="$PROJECT_DIR$/mesh/mesh.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/platform/glfw_launcher.cpp" afterPath="$PROJECT_DIR$/platform/glfw_launcher.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/terrain/terrain.cpp" afterPath="$PROJECT_DIR$/terrain/terrain.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/terrain/terrain.h" afterPath="$PROJECT_DIR$/terrain/terrain.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/utils/log_utils/logger.cpp" afterPath="$PROJECT_DIR$/utils/log_utils/logger.cpp" />
     </list>
     <ignored path="aquarium.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -53,8 +42,8 @@
       <file leaf-file-name="main.cpp" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.6505525">
-              <caret line="469" column="5" selection-start-line="469" selection-start-column="5" selection-end-line="469" selection-end-column="5" />
+            <state vertical-scroll-proportion="0.3646409">
+              <caret line="109" column="39" selection-start-line="109" selection-start-column="39" selection-end-line="109" selection-end-column="39" />
               <folding>
                 <element signature="e#0#17#0" expanded="true" />
               </folding>
@@ -79,11 +68,11 @@
         <option value="$PROJECT_DIR$/CMakeLists.txt" />
         <option value="$PROJECT_DIR$/terrain/terrain.h" />
         <option value="$PROJECT_DIR$/utils/log_utils/logger.cpp" />
-        <option value="$PROJECT_DIR$/assets/plant_plan.txt" />
         <option value="$PROJECT_DIR$/platform/glfw_launcher.cpp" />
         <option value="$PROJECT_DIR$/terrain/terrain.cpp" />
-        <option value="$PROJECT_DIR$/mesh/mesh.cpp" />
         <option value="$PROJECT_DIR$/mesh/mesh.h" />
+        <option value="$PROJECT_DIR$/mesh/mesh.cpp" />
+        <option value="$PROJECT_DIR$/assets/plant_plan.txt" />
         <option value="$PROJECT_DIR$/main.cpp" />
       </list>
     </option>
@@ -318,14 +307,14 @@
     <frame x="1745" y="-4" width="1855" height="1084" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24959569" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24959569" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32892057" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3299389" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3299389" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.23217922" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.23217922" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -608,14 +597,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/assets/plant_plan.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.063535914">
-          <caret line="2" column="4" selection-start-line="2" selection-start-column="4" selection-end-line="2" selection-end-column="4" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/mesh/mesh.frag">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -650,17 +631,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/mesh/mesh.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.33287293">
-          <caret line="228" column="6" selection-start-line="228" selection-start-column="6" selection-end-line="228" selection-end-column="6" />
-          <folding>
-            <element signature="e#1#19#0" expanded="true" />
-            <marker date="1451377261124" expanded="true" signature="1350:1545" placeholder="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/skybox/skybox.cpp">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.5870166">
@@ -669,10 +639,29 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/mesh/mesh.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.5400553">
+          <caret line="46" column="8" selection-start-line="46" selection-start-column="8" selection-end-line="46" selection-end-column="8" />
+          <folding>
+            <element signature="e#1#19#0" expanded="true" />
+            <marker date="1451379541116" expanded="true" signature="1350:1600" placeholder="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/assets/plant_plan.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.25414366">
+          <caret line="8" column="0" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/main.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.6505525">
-          <caret line="469" column="5" selection-start-line="469" selection-start-column="5" selection-end-line="469" selection-end-column="5" />
+        <state vertical-scroll-proportion="0.3646409">
+          <caret line="109" column="39" selection-start-line="109" selection-start-column="39" selection-end-line="109" selection-end-column="39" />
           <folding>
             <element signature="e#0#17#0" expanded="true" />
           </folding>
