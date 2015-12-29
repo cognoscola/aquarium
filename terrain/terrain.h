@@ -9,28 +9,14 @@
 #include <utils/math_utils/maths_funcs.h>
 #include <camera/camera.h>
 
-#define MAP_TEXTURE "/home/alvaregd/Documents/Games/aquarium/assets/ambient_oclusion.png"
-#define MAP_FILE "/home/alvaregd/Documents/Games/aquarium/assets/map.obj"
 #define FLOOR_FILE "/home/alvaregd/Documents/Games/aquarium/assets/floor1.obj"
 #define FLOOR_TEXTURE "/home/alvaregd/Documents/Games/aquarium/assets/terrain_texture.png"
 
-#define MESH_VERTEX "/home/alvaregd/Documents/Games/aquarium/mesh/mesh.vert"
-#define MESH_FRAGMENT "/home/alvaregd/Documents/Games/aquarium/mesh/mesh.frag"
+#define MESH_TERRAIN_UNDER_VERTEX "/home/alvaregd/Documents/Games/aquarium/terrain/terrain_underwater.vert"
+#define MESH_TERRAIN_UNDER_FRAG "/home/alvaregd/Documents/Games/aquarium/terrain/terrain_underwater.frag"
 
-#define MESH_TERRAIN_UNDER_VERTEX "/home/alvaregd/Documents/Games/aquarium/mesh/terrain_underwater.vert"
-#define MESH_TERRAIN_UNDER_FRAG "/home/alvaregd/Documents/Games/aquarium/mesh/terrain_underwater.frag"
-
-#define MESH_TERRAIN 0
-#define MESH_MAP 1
-#define MESH_STATIC_OBJECT 2
-#define MESH_DYNAMIC_OJBECT 3
-#define MESH_MAP_UNDERWATER 5
-#define MESH_STATIC_OBJECT_UNDERWATER 6
-#define MESH_DYNAMIC_OJBECT_UNDERWATER 7
 
 struct Terrain{
-
-    bool isUnderwater;
 
     GLuint shader;
     GLuint texture;

@@ -9,16 +9,11 @@
 #include <utils/io/texload.h>
 #include "mesh.h"
 
-void meshInit(Mesh* mesh, GLfloat* proj_mat, char* filename, int type){
+void meshInit(Mesh* mesh, char* filename, char* texFilename ,GLfloat* proj_mat){
 
-    mesh->meshType = type;
     assert(meshLoadMeshFile(filename, &mesh->vao, &mesh->vertexCount));
-
-    if (mesh->meshType == MESH_MAP) {
-        meshLoadTexture(mesh, MAP_TEXTURE);
-    }else if (mesh->meshType == MESH_TERRAIN_UNDERWATER) {
-        meshLoadTexture(mesh, FLOOR_TEXTURE);
-        meshLoadCausticTexture(mesh);
+    if (texFilename != NULL) {
+        meshLoadTexture(mesh, texFilename);
     }
 
     meshLoadShaderProgram(mesh);
@@ -26,29 +21,30 @@ void meshInit(Mesh* mesh, GLfloat* proj_mat, char* filename, int type){
     meshGetUniforms(mesh);
     glUniform4f(mesh->location_clip_plane, 0.0f, -1.0f, 0.0f, 1.0f);
     glUniformMatrix4fv(mesh->location_projection_mat , 1, GL_FALSE, proj_mat);
+//
+    mesh->modelMatrix = (mat4 *) malloc(mesh->numCopies * sizeof(mat4));
+//    for (int i = 0; i < collection->numberOfCopies; i++) {
+//        mesh->modelMatrix[i] = collection->T[i] * collection->S[i] * collection->R[i];
+//    }
+//
+//    free(collection->T);
+//    free(collection->R);
+//    free(collection->S);
+//    free(collection->objfilename);
+//
+//    //TODO mountain settings
+////    mat4 s = scale(identity_mat4(), vec3(50,100,10));
+////    mat4 T = translate(identity_mat4(), vec3(0.0f, -4.5f, -400.0f));
+////    mesh->modelMatrix = T * s;
+}
 
-    if (mesh->meshType == MESH_TERRAIN_UNDERWATER) {
-        glUniform1i(mesh->location_baseTexture, 0);
-        glUniform1i(mesh->location_luminanceTexture,1 );
+void meshSetInitialTransformation(Mesh* mesh, mat4* T, mat4* S,mat4* R ) {
 
-        glUniform1f(mesh->location_fogDensity, mesh->fogDensity);
-        glUniform1f(mesh->location_fogGradient,mesh->fogGradient);
-        glUniform3f(mesh->location_skyColour,0.0f,0.7f,1.0f);
+    for (int i = 0; i < mesh->numCopies; i++) {
+        mesh->modelMatrix[i] = T[i] * S[i] * R[i];
     }
-
-    //TODO mountain settings
-//    mat4 s = scale(identity_mat4(), vec3(50,100,10));
-//    mat4 T = translate(identity_mat4(), vec3(0.0f, -4.5f, -400.0f));
-//    mesh->modelMatrix = T * s;
-
+//    glUniformMatrix4fv(mesh->location_model_mat , 1, GL_FALSE, mesh->modelMatrix.m);
 }
-
-void meshSetInitialTransformation(Mesh* mesh, mat4* T, mat4* S,mat4* R ){
-    mesh->modelMatrix = *T * *S * *R;
-    glUniformMatrix4fv(mesh->location_model_mat , 1, GL_FALSE, mesh->modelMatrix.m);
-}
-
-
 
 bool meshLoadMeshFile(const char *fileName, GLuint *vao, int *point_count){
 
@@ -206,12 +202,7 @@ void meshLoadCausticTexture(Mesh* mesh) {
 }
 
 void meshLoadShaderProgram(Mesh * mesh) {
-
-    if (mesh->meshType == MESH_MAP) {
-        mesh->shader = create_programme_from_files(MESH_VERTEX, MESH_FRAGMENT);
-    }else if (mesh->meshType == MESH_TERRAIN_UNDERWATER) {
-        mesh->shader = create_programme_from_files(MESH_TERRAIN_UNDER_VERTEX, MESH_TERRAIN_UNDER_FRAG);
-    }
+    mesh->shader = create_programme_from_files(MESH_VERTEX, MESH_FRAGMENT);
 }
 
 void meshGetUniforms(Mesh* mesh){
@@ -219,14 +210,6 @@ void meshGetUniforms(Mesh* mesh){
     mesh->location_view_mat        = glGetUniformLocation(mesh->shader, "viewMatrix");
     mesh->location_projection_mat  = glGetUniformLocation(mesh->shader, "projectionMatrix");
     mesh->location_clip_plane      = glGetUniformLocation(mesh->shader, "plane");
-
-    if (mesh->meshType == MESH_TERRAIN_UNDERWATER) {
-        mesh->location_baseTexture      = glGetUniformLocation(mesh->shader, "baseMap");
-        mesh->location_luminanceTexture = glGetUniformLocation(mesh->shader, "luminanceMap");
-        mesh->location_skyColour        = glGetUniformLocation(mesh->shader, "skyColour");
-        mesh->location_fogDensity        = glGetUniformLocation(mesh->shader, "fogDensity");
-        mesh->location_fogGradient       = glGetUniformLocation(mesh->shader, "fogGradient");
-    }
 
 }
 
@@ -243,39 +226,22 @@ void meshUpdate(Mesh *mesh, double elapsed_seconds){
     }
 }
 
-void meshRender(Mesh* mesh, Camera* camera, GLfloat planeHeight, bool isAboveWater){
-
+void meshRender(Mesh* mesh, Camera* camera, GLfloat planeHeight, bool isAboveWater) {
 
     glUseProgram(mesh->shader);
     glUniform4f(mesh->location_clip_plane, 0.0f, 1.0f, 0.0f, planeHeight);
     glUniformMatrix4fv(mesh->location_view_mat, 1, GL_FALSE, camera->viewMatrix.m);
-    glUniformMatrix4fv(mesh->location_model_mat, 1, GL_FALSE, mesh->modelMatrix.m);
 
     glBindVertexArray(mesh->vao);
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
     glEnableVertexAttribArray(2);
 
-    if (mesh->meshType == MESH_TERRAIN_UNDERWATER) {
-        if (isAboveWater) {
-            glUniform3f(mesh->location_skyColour,0.6f,0.6f,0.6f);
-        }else{
-            mesh->fogDensity = 0.007f;
-            mesh->fogGradient = 1.5f;
-            glUniform3f(mesh->location_skyColour,0.0f,0.7f,1.0f);
-        }
-        glUniform1f(mesh->location_fogDensity, mesh->fogDensity);
-        glUniform1f(mesh->location_fogGradient,mesh->fogGradient);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, mesh->texture);
 
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, mesh->texture);
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, mesh->causticTextureIds[mesh->causticIndex]);
-        glDrawArrays(GL_TRIANGLES, 0, mesh->vertexCount);
-
-    }else if(mesh->meshType == MESH_MAP){
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, mesh->texture);
+    for (int i = 0; i < mesh->numCopies; i++) {
+        glUniformMatrix4fv(mesh->location_model_mat, 1, GL_FALSE, mesh->modelMatrix[i].m);
         glDrawArrays(GL_TRIANGLES, 0, mesh->vertexCount);
     }
 

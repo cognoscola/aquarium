@@ -16,7 +16,7 @@ void terrainInit(Terrain* terrain, GLfloat* proj_mat, char* filename){
 
     assert(terrainLoadTerrainFile(filename, &terrain->vao, &terrain->vertexCount));
 
-    terrainLoadTexture(terrain, FLOOR_TEXTURE);
+    terrainLoadTexture(terrain, (char*)FLOOR_TEXTURE);
     terrainLoadCausticTexture(terrain);
 
     terrainLoadShaderProgram(terrain);

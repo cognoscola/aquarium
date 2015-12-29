@@ -8,6 +8,17 @@
 #include <utils/io/video.h>
 #include <ray/ray.h>
 
+#define LINE_LENGTH 100
+#define LANDSCAPE "/home/alvaregd/Documents/Games/aquarium/assets/plant_plan.txt"
+
+void parseLine(char* line, MeshCollection*col);
+int findLength(char *input);
+void getValues(float*matInputs, char*stringValue);
+void importMeshData(MeshCollection *collection, char *filename);
+void initMeshCollection(MeshCollection*col, GLfloat* proj_mat);
+void collectionRender(MeshCollection* col, Camera* camera, GLfloat planeHeight, bool isAboveWater);
+void collectionCleanUp(MeshCollection* col);
+
 int main() {
 
     Window hardware; //manage the window
@@ -44,14 +55,25 @@ int main() {
     mat4 R;
 
 //    Mesh map;
-//    meshInit(&map, camera.proj_mat, MAP_FILE, MESH_MAP);
+//    meshInit(&map, camera.proj_mat, MAP_FILE, MAP_TEXTURE);
 //    S = scale(identity_mat4(), vec3(2,2,2));
 //    T = translate(identity_mat4(), vec3(0.0f, -5.0f, 0.0f));
 //    R = identity_mat4();
 //    meshSetInitialTransformation(&map, &T, &S, &R);
 
+    MeshCollection collection;
+    importMeshData(&collection, (char*)LANDSCAPE);
+    initMeshCollection(&collection,camera.proj_mat);
+
+//    Mesh coral;
+//    meshInit(&coral, camera.proj_mat, RED_CORAL, NULL);
+//    S = scale(identity_mat4(), vec3(3,3,3));
+//    T = translate(identity_mat4(), vec3(0.0f, -55.0f, 0.0f));
+//    R = identity_mat4();
+//    meshSetInitialTransformation(&coral, &T, &S, &R);
+
     Terrain terrain;
-    terrainInit(&terrain, camera.proj_mat, FLOOR_FILE);
+    terrainInit(&terrain, camera.proj_mat, (char*)FLOOR_FILE);
     T = translate(identity_mat4(), vec3(0.0f, -64.0f, 0.0f));
     S = scale(identity_mat4(), vec3(4,2,4));
     R = identity_mat4();
@@ -88,6 +110,7 @@ int main() {
         calculateViewMatrices(&camera);
         camera.viewMatrix.m[13] += (isAboveWater ? -1:1) *  water.reflectionDistance;
 //        meshRender(&map, &camera, 0.5f,isAboveWater);
+//        meshRender(&coral, &camera, 0.5f,isAboveWater);
         skyUpdate(&sky);
         skyRender(&sky, &camera, isAboveWater,true);
         camera.viewMatrix.m[13] -=  (isAboveWater ? -1:1) * water.reflectionDistance;
@@ -99,6 +122,7 @@ int main() {
         bindFrameBufer(water.refractionFrameBuffer, REFRACTION_WIDTH, REFRACTION_HEIGHT);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 //        meshRender(&map, &camera, (isAboveWater ? 1:-1) * 1000.0f,isAboveWater);
+//        meshRender(&coral, &camera, (isAboveWater ? 1:-1) * 1000.0f,isAboveWater);
         skyRender(&sky, &camera, camera.pos[1] > water.waterHeight,true);
         unbindCurrentFrameBuffer(&hardware);
 
@@ -106,10 +130,12 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glDisable(GL_CLIP_DISTANCE0);
 //        meshRender(&map, &camera, (isAboveWater ? -1:1) * 1000.0f, isAboveWater);
+//        meshRender(&coral, &camera, (isAboveWater ? -1:1) * 1000.0f, isAboveWater);
+
+        collectionRender(&collection, &camera, (isAboveWater ? -1 : 1) * 1000.0f, isAboveWater);
         if (!isAboveWater) {
             terrainRender(&terrain, &camera, 1000.0f, isAboveWater);
         }
-
         skyRender(&sky, &camera,isAboveWater,false);
         waterUpdate(&water);
         waterRender(&water, &camera);
@@ -194,8 +220,10 @@ int main() {
 
     waterCleanUp(&water);
 //    meshCleanUp(&map);
+//    meshCleanUp(&coral);
     terrainCleanUp(&terrain);
     skyCleanUp(&sky);
+    collectionCleanUp(&collection);
 
     if(video.dump_video) {
         dump_video_frames(&video, &hardware);
@@ -261,10 +289,192 @@ static void cursor_position_callback(GLFWwindow *window, double xpos, double ypo
     calculateRotationMatrix(camera.yaw, &camera.Ryaw, YAW);
 }
 
+void importMeshData(MeshCollection *collection, char *filename){
+
+    //reset collection data;
+    collection->fileIndex = -1;
+    collection->hasT = false;
+    collection->hasS = false;
+    collection->hasR = false;
+    collection->meshObject = NULL;
+
+    FILE* file = fopen (filename , "r");
+    if (!file) {
+        gl_log_err ("ERROR: opening file for reading: %s\n", filename);
+        exit(1);
+    }else{
+
+    }
+
+    int current_len = 0;
+    char line[2048];
+    strcpy (line, ""); // remember to clean up before using for first time!
+    while (!feof (file)) {
+        if (NULL != fgets (line, 2048, file)) {
+
+//            printf("%s", line);
+            parseLine(line, collection);
+            strcpy(line, ""); // remember to clean up before using for first time!
+            current_len += strlen(line); // +1 for \n at end
+            if (current_len >= 100) {
+                gl_log_err(
+                        "ERROR: shader length is longer than string buffer length %i\n",
+                        100
+                );
+            }
+        }
+    }
+    if (EOF == fclose (file)) { // probably unnecesssary validation
+        gl_log_err ("ERROR: closing file from reading %s\n", filename);
+    }
+    //do something with the collection
+}
+
+void parseLine(char* line, MeshCollection*col) {
+
+    if (strstr(line, "-N") != NULL) {
+        size_t length =(size_t)findLength(line) - 3;
+        char* value = (char*)malloc(length * sizeof(char));
+        memcpy(value,&line[3],length);
+        col->numberOfFiles =  atoi(value);
+        col->meshObject = (MeshObject *) malloc(col->numberOfFiles * sizeof(MeshObject));
+
+        printf("Allocating new mesh space for %i files\n", col->numberOfFiles);
+    }
+
+    if (strstr(line, "-f") != NULL) {
+
+        col->fileIndex++;
+        size_t length =(size_t) findLength(line) - 3;
+        col->meshObject[col->fileIndex].objfilename = (char *) malloc(length * sizeof(char));
+        memcpy(col->meshObject[col->fileIndex].objfilename, &line[3], length);
+        printf("File: %s\n", col->meshObject[col->fileIndex].objfilename);
+    }
+
+    if (strstr(line, "-n") != NULL) {
+
+        size_t length =(size_t)findLength(line) - 3;
+        char* value = (char*)malloc(length * sizeof(char));
+        memcpy(value,&line[3],length);
+        col->meshObject[col->fileIndex].numberOfCopies = atoi(value);
+        printf("Copies:%i\n", col->meshObject[col->fileIndex].numberOfCopies);
+
+        col->meshObject[col->fileIndex].T =
+                (mat4 *) malloc(col->meshObject[col->fileIndex].numberOfCopies * sizeof(mat4));
+        col->meshObject[col->fileIndex].R =
+                (mat4 *) malloc(col->meshObject[col->fileIndex].numberOfCopies * sizeof(mat4));
+        col->meshObject[col->fileIndex].S =
+                (mat4 *) malloc(col->meshObject[col->fileIndex].numberOfCopies * sizeof(mat4));
+    }
 
 
+    if (strstr(line, "-r") != NULL) {
+        col->hasR = true;
+    }
+
+    if (strstr(line, "-t") != NULL) {
 
 
+        float input[3];
+        getValues(input, line);
+
+        MeshObject* obj =&col->meshObject[col->fileIndex];
+        obj->T[obj->index] = translate(identity_mat4(), vec3(input[0], input[1], input[2]));
+        col->hasT = true;
+    }
+
+    if (strstr(line, "-s") != NULL) {
+
+        float input[3];
+        getValues(input, line);
+
+        MeshObject* obj =&col->meshObject[col->fileIndex];
+
+        obj->S[obj->index] = scale(identity_mat4(), vec3(input[0], input[1], input[2]));
+        col->hasR = true;
+
+        //check that all matrices have been instantiated
+        if (!col->hasR) {
+            obj->R[obj->index] = identity_mat4();
+        }
+        if (!col->hasT) {
+            obj->T[obj->index] = identity_mat4();
+        }
+        //todo for now this is always true
+        if (!col->hasS) {
+            obj->S[obj->index] = identity_mat4();
+        }
+
+        obj->index++;
+        col->hasR = false;
+        col->hasS = false;
+        col->hasT = false;
+
+    }
 
 
+}
+
+int findLength(char *input){
+
+    int length = 0;
+    while(input[length]!='\n')  //  remove ;
+    {
+        length++;
+    }
+    return length;
+}
+
+void getValues(float* matInputs, char* line){
+
+    size_t length = (size_t)findLength(line) - 3;
+    char* stringValue = (char*)malloc(sizeof(char) * length);
+    memcpy(stringValue, &line[3], length);
+
+    char seps[] = " ,\t\n";
+    char* token;
+    float var;
+    int i = 0;
+
+    token = strtok (stringValue, seps);
+    while (token != NULL)
+    {
+        sscanf (token, "%f", &var);
+        matInputs[i++] = var;
+
+        printf("Value: %f\n", var);
+        token = strtok (NULL, seps);
+    }
+
+    free(stringValue);
+}
+
+void initMeshCollection(MeshCollection* col, GLfloat* proj_mat){
+
+    //for object inside the collection, initialize a new Mesh item
+    col->mesh = (Mesh*)malloc(sizeof(Mesh) * col->numberOfFiles);
+
+    for (int i = 0; i < col->numberOfFiles; i++) {
+        col->mesh[i].numCopies = col->meshObject[i].numberOfCopies;
+        meshInit(&col->mesh[i], col->meshObject[i].objfilename, NULL, proj_mat);
+        meshSetInitialTransformation(&col->mesh[i], col->meshObject[i].T,col->meshObject[i].S,col->meshObject[i].R);
+    }
+
+    free(col->meshObject);
+}
+
+void collectionRender(MeshCollection* col, Camera* camera, GLfloat planeHeight, bool isAboveWater) {
+
+    for (int i = 0; i < col->numberOfFiles; i++) {
+        meshRender(&col->mesh[i], camera, planeHeight, isAboveWater);
+    }
+}
+
+void collectionCleanUp(MeshCollection* col) {
+
+    for (int i = 0; i < col->numberOfFiles; i++) {
+        meshCleanUp(&col->mesh[i]);
+    }
+//    free(col);
+}
 
