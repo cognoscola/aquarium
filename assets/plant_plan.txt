@@ -1,4 +1,4 @@
--N 5
+-N 6
 -f /home/alvaregd/Documents/Games/aquarium/assets/red_coral.obj
 -n 3
 -t 0.0, -55.0, 0.0
@@ -46,5 +46,9 @@
 -t -0.0, -33.4, +200.0
 -s 1.0, 1.0, 1.0
 -t 50.0, -35, +240.0
+-s 1.0, 1.0, 1.0
+-f /home/alvaregd/Documents/Games/aquarium/assets/cactus.obj
+-n 1
+-t -0.0, -58.6, -120.0
 -s 1.0, 1.0, 1.0
 

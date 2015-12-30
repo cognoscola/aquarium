@@ -21,21 +21,13 @@ void meshInit(Mesh* mesh, char* filename, char* texFilename ,GLfloat* proj_mat){
     meshGetUniforms(mesh);
     glUniform4f(mesh->location_clip_plane, 0.0f, -1.0f, 0.0f, 1.0f);
     glUniformMatrix4fv(mesh->location_projection_mat , 1, GL_FALSE, proj_mat);
-//
+
+
     mesh->modelMatrix = (mat4 *) malloc(mesh->numCopies * sizeof(mat4));
-//    for (int i = 0; i < collection->numberOfCopies; i++) {
-//        mesh->modelMatrix[i] = collection->T[i] * collection->S[i] * collection->R[i];
-//    }
-//
-//    free(collection->T);
-//    free(collection->R);
-//    free(collection->S);
-//    free(collection->objfilename);
-//
 //    //TODO mountain settings
-////    mat4 s = scale(identity_mat4(), vec3(50,100,10));
-////    mat4 T = translate(identity_mat4(), vec3(0.0f, -4.5f, -400.0f));
-////    mesh->modelMatrix = T * s;
+//    mat4 s = scale(identity_mat4(), vec3(50,100,10));
+//    mat4 T = translate(identity_mat4(), vec3(0.0f, -4.5f, -400.0f));
+//    mesh->modelMatrix = T * s;
 }
 
 void meshSetInitialTransformation(Mesh* mesh, mat4* T, mat4* S,mat4* R ) {

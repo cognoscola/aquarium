@@ -7,6 +7,7 @@
 #include <water/water.h>
 #include <utils/io/video.h>
 #include <ray/ray.h>
+#include <dynamic/animal.h>
 
 #define LINE_LENGTH 100
 #define LANDSCAPE "/home/alvaregd/Documents/Games/aquarium/assets/plant_plan.txt"
@@ -50,33 +51,18 @@ int main() {
     Ray ray;
     rayInit(&ray, camera.proj_mat);
 
-    mat4 S;
-    mat4 T;
-    mat4 R;
-
-//    Mesh map;
-//    meshInit(&map, camera.proj_mat, MAP_FILE, MAP_TEXTURE);
-//    S = scale(identity_mat4(), vec3(2,2,2));
-//    T = translate(identity_mat4(), vec3(0.0f, -5.0f, 0.0f));
-//    R = identity_mat4();
-//    meshSetInitialTransformation(&map, &T, &S, &R);
+    Animal bird;
+    animalInit(&bird, camera.proj_mat);
 
     MeshCollection collection;
     importMeshData(&collection, (char*)LANDSCAPE);
     initMeshCollection(&collection,camera.proj_mat);
 
-//    Mesh coral;
-//    meshInit(&coral, camera.proj_mat, RED_CORAL, NULL);
-//    S = scale(identity_mat4(), vec3(3,3,3));
-//    T = translate(identity_mat4(), vec3(0.0f, -55.0f, 0.0f));
-//    R = identity_mat4();
-//    meshSetInitialTransformation(&coral, &T, &S, &R);
-
     Terrain terrain;
     terrainInit(&terrain, camera.proj_mat, (char*)FLOOR_FILE);
-    T = translate(identity_mat4(), vec3(0.0f, -64.0f, 0.0f));
-    S = scale(identity_mat4(), vec3(4,2,4));
-    R = identity_mat4();
+    mat4 S  = scale(identity_mat4(), vec3(4,2,4));
+    mat4 T = translate(identity_mat4(), vec3(0.0f, -64.0f, 0.0f));
+    mat4 R = identity_mat4();
     terrainSetInitialTransformation(&terrain, &T, &S, &R);
 
     Water water; // water object
@@ -86,6 +72,8 @@ int main() {
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
 
+    double anim_time = 0.0;
+
     while(!glfwWindowShouldClose (hardware.window)) {
 
         //timing calculation
@@ -93,6 +81,12 @@ int main() {
         double current_seconds = glfwGetTime ();
         double elapsed_seconds = current_seconds - previous_seconds;
         previous_seconds = current_seconds;
+
+        anim_time += elapsed_seconds * 0.7;
+        if (anim_time >= bird.animationDuration) {
+            anim_time = bird.animationDuration - anim_time;
+        }
+
 
         if(videoUpdateTimer(&video, &elapsed_seconds)) break;
 
@@ -113,6 +107,7 @@ int main() {
 //        collectionRender(&collection, &camera, (isAboveWater ? -1 : 1) * 1000.0f, isAboveWater);
         skyUpdate(&sky);
         skyRender(&sky, &camera, isAboveWater,true);
+        animalRender(&bird, &camera);
         camera.viewMatrix.m[13] -=  (isAboveWater ? -1:1) * water.reflectionDistance;
         calculateRotationMatrix(camera.pitch, &camera.Rpitch,PITCH);
         calculateViewMatrices(&camera);
@@ -138,6 +133,7 @@ int main() {
         waterUpdate(&water);
         waterRender(&water, &camera);
         rayRender(&ray, &camera,isAboveWater, current_seconds,elapsed_seconds);
+        animalRender(&bird, &camera);
 
         glfwPollEvents();
 
@@ -207,6 +203,23 @@ int main() {
             }
         }
 
+        animalSkeletonAnimate(
+                &bird,
+                bird.nodes,
+                anim_time,
+                identity_mat4 (),
+                bird.monkey_bone_offset_matrices,
+                bird.monkey_bone_animation_mats
+        );
+        glUseProgram (bird.shader);
+        glUniformMatrix4fv (
+                bird.bone_matrices_location[0],
+                bird.boneCount,
+                GL_FALSE,
+                bird.monkey_bone_animation_mats[0].m
+        );
+
+
         if (video.dump_video) { // check if recording mode is enabled
             while (video.video_dump_timer > video.frame_time) {
                 grab_video_frame (&video, &hardware); // 25 Hz so grab a frame
@@ -217,11 +230,10 @@ int main() {
     }
 
     waterCleanUp(&water);
-//    meshCleanUp(&map);
-//    meshCleanUp(&coral);
     terrainCleanUp(&terrain);
     skyCleanUp(&sky);
     collectionCleanUp(&collection);
+    animalCleanUp(&bird);
 
     if(video.dump_video) {
         dump_video_frames(&video, &hardware);
