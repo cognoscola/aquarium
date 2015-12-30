@@ -1,4 +1,4 @@
--N 3
+-N 5
 -f /home/alvaregd/Documents/Games/aquarium/assets/red_coral.obj
 -n 3
 -t 0.0, -55.0, 0.0
@@ -26,6 +26,25 @@
 -t -33.0, -50.0, +30.0
 -s 1.0, 1.0, 1.0
 -f /home/alvaregd/Documents/Games/aquarium/assets/arch.obj
--n 1
+-n 2
 -t -100.0, -40.0, -100.0
 -s 10.0, 10.0, 10.0
+-t -90.0, -40.0, -100.0
+-s 10.0, 10.0, 10.0
+-f /home/alvaregd/Documents/Games/aquarium/assets/platform.obj
+-n 1
+-t -120.0, -51.0, -120.0
+-s 5.0, 5.0, 5.0
+-f /home/alvaregd/Documents/Games/aquarium/assets/bomb.obj
+-n 5
+-t -0.0, -33.9, +120.0
+-s 1.0, 1.0, 1.0
+-t 20.0, -34.9, +135.0
+-s 1.0, 1.0, 1.0
+-t -45.0, -30.9, +160.0
+-s 1.0, 1.0, 1.0
+-t -0.0, -33.4, +200.0
+-s 1.0, 1.0, 1.0
+-t 50.0, -35, +240.0
+-s 1.0, 1.0, 1.0
+

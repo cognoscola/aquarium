@@ -231,6 +231,8 @@ void meshUpdate(Mesh *mesh, double elapsed_seconds){
 
 void meshRender(Mesh* mesh, Camera* camera, GLfloat planeHeight, bool isAboveWater) {
 
+    if (!isAboveWater) {
+
     glUseProgram(mesh->shader);
     glUniform4f(mesh->location_clip_plane, 0.0f, 1.0f, 0.0f, planeHeight);
     glUniformMatrix4fv(mesh->location_view_mat, 1, GL_FALSE, camera->viewMatrix.m);
@@ -252,6 +254,7 @@ void meshRender(Mesh* mesh, Camera* camera, GLfloat planeHeight, bool isAboveWat
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(2);
     glBindVertexArray(0);
+    }
 
 }
 
