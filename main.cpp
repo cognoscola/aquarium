@@ -130,7 +130,7 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glDisable(GL_CLIP_DISTANCE0);
 //        meshRender(&map, &camera, (isAboveWater ? -1:1) * 1000.0f, isAboveWater);
-//        collectionRender(&collection, &camera, (isAboveWater ? -1 : 1) * 1000.0f, isAboveWater);
+        collectionRender(&collection, &camera, (isAboveWater ? -1 : 1) * 1000.0f, isAboveWater);
         if (!isAboveWater) {
             terrainRender(&terrain, &camera, 1000.0f, isAboveWater);
         }
@@ -348,8 +348,10 @@ void parseLine(char* line, MeshCollection*col) {
 
         col->fileIndex++;
         size_t length =(size_t) findLength(line) - 3;
-        col->meshObject[col->fileIndex].objfilename = (char *) malloc(length * sizeof(char));
+        printf("Name Length: %i\n", length);
+//        col->meshObject[col->fileIndex].objfilename = (char *) malloc(length * sizeof(char));
         memcpy(col->meshObject[col->fileIndex].objfilename, &line[3], length);
+
         printf("File: %s\n", col->meshObject[col->fileIndex].objfilename);
     }
 
@@ -426,11 +428,15 @@ int findLength(char *input){
 
 void getValues(float* matInputs, char* line){
 
+    printf("getValue() Input: %s", line);
     size_t length = (size_t)findLength(line) - 3;
-    char* stringValue = (char*)malloc(sizeof(char) * length);
+    printf("getValue() Length: %i\n", length);
+    char stringValue[length];
+    memset(stringValue, 0, sizeof stringValue);
     memcpy(stringValue, &line[3], length);
+    printf("getValue() after Copy: %s\n", stringValue);
 
-    char seps[] = " ,\t\n";
+    char seps[] = ",";
     char* token;
     float var;
     int i = 0;
@@ -445,7 +451,7 @@ void getValues(float* matInputs, char* line){
         token = strtok (NULL, seps);
     }
 
-    free(stringValue);
+//    free(stringValue);
 }
 
 void initMeshCollection(MeshCollection* col, GLfloat* proj_mat){

@@ -50,7 +50,7 @@ struct Mesh{
 
 struct MeshObject{
 
-    char* objfilename;
+    char objfilename[100];
     char* texFilenames;
 
     int index = 0;
