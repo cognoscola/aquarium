@@ -33,11 +33,9 @@ void animalInit(Animal* animal, GLfloat* proj_mat){
     glUseProgram(animal->shader);
     animalGetUniforms(animal);
     glUniformMatrix4fv(animal->location_projection_mat , 1, GL_FALSE, proj_mat);
-    mat4 rotX = rotate_x_deg(identity_mat4(), -90.0f);
-    mat4 rotY = rotate_y_deg(identity_mat4(), -90.0f);
-    mat4 Trans = translate(identity_mat4(),vec3(0.0f,0.0f,-3.0f));
-    animal->modelMatrix = Trans *rotY*rotX ;
-    glUniformMatrix4fv(animal->location_model_mat , 1, GL_FALSE, animal->modelMatrix.m);
+//    animal.rotF = rotate_x_deg(identity_mat4(), -90.0f);
+    animal->modelMatrix = identity_mat4();
+//    glUniformMatrix4fv(animal->location_model_mat , 1, GL_FALSE, animal->modelMatrix.m);
 
 /////////visualizing the bones
     float bone_positions[3*256];
@@ -76,7 +74,6 @@ void animalInit(Animal* animal, GLfloat* proj_mat){
     char name[64];
     for (int j = 0; j < MAX_BONES; j++) {
         sprintf(name, "bone_matrices[%i]", j);
-//        printf("bone_matrices[%i]: %s", j,name);
         animal->bone_matrices_location[j] = glGetUniformLocation(animal->shader, name);
         glUniformMatrix4fv(animal->bone_matrices_location[j], 1, GL_FALSE, identity_mat4().m);
     }
@@ -351,7 +348,7 @@ void animalLoadTexture(Animal* animal){
 }
 
 void animalLoadShaderProgram(Animal * animal){
-    animal->shader = create_programme_from_files(MESH_VERTEX, MESH_FRAGMENT);
+    animal->shader = create_programme_from_files(ANIMAL_VERTEX, ANIMAL_FRAGMENT);
 }
 
 void animalGetUniforms(Animal* animal){
@@ -423,7 +420,6 @@ bool animalImportSkeletonNode(aiNode* assimpNode, SkeletonNode** skeletonNode, i
     temp->numRotKeys = 0;
     temp->numScaKeys = 0;
 
-
     printf("node has %i children\n", (int) assimpNode->mNumChildren);
     temp->boneIndex = -1;
     for (int i = 0; i < MAX_BONES; i++) {
@@ -476,7 +472,6 @@ void animalSkeletonAnimate(Animal* animal,
                          mat4 parentMat,
                          mat4* boneOffsetMats,
                          mat4* boneAnimationMats) {
-
     assert(node);
 
     mat4 ourMat = parentMat;
@@ -522,7 +517,6 @@ void animalSkeletonAnimate(Animal* animal,
         versor slerped = slerp(qi, qf, t);
         node_R = quat_to_mat4(slerped);
     }
-
 
     mat4 node_S = identity_mat4();
     if (node->numScaKeys > 0) {
@@ -586,36 +580,47 @@ SkeletonNode* findNodeInSkeleton(SkeletonNode* root, const char* nodeName){
 }
 
 
+void animalUpdate(Animal * animal, double time, Transformation* transformation, double transTime){
+
+    mat4 nodeT = identity_mat4();
+    if (transformation->numPosKeys > 0) {
+        int prevKeys =0;
+        int nextKeys =0;
+        for (int i = 0; i < transformation->numPosKeys - 1; i++) {
+            prevKeys = i;
+            nextKeys =i +1;
+            if (transformation->posKeyTimes[nextKeys] >= transTime) {
+                break;
+            }
+        }
+        float total_t = (float)(transformation->posKeyTimes[nextKeys] - transformation->posKeyTimes[prevKeys]);
+        float t = (float)((transTime - transformation->posKeyTimes[prevKeys]) / total_t);
+        vec3 vi = transformation->posKeys[prevKeys];
+        vec3 vf = transformation->posKeys[nextKeys];
+        vec3 lerped = vi* (1.0f -t ) + vf* t;
+        nodeT = translate(identity_mat4(), lerped);
+    }
+
+    animal->modelMatrix = nodeT * transformation->rotFix;
+
+    animalSkeletonAnimate(
+            animal,
+            animal->nodes,
+            time,
+            identity_mat4 (),
+            animal->monkey_bone_offset_matrices,
+            animal->monkey_bone_animation_mats
+    );
+    glUseProgram (animal->shader);
+    glUniformMatrix4fv (
+            animal->bone_matrices_location[0],
+            animal->boneCount,
+            GL_FALSE,
+            animal->monkey_bone_animation_mats[0].m
+    );
 
 
-void moveEarsForward(Animal *animal, float elapsed_seconds){
 
-    animal->theta += animal->rot_speed * elapsed_seconds;
 
-    glUseProgram(animal->shader);
-    animal->ear_mat = inverse(animal->monkey_bone_offset_matrices[0]) *
-                    rotate_z_deg(identity_mat4(), animal->theta) *
-                    animal->monkey_bone_offset_matrices[0];
-    glUniformMatrix4fv(animal->bone_matrices_location[0], 1, GL_FALSE, animal->ear_mat.m);
-    animal->ear_mat = inverse(animal->monkey_bone_offset_matrices[1]) *
-                    rotate_z_deg(identity_mat4(), -animal->theta) *
-                    animal->monkey_bone_offset_matrices[1];
-    glUniformMatrix4fv(animal->bone_matrices_location[1], 1, GL_FALSE, animal->ear_mat.m);
-
-}
-
-void moveEarsBackward(Animal *animal, float elapsed_seconds){
-
-    animal->theta -= animal->rot_speed * elapsed_seconds;
-    glUseProgram(animal->shader);
-    animal->ear_mat = inverse(animal->monkey_bone_offset_matrices[0]) *
-                    rotate_z_deg(identity_mat4(), animal->theta) *
-                    animal->monkey_bone_offset_matrices[0];
-    glUniformMatrix4fv(animal->bone_matrices_location[0], 1, GL_FALSE, animal->ear_mat.m);
-
-    animal->ear_mat = inverse(animal->monkey_bone_offset_matrices[1]) *
-                    rotate_z_deg(identity_mat4(), -animal->theta) *
-                    animal->monkey_bone_offset_matrices[1];
-    glUniformMatrix4fv(animal->bone_matrices_location[1], 1, GL_FALSE, animal->ear_mat.m);
 
 }

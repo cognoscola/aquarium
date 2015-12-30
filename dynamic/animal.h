@@ -13,8 +13,8 @@
 #define TERRAIN_TEXTURE "/home/alvaregd/Documents/Games/aquarium/assets/ambient_oclusion.png"
 #define MESH_FILE "/home/alvaregd/Documents/Games/aquarium/assets/seagull.dae"
 
-#define MESH_VERTEX "/home/alvaregd/Documents/Games/aquarium/dynamic/mesh.vert"
-#define MESH_FRAGMENT "/home/alvaregd/Documents/Games/aquarium/dynamic/mesh.frag"
+#define ANIMAL_VERTEX "/home/alvaregd/Documents/Games/aquarium/dynamic/mesh.vert"
+#define ANIMAL_FRAGMENT "/home/alvaregd/Documents/Games/aquarium/dynamic/mesh.frag"
 
 #define BONE_VERTEX "/home/alvaregd/Documents/Games/aquarium/dynamic/bone.vert"
 #define BONE_FRAGMENT "/home/alvaregd/Documents/Games/aquarium/dynamic/bone.frag"
@@ -34,6 +34,9 @@ struct Transformation{
     int numPosKeys;
     int numRotKeys;
     int numScaKeys;
+
+    double animationDuration;
+    mat4 rotFix;
 
 };
 
@@ -89,9 +92,7 @@ struct Animal{
     float rot_speed = 50.0f; // 50 radians per second
 
     SkeletonNode* nodes;
-    Transformation* transformaion;
 
-    mat4 g_local_anims[MAX_BONES];
     float y = 0.0; // position of head
 
     //animation stuff
@@ -115,8 +116,8 @@ void animalSkeletonAnimate(Animal* mesh,
                          mat4* boneOffsetMats,
                          mat4* boneAnimationMats);
 SkeletonNode* findNodeInSkeleton(SkeletonNode* root, const char* nodeName);
-void moveEarsForward(Animal *mesh, float elapsed_seconds);
-void moveEarsBackward(Animal *mesh, float elapsed_seconds);
+void animalUpdate(Animal * animal, double time, Transformation* transformation, double transformationTime);
+
 
 
 #endif //AQUARIUM_ANIMAL_H

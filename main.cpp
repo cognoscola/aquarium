@@ -54,6 +54,27 @@ int main() {
     Animal bird;
     animalInit(&bird, camera.proj_mat);
 
+    Transformation transformation;
+    transformation.numPosKeys = 2;
+    transformation.numScaKeys = 2;
+    transformation.numRotKeys = 2;
+
+    transformation.posKeys = (vec3 *) malloc(sizeof(vec3) * transformation.numPosKeys);
+//    transformation.rotKeys = (versor *) malloc(sizeof(versor) * transformation.numRotKeys);
+//    transformation.scaleKeys = (vec3 *) malloc(sizeof(vec3) * transformation.numScaKeys);
+
+    transformation.posKeyTimes = (double *) malloc(sizeof(double) * transformation.numPosKeys);
+//    transformation.rotKeyTimes = (double *) malloc(sizeof(double) * transformation.numRotKeys);
+//    transformation.scaKeyTimes = (double *) malloc(sizeof(double) * transformation.numScaKeys);
+
+    transformation.animationDuration = 5.0f;
+    transformation.rotFix = rotate_x_deg(identity_mat4(), -90.0f);
+
+    transformation.posKeys[0] = vec3(0.0, 0.0f, 100.0f);
+    transformation.posKeys[1] = vec3(0.0, 0.0f, -100.0f);
+    transformation.posKeyTimes[0] = 0.0f;
+    transformation.posKeyTimes[1] = 5.0f;
+
     MeshCollection collection;
     importMeshData(&collection, (char*)LANDSCAPE);
     initMeshCollection(&collection,camera.proj_mat);
@@ -73,6 +94,7 @@ int main() {
     glCullFace(GL_BACK);
 
     double anim_time = 0.0;
+    double transformation_time = 0.0;
 
     while(!glfwWindowShouldClose (hardware.window)) {
 
@@ -85,6 +107,11 @@ int main() {
         anim_time += elapsed_seconds * 0.7;
         if (anim_time >= bird.animationDuration) {
             anim_time = bird.animationDuration - anim_time;
+        }
+
+        transformation_time += elapsed_seconds * 0.7;
+        if (transformation_time >= transformation.animationDuration) {
+            transformation_time = transformation.animationDuration - transformation_time;
         }
 
 
@@ -203,22 +230,7 @@ int main() {
             }
         }
 
-        animalSkeletonAnimate(
-                &bird,
-                bird.nodes,
-                anim_time,
-                identity_mat4 (),
-                bird.monkey_bone_offset_matrices,
-                bird.monkey_bone_animation_mats
-        );
-        glUseProgram (bird.shader);
-        glUniformMatrix4fv (
-                bird.bone_matrices_location[0],
-                bird.boneCount,
-                GL_FALSE,
-                bird.monkey_bone_animation_mats[0].m
-        );
-
+        animalUpdate(&bird, anim_time, &transformation,transformation_time);
 
         if (video.dump_video) { // check if recording mode is enabled
             while (video.video_dump_timer > video.frame_time) {
@@ -321,8 +333,6 @@ void importMeshData(MeshCollection *collection, char *filename){
     strcpy (line, ""); // remember to clean up before using for first time!
     while (!feof (file)) {
         if (NULL != fgets (line, 2048, file)) {
-
-//            printf("%s", line);
             parseLine(line, collection);
             strcpy(line, ""); // remember to clean up before using for first time!
             current_len += strlen(line); // +1 for \n at end
@@ -334,10 +344,10 @@ void importMeshData(MeshCollection *collection, char *filename){
             }
         }
     }
+
     if (EOF == fclose (file)) { // probably unnecesssary validation
         gl_log_err ("ERROR: closing file from reading %s\n", filename);
     }
-    //do something with the collection
 }
 
 void parseLine(char* line, MeshCollection*col) {
