@@ -27,8 +27,6 @@ struct Camera{
     mat4 Ryaw;
     mat4 viewMatrix;
 
-    GLint view_mat_location;
-    GLint proj_mat_location;
 
     int pushing; //-1 slowing down, +1 accelerating , 0 = idle
     bool moving; //velocity != 0
@@ -36,7 +34,7 @@ struct Camera{
 
     vec3 velocity; //actor's velocity
 
-    GLfloat speedConstant = 5.0f;
+    GLfloat speedConstant = 0.5f;
     GLfloat* proj_mat;
 };
 

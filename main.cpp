@@ -55,9 +55,9 @@ int main() {
     animalInit(&bird, camera.proj_mat);
 
     Transformation transformation;
-    transformation.numPosKeys = 2;
-    transformation.numScaKeys = 2;
-    transformation.numRotKeys = 2;
+    transformation.numPosKeys = 4;
+//    transformation.numScaKeys = 2;
+//    transformation.numRotKeys = 2;
 
     transformation.posKeys = (vec3 *) malloc(sizeof(vec3) * transformation.numPosKeys);
 //    transformation.rotKeys = (versor *) malloc(sizeof(versor) * transformation.numRotKeys);
@@ -67,13 +67,17 @@ int main() {
 //    transformation.rotKeyTimes = (double *) malloc(sizeof(double) * transformation.numRotKeys);
 //    transformation.scaKeyTimes = (double *) malloc(sizeof(double) * transformation.numScaKeys);
 
-    transformation.animationDuration = 5.0f;
+    transformation.animationDuration = 7.5f;
     transformation.rotFix = rotate_x_deg(identity_mat4(), -90.0f);
 
-    transformation.posKeys[0] = vec3(0.0, 0.0f, 100.0f);
-    transformation.posKeys[1] = vec3(0.0, 0.0f, -100.0f);
+    transformation.posKeys[0] = vec3(0.0, 100.0f, 200.0f);
+    transformation.posKeys[1] = vec3(0.0, 3.0f, 100.0f);
+    transformation.posKeys[2] = vec3(0.0, 0.0f, -100.0f);
+    transformation.posKeys[3] = vec3(0.0, 20.0f, -200.0f);
     transformation.posKeyTimes[0] = 0.0f;
-    transformation.posKeyTimes[1] = 5.0f;
+    transformation.posKeyTimes[1] = 2.5f;
+    transformation.posKeyTimes[2] = 5.0f;
+    transformation.posKeyTimes[3] = 7.5f;
 
     MeshCollection collection;
     importMeshData(&collection, (char*)LANDSCAPE);

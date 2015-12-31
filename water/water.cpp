@@ -204,7 +204,7 @@ void waterGetUniforms(Water* water) {
 }
 
 void waterUpdate(Water* water){
-    water->moveFactor += (WAVE_SPEED *  0.00003 * 500);
+    water->moveFactor += (WAVE_SPEED *  0.00003 * 50);
     water->moveFactor = fmod(water->moveFactor, 1.0);
 }
 
