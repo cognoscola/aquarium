@@ -99,7 +99,6 @@ void rayGetUniforms(Ray * ray) {
 void rayRender(Ray *ray, Camera *camera, bool isAboveWater, double globalTime, double elapsedTime) {
 
     if(!isAboveWater) {
-
         glDisable(GL_DEPTH_TEST);
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
