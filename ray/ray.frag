@@ -26,15 +26,6 @@ float rayStrength(vec2 raySource, vec2 rayRefDirection, vec2 coord, float seedA,
 
 void main () {
 
-//    out_Color = texture(baseMap, baseTexCoords);
-//    vec4 light = texture(luminanceMap, luminanceTexCoords);
-
-    //luminance mixture
-//    out_Color = mix(out_Color, light, light.r);
-
-    //fog mixture
-//    out_Color = mix(vec4(skyColour, 1.0),out_Color,visibility);
-
     vec2 uv = baseTexCoords.xy/ resolution.xy;
     uv.y = 1.0 - uv.y;
     vec2 coord = vec2(baseTexCoords.x, resolution.y - baseTexCoords.y);

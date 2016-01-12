@@ -19,7 +19,6 @@ struct Video{
     double video_timer = 0.0; // time video has been recording
     double video_dump_timer = 0.0; // timer for next frame grab
     double frame_time = 0.04; // 1/25 seconds of time
-
 };
 /** Reserve a chunk of memory to hold frames for the video */
 void reserve_video_memory (Video* video, Window * hardware);

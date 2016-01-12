@@ -42,7 +42,9 @@ set(SOURCE_FILES
         utils/io/video.cpp utils/io/video.h
         ray/ray.cpp ray/ray.h
         terrain/terrain.cpp terrain/terrain.h
-        dynamic/animal.cpp dynamic/animal.h)
+        dynamic/animal.cpp dynamic/animal.h
+        glass/glass.cpp glass/glass.h
+        libs/delaunay.cpp libs/delaunay.h)
 
 #set(SOURCE_FILES main.cpp __add_other_cpp_files_here__)
 

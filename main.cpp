@@ -8,6 +8,7 @@
 #include <utils/io/video.h>
 #include <ray/ray.h>
 #include <dynamic/animal.h>
+#include <glass/glass.h>
 
 #define LINE_LENGTH 100
 #define LANDSCAPE "/home/alvaregd/Documents/Games/aquarium/assets/plant_plan.txt"
@@ -54,6 +55,9 @@ int main() {
     Animal bird;
     animalInit(&bird, camera.proj_mat);
 
+    Glass glass;
+    glassInit(&glass, &hardware, camera.proj_mat);
+
     Transformation transformation;
     transformation.numPosKeys = 4;
 //    transformation.numScaKeys = 2;
@@ -79,9 +83,9 @@ int main() {
     transformation.posKeyTimes[2] = 5.0f;
     transformation.posKeyTimes[3] = 7.5f;
 
-    MeshCollection collection;
-    importMeshData(&collection, (char*)LANDSCAPE);
-    initMeshCollection(&collection,camera.proj_mat);
+//    MeshCollection collection;
+//    importMeshData(&collection, (char*)LANDSCAPE);
+//    initMeshCollection(&collection,camera.proj_mat);
 
     Terrain terrain;
     terrainInit(&terrain, camera.proj_mat, (char*)FLOOR_FILE);
@@ -99,6 +103,9 @@ int main() {
 
     double anim_time = 0.0;
     double transformation_time = 0.0;
+
+    bool isBreaking = false;
+    bool breakLatch = false;
 
     while(!glfwWindowShouldClose (hardware.window)) {
 
@@ -118,7 +125,6 @@ int main() {
             transformation_time = transformation.animationDuration - transformation_time;
         }
 
-
         if(videoUpdateTimer(&video, &elapsed_seconds)) break;
 
         glEnable(GL_CLIP_DISTANCE0);
@@ -134,7 +140,6 @@ int main() {
         calculateRotationMatrix(-camera.pitch, &camera.Rpitch, PITCH);
         calculateViewMatrices(&camera);
         camera.viewMatrix.m[13] += (isAboveWater ? -1:1) *  water.reflectionDistance;
-//        meshRender(&map, &camera, 0.5f,isAboveWater);
 //        collectionRender(&collection, &camera, (isAboveWater ? -1 : 1) * 1000.0f, isAboveWater);
         skyUpdate(&sky);
         skyRender(&sky, &camera, isAboveWater,true);
@@ -147,16 +152,32 @@ int main() {
         //RENDER THE REFRACTION BUFFER
         bindFrameBufer(water.refractionFrameBuffer, REFRACTION_WIDTH, REFRACTION_HEIGHT);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-//        meshRender(&map, &camera, (isAboveWater ? 1:-1) * 1000.0f,isAboveWater);
 //        collectionRender(&collection, &camera, (!isAboveWater ? -1 : 1) * 1000.0f, isAboveWater);
         skyRender(&sky, &camera, camera.pos[1] > water.waterHeight,true);
         unbindCurrentFrameBuffer(&hardware);
 
+        if(isBreaking && breakLatch) {
+            glassBindFrameBufer(glass.reflectionFrameBuffer, GLASS_REFLECTION_WIDTH, GLASS_REFLECTION_HEIGHT);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            glDisable(GL_CLIP_DISTANCE0);
+//            collectionRender(&collection, &camera, (isAboveWater ? -1 : 1) * 1000.0f, isAboveWater);
+            if (!isAboveWater) {
+                terrainRender(&terrain, &camera, 1000.0f, isAboveWater);
+            }
+            skyRender(&sky, &camera,isAboveWater,false);
+            waterUpdate(&water);
+            waterRender(&water, &camera);
+            rayRender(&ray, &camera,isAboveWater, current_seconds,elapsed_seconds);
+            animalRender(&bird, &camera);
+            glassUnbindCurrentFrameBuffer(&hardware);
+            isBreaking = false;
+        }
+
+
         //RENDER TO THE DEFAULT BUFFER
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glDisable(GL_CLIP_DISTANCE0);
-//        meshRender(&map, &camera, (isAboveWater ? -1:1) * 1000.0f, isAboveWater);
-        collectionRender(&collection, &camera, (isAboveWater ? -1 : 1) * 1000.0f, isAboveWater);
+//        collectionRender(&collection, &camera, (isAboveWater ? -1 : 1) * 1000.0f, isAboveWater);
         if (!isAboveWater) {
             terrainRender(&terrain, &camera, 1000.0f, isAboveWater);
         }
@@ -165,6 +186,12 @@ int main() {
         waterRender(&water, &camera);
         rayRender(&ray, &camera,isAboveWater, current_seconds,elapsed_seconds);
         animalRender(&bird, &camera);
+
+        if(isBreaking || breakLatch) {
+            glassRender(&glass, &camera, elapsed_seconds);
+        }
+
+
 
         glfwPollEvents();
 
@@ -234,6 +261,20 @@ int main() {
             }
         }
 
+        if (GLFW_PRESS == glfwGetKey(hardware.window, GLFW_KEY_B)) {
+            if (!breakLatch && !isBreaking) {
+                isBreaking = true;
+                breakLatch = true;
+                glass.transitionTime = 0.0f;
+            }
+        }
+
+        if(GLFW_RELEASE == glfwGetKey(hardware.window, GLFW_KEY_B)) {
+            if(breakLatch) {
+                breakLatch = false;
+            }
+        }
+
         animalUpdate(&bird, anim_time, &transformation,transformation_time);
 
         if (video.dump_video) { // check if recording mode is enabled
@@ -248,7 +289,7 @@ int main() {
     waterCleanUp(&water);
     terrainCleanUp(&terrain);
     skyCleanUp(&sky);
-    collectionCleanUp(&collection);
+//    collectionCleanUp(&collection);
     animalCleanUp(&bird);
 
     if(video.dump_video) {
