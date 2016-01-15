@@ -17,6 +17,8 @@ out vec3 colour;
 
 void main(void){
 
+    //Set the colour of the skin depending on the ID of the bone
+
     colour = vec3(0.0,0.0,0.0);
     if(bone_id == 0){
         colour.r = 0.0;
@@ -141,6 +143,5 @@ void main(void){
     normal = vertex_normal;
     gl_Position = projectionMatrix  *  viewMatrix * modelMatrix * bone_matrices[bone_id]* vec4 (positions, 1.0);
 
-//bone_matrices[bone_id]
 
 }

@@ -8,19 +8,20 @@
 #include <utils/io/texture.h>
 #include <utils/io/shader_loader.h>
 #include "animal.h"
-
 void animalInit(Animal* animal, GLfloat* proj_mat){
 
-    animal->monkey_bone_offset_matrices =(mat4*)malloc(sizeof(mat4) * MAX_BONES );
-    animal->monkey_bone_animation_mats = (mat4*)malloc(sizeof(mat4) * MAX_BONES );
+    animal->bone_offset_matrices =(mat4*)malloc(sizeof(mat4) * MAX_BONES );
+    animal->bone_animation_mats = (mat4*)malloc(sizeof(mat4) * MAX_BONES );
+
     for (int i = 0; i < MAX_BONES; i++) {
-        animal->monkey_bone_offset_matrices[i] = identity_mat4();
+        animal->bone_offset_matrices[i] = identity_mat4();
     }
-    assert(animalLoadAnimalFile(
+
+    assert(animalLoadDaeFile(
             MESH_FILE,
             &animal->vao,
             &animal->vertexCount,
-            animal->monkey_bone_offset_matrices,
+            animal->bone_offset_matrices,
             &animal->boneCount,
             &animal->nodes,
             &animal->animationDuration
@@ -33,42 +34,7 @@ void animalInit(Animal* animal, GLfloat* proj_mat){
     glUseProgram(animal->shader);
     animalGetUniforms(animal);
     glUniformMatrix4fv(animal->location_projection_mat , 1, GL_FALSE, proj_mat);
-//    animal.rotF = rotate_x_deg(identity_mat4(), -90.0f);
     animal->modelMatrix = identity_mat4();
-//    glUniformMatrix4fv(animal->location_model_mat , 1, GL_FALSE, animal->modelMatrix.m);
-
-/////////visualizing the bones
-    float bone_positions[3*256];
-    int c = 0;
-    for (int i = 0; i < animal->boneCount; i++) {
-        print(animal->monkey_bone_offset_matrices[i]);
-        // get the x y z translation elements from the last column in the array
-        bone_positions[c++] = -animal->monkey_bone_offset_matrices[i].m[12];
-        bone_positions[c++] = -animal->monkey_bone_offset_matrices[i].m[13];
-        bone_positions[c++] = -animal->monkey_bone_offset_matrices[i].m[14];
-        printf("Position[%i]",i);
-    }
-
-    glGenVertexArrays (1, &animal->boneVao);
-    glBindVertexArray (animal->boneVao);
-    GLuint bones_vbo;
-    glGenBuffers (1, &bones_vbo);
-    glBindBuffer (GL_ARRAY_BUFFER, bones_vbo);
-    glBufferData (
-            GL_ARRAY_BUFFER,
-            3 * animal->boneCount* sizeof (float),
-            bone_positions,
-            GL_STATIC_DRAW
-    );
-    glVertexAttribPointer (0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-    glEnableVertexAttribArray (0);
-
-////////////////////////////////////////////
-
-    ///////////////// LOAD BONE SHADER
-    animal->boneShader= create_programme_from_files(BONE_VERTEX, BONE_FRAGMENT);
-
-//////////////////////assign the matrices
 
     //reset bone matrice
     char name[64];
@@ -78,33 +44,36 @@ void animalInit(Animal* animal, GLfloat* proj_mat){
         glUniformMatrix4fv(animal->bone_matrices_location[j], 1, GL_FALSE, identity_mat4().m);
     }
 
-    glUseProgram(animal->boneShader);
-    animal->location_bone_proj_mat = glGetUniformLocation(animal->boneShader, "proj");
-    animal->location_bone_view_mat = glGetUniformLocation(animal->boneShader, "view");
-    animal->location_bone_model_mat = glGetUniformLocation(animal->boneShader, "model");
-    glUniformMatrix4fv(animal->location_bone_proj_mat, 1, GL_FALSE, proj_mat);
-    glUniformMatrix4fv(animal->location_bone_model_mat, 1, GL_FALSE,  animal->modelMatrix.m);
+    //// set transformations
+    animal->transformation.numPosKeys = 4;
+    animal->transformation.posKeys = (vec3 *) malloc(sizeof(vec3) * animal->transformation.numPosKeys);
+    animal->transformation.posKeyTimes = (double *) malloc(sizeof(double) * animal->transformation.numPosKeys);
+    animal->transformation.animationDuration = 7.5f;
+    animal->transformation.rotFix = rotate_x_deg(identity_mat4(), -90.0f);
+    animal->transformation.posKeys[0] = vec3(0.0, 100.0f, 200.0f);
+    animal->transformation.posKeys[1] = vec3(0.0, 3.0f, 100.0f);
+    animal->transformation.posKeys[2] = vec3(0.0, 0.0f, -100.0f);
+    animal->transformation.posKeys[3] = vec3(0.0, 20.0f, -200.0f);
+    animal->transformation.posKeyTimes[0] = 0.0f;
+    animal->transformation.posKeyTimes[1] = 2.5f;
+    animal->transformation.posKeyTimes[2] = 5.0f;
+    animal->transformation.posKeyTimes[3] = 7.5f;
 
-/////////////////////////////////////////
 }
 
 mat4 convert_assimp_matrix (aiMatrix4x4 m) {
     return mat4 (
-            /*           1.0f, 0.0f, 0.0f, 0.0f,
-                       0.0f, 1.0f, 0.0f, 0.0f,
-                       0.0f, 0.0f, 1.0f, 0.0f,
-                       m.a4, m.b4, m.c4, m.d4*/
-
             m.a1, m.b1, m.c1, m.d1,
             m.a2, m.b2, m.c2, m.d2,
             m.a3, m.b3, m.c3, m.d3,
             m.a4, m.b4, m.c4, m.d4
     );
+
 }
 
-bool animalLoadAnimalFile(
-        const char *fileName, GLuint *vao, int *point_count, mat4* bone_offset_mats,
-        int* boneCount, SkeletonNode** rootNode, double* animDuration){
+bool animalLoadDaeFile(
+        const char *fileName, GLuint *vao, int *point_count, mat4 *bone_offset_mats,
+        int *boneCount, SkeletonNode **rootNode, double *animDuration){
 
     const aiScene *scene = aiImportFile(fileName, aiProcess_Triangulate);
     if (!scene) {
@@ -190,7 +159,6 @@ bool animalLoadAnimalFile(
             printf ("[%.2f][%.2f][%.2f][%.2f]\n", bone->mOffsetMatrix.d1, bone->mOffsetMatrix.d2, bone->mOffsetMatrix.d3, bone->mOffsetMatrix.d4);
 
             bone_offset_mats[b_i] = convert_assimp_matrix(bone->mOffsetMatrix);
-//            bone_offset_mats[b_i] = convert_assimp_matrix(bone->mOffsetMatrix);
 
             //get the bone weights
             int num_weights = (int) bone->mNumWeights;
@@ -199,8 +167,6 @@ bool animalLoadAnimalFile(
                 int vertex_id = (int) weight.mVertexId;
                 //ignore weight of less than 0.5 factor
                 bone_ids[vertex_id]= b_i;
-//                if (weight.mWeight >= 0.5) {
-//                }
             }
         }
 
@@ -376,30 +342,15 @@ void animalRender(Animal* animal, Camera* camera){
     glDisableVertexAttribArray(2);
     glDisableVertexAttribArray(3);
 
-    //render the bone
-    /*glDisable(GL_DEPTH_TEST);
-    glEnable(GL_PROGRAM_POINT_SIZE);
-    glUseProgram(animal->boneShader);
-    glUniformMatrix4fv(animal->location_bone_view_mat, 1, GL_FALSE, camera->viewMatrix.m);
-    glBindVertexArray(animal->boneVao);
-    glEnableVertexAttribArray(0);
-    glPointSize(1);
-    glDrawArrays(GL_POINTS, 0, animal->boneCount);
-    glDisable(GL_PROGRAM_POINT_SIZE);
-    glEnable(GL_DEPTH_TEST);*/
 }
 
 void animalCleanUp(Animal *animal){
     glDeleteVertexArrays(1, &animal->vao);
     glDeleteBuffers(1, &animal->vbo);
-
-//    free(animal->nodes->posKeys);
-//    free(animal->nodes->rotKeys);
-//    free(animal->nodes->scaleKeys);
-
-//    free(animal->nodes->posKeyTimes);
-//    free(animal->nodes->rotKeyTimes);
-//    free(animal->nodes->scaKeyTimes);
+//    glDeleteTextures(1, &animal->texture);
+    free(animal->bone_offset_matrices);
+    free(animal->bone_animation_mats);
+    free(animal->nodes);
 }
 
 bool animalImportSkeletonNode(aiNode* assimpNode, SkeletonNode** skeletonNode, int boneCount, char boneNames[][64]){
@@ -543,10 +494,7 @@ void animalSkeletonAnimate(Animal* animal,
     int bone_i = node->boneIndex;
     if (bone_i > -1) {
         mat4 boneOffset = boneOffsetMats[bone_i];
-//        mat4 invBoneOffset = inverse(boneOffset);
-//        localAnim = animal->g_local_anims[bone_i];
         ourMat = parentMat * localAnim;
-//        ourMat = parentMat * invBoneOffset * localAnim * boneOffset;
         boneAnimationMats[bone_i] = parentMat * localAnim * boneOffset;
 
     }
@@ -580,47 +528,53 @@ SkeletonNode* findNodeInSkeleton(SkeletonNode* root, const char* nodeName){
 }
 
 
-void animalUpdate(Animal * animal, double time, Transformation* transformation, double transTime){
+void animalUpdate(Animal * animal, double elapsed_seconds){
+
+    animal->transformation.transformation_time += elapsed_seconds * 0.7;
+    if (animal->transformation.transformation_time  >= animal->transformation.animationDuration) {
+        animal->transformation.transformation_time  = animal->transformation.animationDuration
+                                                      - animal->transformation.transformation_time;
+    }
+
+    animal->anim_time += elapsed_seconds * 0.7;
+    if (animal->anim_time >= animal->animationDuration) {
+        animal->anim_time = animal->animationDuration - animal->anim_time;
+    }
 
     mat4 nodeT = identity_mat4();
-    if (transformation->numPosKeys > 0) {
+    if (animal->transformation.numPosKeys > 0) {
         int prevKeys =0;
         int nextKeys =0;
-        for (int i = 0; i < transformation->numPosKeys - 1; i++) {
+        for (int i = 0; i < animal->transformation.numPosKeys - 1; i++) {
             prevKeys = i;
             nextKeys =i +1;
-            if (transformation->posKeyTimes[nextKeys] >= transTime) {
+            if (animal->transformation.posKeyTimes[nextKeys] >= animal->transformation.transformation_time) {
                 break;
             }
         }
-        float total_t = (float)(transformation->posKeyTimes[nextKeys] - transformation->posKeyTimes[prevKeys]);
-        float t = (float)((transTime - transformation->posKeyTimes[prevKeys]) / total_t);
-        vec3 vi = transformation->posKeys[prevKeys];
-        vec3 vf = transformation->posKeys[nextKeys];
+        float total_t = (float)(animal->transformation.posKeyTimes[nextKeys] - animal->transformation.posKeyTimes[prevKeys]);
+        float t = (float)((animal->transformation.transformation_time - animal->transformation.posKeyTimes[prevKeys]) / total_t);
+        vec3 vi = animal->transformation.posKeys[prevKeys];
+        vec3 vf = animal->transformation.posKeys[nextKeys];
         vec3 lerped = vi* (1.0f -t ) + vf* t;
         nodeT = translate(identity_mat4(), lerped);
     }
 
-    animal->modelMatrix = nodeT * transformation->rotFix;
+    animal->modelMatrix = nodeT * animal->transformation.rotFix;
 
     animalSkeletonAnimate(
             animal,
             animal->nodes,
-            time,
+            animal->anim_time,
             identity_mat4 (),
-            animal->monkey_bone_offset_matrices,
-            animal->monkey_bone_animation_mats
+            animal->bone_offset_matrices,
+            animal->bone_animation_mats
     );
     glUseProgram (animal->shader);
     glUniformMatrix4fv (
             animal->bone_matrices_location[0],
             animal->boneCount,
             GL_FALSE,
-            animal->monkey_bone_animation_mats[0].m
+            animal->bone_animation_mats[0].m
     );
-
-
-
-
-
 }

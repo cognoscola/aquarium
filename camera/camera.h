@@ -49,8 +49,6 @@ void cameraInit(Camera * camera, Window *window);
  */
 void updateMovement(Camera* camera, Input* input);
 
-/**
- *
- */
+
 void calculateViewMatrices(Camera *camera);
 #endif //WATER_REFLECTION_CAMERA_H

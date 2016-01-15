@@ -360,7 +360,7 @@ distribute, and modify this file as you see fit.
 // appropriately).
 //
 // Additionally, there is a new, parallel interface for loading files as
-// (linear) floats to preserve the full dynamic range:
+// (linear) floats to preserve the full animal range:
 //
 //    float *data = stbi_loadf(filename, &x, &y, &n, 0);
 //

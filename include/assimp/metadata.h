@@ -201,7 +201,7 @@ struct aiMetadata
 
 		// Set metadata type
 		mValues[index].mType = GetAiType(value);
-		// Copy the given value to the dynamic storage
+		// Copy the given value to the animal storage
 		mValues[index].mData = new T(value);
 	}
 

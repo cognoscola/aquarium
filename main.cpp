@@ -49,39 +49,14 @@ int main() {
     Skybox sky; // sky object
     skyInit(&sky, camera.proj_mat);
 
-    Ray ray;
+    Ray ray;  // rays of light underwater
     rayInit(&ray, camera.proj_mat);
 
-    Animal bird;
+    Animal bird; //colourful bird that moves along the water surface
     animalInit(&bird, camera.proj_mat);
 
-    Glass glass;
+    Glass glass; //just for fun
     glassInit(&glass, &hardware, camera.proj_mat);
-
-    Transformation transformation;
-    transformation.numPosKeys = 4;
-//    transformation.numScaKeys = 2;
-//    transformation.numRotKeys = 2;
-
-    transformation.posKeys = (vec3 *) malloc(sizeof(vec3) * transformation.numPosKeys);
-//    transformation.rotKeys = (versor *) malloc(sizeof(versor) * transformation.numRotKeys);
-//    transformation.scaleKeys = (vec3 *) malloc(sizeof(vec3) * transformation.numScaKeys);
-
-    transformation.posKeyTimes = (double *) malloc(sizeof(double) * transformation.numPosKeys);
-//    transformation.rotKeyTimes = (double *) malloc(sizeof(double) * transformation.numRotKeys);
-//    transformation.scaKeyTimes = (double *) malloc(sizeof(double) * transformation.numScaKeys);
-
-    transformation.animationDuration = 7.5f;
-    transformation.rotFix = rotate_x_deg(identity_mat4(), -90.0f);
-
-    transformation.posKeys[0] = vec3(0.0, 100.0f, 200.0f);
-    transformation.posKeys[1] = vec3(0.0, 3.0f, 100.0f);
-    transformation.posKeys[2] = vec3(0.0, 0.0f, -100.0f);
-    transformation.posKeys[3] = vec3(0.0, 20.0f, -200.0f);
-    transformation.posKeyTimes[0] = 0.0f;
-    transformation.posKeyTimes[1] = 2.5f;
-    transformation.posKeyTimes[2] = 5.0f;
-    transformation.posKeyTimes[3] = 7.5f;
 
 //    MeshCollection collection;
 //    importMeshData(&collection, (char*)LANDSCAPE);
@@ -101,9 +76,6 @@ int main() {
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
 
-    double anim_time = 0.0;
-    double transformation_time = 0.0;
-
     bool isBreaking = false;
     bool breakLatch = false;
 
@@ -114,16 +86,6 @@ int main() {
         double current_seconds = glfwGetTime ();
         double elapsed_seconds = current_seconds - previous_seconds;
         previous_seconds = current_seconds;
-
-        anim_time += elapsed_seconds * 0.7;
-        if (anim_time >= bird.animationDuration) {
-            anim_time = bird.animationDuration - anim_time;
-        }
-
-        transformation_time += elapsed_seconds * 0.7;
-        if (transformation_time >= transformation.animationDuration) {
-            transformation_time = transformation.animationDuration - transformation_time;
-        }
 
         if(videoUpdateTimer(&video, &elapsed_seconds)) break;
 
@@ -173,7 +135,6 @@ int main() {
             isBreaking = false;
         }
 
-
         //RENDER TO THE DEFAULT BUFFER
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glDisable(GL_CLIP_DISTANCE0);
@@ -191,8 +152,7 @@ int main() {
             glassRender(&glass, &camera, elapsed_seconds);
         }
 
-
-
+        //handle various keyboard inputs
         glfwPollEvents();
 
         if (GLFW_PRESS == glfwGetKey (hardware.window, GLFW_KEY_P)) {
@@ -275,14 +235,14 @@ int main() {
             }
         }
 
-        animalUpdate(&bird, anim_time, &transformation,transformation_time);
-
+        animalUpdate(&bird,elapsed_seconds);
         if (video.dump_video) { // check if recording mode is enabled
             while (video.video_dump_timer > video.frame_time) {
                 grab_video_frame (&video, &hardware); // 25 Hz so grab a frame
                 video.video_dump_timer -= video.frame_time;
             }
         }
+
         glfwSwapBuffers(hardware.window);
     }
 
@@ -295,7 +255,6 @@ int main() {
     if(video.dump_video) {
         dump_video_frames(&video, &hardware);
     }
-
     /* close GL context and any other GLFW resources */
     glfwTerminate();
     return 0;
@@ -407,7 +366,6 @@ void parseLine(char* line, MeshCollection*col) {
         for (int i = 0; i < col->numberOfFiles; i++) {
             col->meshObject[i].index = 0;
         }
-
         printf("Allocating new mesh space for %i files\n", col->numberOfFiles);
     }
 
@@ -549,4 +507,5 @@ void collectionCleanUp(MeshCollection* col) {
     }
 //    free(col);
 }
+
 

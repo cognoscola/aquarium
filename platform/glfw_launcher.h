@@ -11,7 +11,7 @@
 
 struct Window {
     GLFWwindow* window;
-    GLFWmonitor *mon;
+    GLFWmonitor *wmonitor;
     const GLFWvidmode* vmode;
 };
 

@@ -21,7 +21,6 @@
 #define YAW  1
 #define ROLL  2
 
-
 static Input input;
 static Camera camera;
 
