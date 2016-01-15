@@ -2,12 +2,13 @@
 
 #include <stdio.h>
 #include <assimp/cimport.h>
-
 #include <assimp/postprocess.h>
 #include <GL/glew.h>
 #include <utils/io/texture.h>
 #include <utils/io/shader_loader.h>
 #include "animal.h"
+
+/**initialize this animmal's state. For now everything is hardcoded */
 void animalInit(Animal* animal, GLfloat* proj_mat){
 
     animal->bone_offset_matrices =(mat4*)malloc(sizeof(mat4) * MAX_BONES );
@@ -44,7 +45,7 @@ void animalInit(Animal* animal, GLfloat* proj_mat){
         glUniformMatrix4fv(animal->bone_matrices_location[j], 1, GL_FALSE, identity_mat4().m);
     }
 
-    //// set transformations
+    //hard code this transformation.
     animal->transformation.numPosKeys = 4;
     animal->transformation.posKeys = (vec3 *) malloc(sizeof(vec3) * animal->transformation.numPosKeys);
     animal->transformation.posKeyTimes = (double *) malloc(sizeof(double) * animal->transformation.numPosKeys);
@@ -61,6 +62,9 @@ void animalInit(Animal* animal, GLfloat* proj_mat){
 
 }
 
+/**
+ * convert to column major order
+ */
 mat4 convert_assimp_matrix (aiMatrix4x4 m) {
     return mat4 (
             m.a1, m.b1, m.c1, m.d1,
@@ -158,6 +162,7 @@ bool animalLoadDaeFile(
             printf ("[%.2f][%.2f][%.2f][%.2f]\n", bone->mOffsetMatrix.c1, bone->mOffsetMatrix.c2, bone->mOffsetMatrix.c3, bone->mOffsetMatrix.c4);
             printf ("[%.2f][%.2f][%.2f][%.2f]\n", bone->mOffsetMatrix.d1, bone->mOffsetMatrix.d2, bone->mOffsetMatrix.d3, bone->mOffsetMatrix.d4);
 
+            //convert to column major order
             bone_offset_mats[b_i] = convert_assimp_matrix(bone->mOffsetMatrix);
 
             //get the bone weights
@@ -175,6 +180,7 @@ bool animalLoadDaeFile(
             fprintf(stderr, "ERROR: could not import node tree from animal\n");
         }
 
+        //get bone animations
         if(scene->mNumAnimations > 0){
 
             //get the first animations
@@ -415,20 +421,22 @@ bool animalImportSkeletonNode(aiNode* assimpNode, SkeletonNode** skeletonNode, i
     temp = NULL;
     return  false;
 }
-
-
+/**
+ * recursively iterate through the nodes, calculating their
+ * transformation matrices along the way.
+ */
 void animalSkeletonAnimate(Animal* animal,
                          SkeletonNode* node,
                          double animTime,
                          mat4 parentMat,
                          mat4* boneOffsetMats,
                          mat4* boneAnimationMats) {
+    //check that the node exist, if not something went wrong
     assert(node);
-
     mat4 ourMat = parentMat;
     mat4 localAnim = identity_mat4();
 
-    //interpolate the position
+    //interpolate the translation
     mat4 nodeT = identity_mat4();
     if (node->numPosKeys > 0) {
         int prevKeys =0;
@@ -469,6 +477,7 @@ void animalSkeletonAnimate(Animal* animal,
         node_R = quat_to_mat4(slerped);
     }
 
+    //interpolate between scales
     mat4 node_S = identity_mat4();
     if (node->numScaKeys > 0) {
         int prevKeys =0;
@@ -530,17 +539,21 @@ SkeletonNode* findNodeInSkeleton(SkeletonNode* root, const char* nodeName){
 
 void animalUpdate(Animal * animal, double elapsed_seconds){
 
+    //Update the world transformation animation time
     animal->transformation.transformation_time += elapsed_seconds * 0.7;
     if (animal->transformation.transformation_time  >= animal->transformation.animationDuration) {
         animal->transformation.transformation_time  = animal->transformation.animationDuration
                                                       - animal->transformation.transformation_time;
     }
 
+    //update the skeleton animation time
     animal->anim_time += elapsed_seconds * 0.7;
     if (animal->anim_time >= animal->animationDuration) {
         animal->anim_time = animal->animationDuration - animal->anim_time;
     }
 
+    //in this case, there is only translation transformations, so only interpolate between
+    //positional key frames
     mat4 nodeT = identity_mat4();
     if (animal->transformation.numPosKeys > 0) {
         int prevKeys =0;
@@ -562,6 +575,7 @@ void animalUpdate(Animal * animal, double elapsed_seconds){
 
     animal->modelMatrix = nodeT * animal->transformation.rotFix;
 
+    //update the skeleton animation
     animalSkeletonAnimate(
             animal,
             animal->nodes,
@@ -571,6 +585,8 @@ void animalUpdate(Animal * animal, double elapsed_seconds){
             animal->bone_animation_mats
     );
     glUseProgram (animal->shader);
+
+    //update the matrices on the GPU side.
     glUniformMatrix4fv (
             animal->bone_matrices_location[0],
             animal->boneCount,

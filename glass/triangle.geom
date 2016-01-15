@@ -1,5 +1,6 @@
 #version 410
 
+/** helps  visualize triangles without any textures or colours */
 layout(triangles) in;
 layout(line_strip, max_vertices = 4) out;
 

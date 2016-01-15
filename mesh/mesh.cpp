@@ -11,6 +11,7 @@
 
 void meshInit(Mesh* mesh, char* filename, char* texFilename ,GLfloat* proj_mat){
 
+    //load the mesh file
     assert(meshLoadMeshFile(filename, &mesh->vao, &mesh->vertexCount));
     if (texFilename != NULL) {
         meshLoadTexture(mesh, texFilename);
@@ -22,7 +23,6 @@ void meshInit(Mesh* mesh, char* filename, char* texFilename ,GLfloat* proj_mat){
     glUniform4f(mesh->location_clip_plane, 0.0f, -1.0f, 0.0f, 1.0f);
     glUniformMatrix4fv(mesh->location_projection_mat , 1, GL_FALSE, proj_mat);
 
-
     mesh->modelMatrix = (mat4 *) malloc(mesh->numCopies * sizeof(mat4));
 //    //TODO mountain settings
 //    mat4 s = scale(identity_mat4(), vec3(50,100,10));
@@ -33,12 +33,9 @@ void meshInit(Mesh* mesh, char* filename, char* texFilename ,GLfloat* proj_mat){
 void meshSetInitialTransformation(Mesh* mesh, mat4* T, mat4* S,mat4* R ) {
 
     for (int i = 0; i < mesh->numCopies; i++) {
-
         printf("created a model matrix at %i\n", i);
         mesh->modelMatrix[i] = T[i] * S[i] * R[i];
-
     }
-//    glUniformMatrix4fv(mesh->location_model_mat , 1, GL_FALSE, mesh->modelMatrix.m);
 }
 
 bool meshLoadMeshFile(const char *fileName, GLuint *vao, int *point_count){

@@ -17,11 +17,14 @@ out vec3 toLightVector;
 out vec3 toCameraVector;
 
 void main(void){
+
+    //generated solid colours on the triangles.
     colours = vec3(triangle_id/100.0, triangle_id/100.0, triangle_id/100.0);
     vec4 worldPosition = modelMatrix[triangle_id] *  vec4(positions,1.0);
     gl_Position = projectionMatrix * worldPosition;
     textureCoords = texCoords;
 
+    //vectors for use  in the calculator of specular lighting
     toLightVector = lightPosition - worldPosition.xyz;
     toCameraVector = vec3(5.0,1.0,-2.0) - worldPosition.xyz;
 

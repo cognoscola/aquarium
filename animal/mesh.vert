@@ -18,6 +18,8 @@ out vec3 colour;
 void main(void){
 
     //Set the colour of the skin depending on the ID of the bone
+    // the colours are arbitrary
+
 
     colour = vec3(0.0,0.0,0.0);
     if(bone_id == 0){

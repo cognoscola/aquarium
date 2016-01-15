@@ -5,7 +5,7 @@
 #include <GL/glew.h>
 #include "glfw_launcher.h"
 
-bool start_gl (Window * hardware) {
+bool start_gl (Window *window) {
 
     const GLubyte* renderer;
     const GLubyte* version;
@@ -18,16 +18,17 @@ bool start_gl (Window * hardware) {
         return false;
     }
 
-    hardware->wmonitor = glfwGetPrimaryMonitor();
-    hardware->vmode = glfwGetVideoMode(hardware->wmonitor);
-    hardware->window = glfwCreateWindow (hardware->vmode->width, hardware->vmode->height, "Hello World", hardware->wmonitor, NULL);
-    if (!hardware->window) {
+    //make the window full screen
+    window->wmonitor = glfwGetPrimaryMonitor();
+    window->vmode = glfwGetVideoMode(window->wmonitor);
+    window->window = glfwCreateWindow (window->vmode->width, window->vmode->height, "Hello World", window->wmonitor, NULL);
+    if (!window->window) {
         fprintf (stderr, "ERROR: could not open window with GLFW3\n");
         glfwTerminate();
         return 1;
     }
 
-    glfwMakeContextCurrent (hardware->window);
+    glfwMakeContextCurrent (window->window);
 
     glewExperimental = GL_TRUE;
     glewInit ();

@@ -38,14 +38,16 @@ struct Camera{
     GLfloat* proj_mat;
 };
 
-/** initialize the camara
+/** initialize the camera. For now its state is hardcoded
  *  in - Camera object
  *  in - Window object
  **/
 void cameraInit(Camera * camera, Window *window);
 
 /**
- * CalcCamera's position needs to change
+ * calculate the camera's postion
+ * in camera: the main camera
+ * in input: keyboard input
  */
 void updateMovement(Camera* camera, Input* input);
 

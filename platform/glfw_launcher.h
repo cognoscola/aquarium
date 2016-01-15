@@ -15,7 +15,16 @@ struct Window {
     const GLFWvidmode* vmode;
 };
 
-bool start_gl(Window * hardware);
+/**
+ * Start an opengl instance
+ * in window: window object to start the instance
+ * returns true if execution finished successfully
+ */
+bool start_gl(Window *window);
+
+/**
+ * function to call when an error happens
+ */
 void glfw_error_callback(int error, const char* description);
 
 

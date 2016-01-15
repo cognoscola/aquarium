@@ -1,13 +1,13 @@
+//created by alvaregd 10/12/15.
+
 #include <GL/glew.h>
 #include <platform/glfw_launcher.h>
 #include <utils/io/shader_loader.h>
 #include <camera/camera.h>
-#include <utils/io/texture.h>
 #include "ray.h"
 
 void rayInit(Ray *ray, GLfloat *proj_mat) {
 
-    rayLoadTexture(ray, RAY_TEX);
     rayCreateVao(ray);
     ray->shader = create_programme_from_files(RAY_VERTEX, RAY_FRAGMENT);
 
@@ -15,7 +15,6 @@ void rayInit(Ray *ray, GLfloat *proj_mat) {
     rayGetUniforms(ray);
 
     glUniformMatrix4fv(ray->location_projectionMatrix, 1, GL_FALSE, proj_mat);
-    glUniform1i(ray->location_baseTexture,0);
     ray->S = scale(identity_mat4(), vec3(40.0f, 20.0f,20.0f));
 
     glUniform2f(ray->location_resolution, 1.0f, 1.0f);
@@ -83,7 +82,6 @@ void rayCreateVao(Ray *ray){
 }
 
 void rayGetUniforms(Ray * ray) {
-    ray->location_baseTexture       = glGetUniformLocation(ray->shader, "baseMap");
     ray->location_modelMatrix       = glGetUniformLocation(ray->shader, "modelMatrix");
     ray->location_viewMatrix        = glGetUniformLocation(ray->shader, "viewMatrix");
     ray->location_projectionMatrix  = glGetUniformLocation(ray->shader, "projectionMatrix");
@@ -135,26 +133,6 @@ void rayRender(Ray *ray, Camera *camera, bool isAboveWater, double globalTime, d
     }
 }
 
-void rayLoadTexture(Ray* ray, const char* name){
-
-    GLuint texID;
-    glGenTextures(1, &texID);
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texID);
-
-    unsigned char* image_data;
-    int x ,y;
-    loadImageFile(name, true, &image_data, &x,&y);
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, x, y, 0, GL_RGBA, GL_UNSIGNED_BYTE, image_data);
-    free(image_data);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    ray->tex = texID;
-}
 
 void rayUpdate(Ray * ray ,int index, double elapsedSeconds){
 

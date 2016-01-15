@@ -1,5 +1,6 @@
 //
 // Created by alvaregd on 07/12/15.
+// manage input states
 //
 #ifndef WATER_REFLECTION_INPUT_H
 #define WATER_REFLECTION_INPUT_H

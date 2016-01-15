@@ -21,19 +21,19 @@
 /** describes animal's motion in the world*/
 struct Transformation{
 
-    vec3* posKeys;
-    versor* rotKeys;
-    vec3* scaleKeys;
-    double* posKeyTimes;
-    double* rotKeyTimes;
-    double* scaKeyTimes;
+    vec3* posKeys;        //describes object's position at every key frame
+    versor*rotKeys;       //describes object's orientation at every key frame
+    vec3* scaleKeys;      //describes object's scale at every key frame
+    double* posKeyTimes;  //key frame times for the position key frames
+    double* rotKeyTimes;  //key frame times for the rotation key frames
+    double* scaKeyTimes;  //key frame times for the scale key frames
     int numPosKeys;
     int numRotKeys;
     int numScaKeys;
 
-    double animationDuration;
-    mat4 rotFix;
-    double transformation_time = 0.0;
+    double animationDuration; //time it takes for animation to complete
+    mat4 rotFix;              //fixes the orientation of the object t
+    double transformation_time = 0.0; //time it takes for world animation (not the skeletal animation) to complete
 
 };
 
@@ -88,6 +88,8 @@ struct Animal{
 };
 
 /** initialize the animal object, for now all settings are hardcoded in the function
+ * This function will take care of all that is necessary to start using this animal object.
+ * call animalRender after calling this function
  * in - animal object
  * in - projection matrix */
 void animalInit(Animal* mesh, GLfloat* proj_mat);

@@ -4,8 +4,6 @@ in vec2 baseTexCoords;
 
 out vec4 out_Color;
 
-uniform sampler2D baseMap;
-
 uniform vec2 resolution;
 uniform float globalTime;
 uniform float life; //deteremined by the lifespan

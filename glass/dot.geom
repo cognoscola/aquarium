@@ -1,5 +1,9 @@
 #version 410
 
+/**
+* Helps the user visualize points in 3d spcae specified by the fbo
+*/
+
 layout(points) in;
 layout(triangle_strip, max_vertices = 4) out;
 

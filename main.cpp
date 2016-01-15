@@ -7,7 +7,7 @@
 #include <water/water.h>
 #include <utils/io/video.h>
 #include <ray/ray.h>
-#include <dynamic/animal.h>
+#include <animal/animal.h>
 #include <glass/glass.h>
 
 #define LINE_LENGTH 100
@@ -119,7 +119,7 @@ int main() {
         unbindCurrentFrameBuffer(&hardware);
 
         if(isBreaking && breakLatch) {
-            glassBindFrameBufer(glass.reflectionFrameBuffer, GLASS_REFLECTION_WIDTH, GLASS_REFLECTION_HEIGHT);
+            glassBindFrameBufer(glass.framebuffer, GLASS_REFLECTION_WIDTH, GLASS_REFLECTION_HEIGHT);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             glDisable(GL_CLIP_DISTANCE0);
 //            collectionRender(&collection, &camera, (isAboveWater ? -1 : 1) * 1000.0f, isAboveWater);
@@ -251,6 +251,7 @@ int main() {
     skyCleanUp(&sky);
 //    collectionCleanUp(&collection);
     animalCleanUp(&bird);
+    glassCleanUp(&glass);
 
     if(video.dump_video) {
         dump_video_frames(&video, &hardware);
