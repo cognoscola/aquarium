@@ -1,5 +1,11 @@
 // Created by alvaregd on 01/12/15.
 
+/**
+ * Skybox
+ *
+ * draws a giant box that surround the camera
+ */
+
 #ifndef SIMPLE_LEVEL_EDITOR_SKYBOX_SHADER_H
 #define SIMPLE_LEVEL_EDITOR_SKYBOX_SHADER_H
 

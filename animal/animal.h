@@ -1,6 +1,13 @@
 //
 // Created by alvaregd on 30/12/15.
 //
+/**
+ * Animal
+ *
+ * This object similar to a Mesh object defined in this project but has many differences. As .obj files don't
+ * carry animation data, it instead imports mesh information from a .dae file.
+ * Bones and animation keyframes are also imported and used to make the mesh animate in various ways.
+ */
 
 #ifndef AQUARIUM_ANIMAL_H
 #define AQUARIUM_ANIMAL_H

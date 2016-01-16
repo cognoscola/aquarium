@@ -20,6 +20,7 @@ void main () {
    gl_Position = projectionMatrix * positionRelativeToCam;
    textureCoords= positions;
 
+    //claculate visibilty of the skybox
    float distance = length(positionRelativeToCam.xyz);
    visibility = exp(-pow((distance*fogDensity),fogGradient));
    visibility = clamp(visibility,0.0,1.0);

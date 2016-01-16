@@ -32,7 +32,6 @@ void terrainInit(Terrain* terrain, GLfloat* proj_mat, char* filename){
     glUniform1f(terrain->location_fogGradient,terrain->fogGradient);
     glUniform3f(terrain->location_skyColour,0.0f,0.7f,1.0f);
 
-
 }
 
 void terrainSetInitialTransformation(Terrain* terrain, mat4* T, mat4* S,mat4* R ){

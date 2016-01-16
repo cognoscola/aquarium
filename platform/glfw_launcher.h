@@ -2,6 +2,12 @@
 // Created by alvaregd on 27/11/15.
 //
 
+/**
+ * Window
+ * simple  function for starting the glfw window
+ */
+
+
 #ifndef SIMPLE_LEVEL_EDITOR_GLFW_LAUNCHER_H
 #define SIMPLE_LEVEL_EDITOR_GLFW_LAUNCHER_H
 

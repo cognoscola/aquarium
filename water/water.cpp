@@ -11,7 +11,7 @@
 #include <camera/camera.h>
 #include "water.h"
 
-void waterInit(Water *water, Window *hardware, GLfloat* proj_mat) {
+void waterInit(Water *water, Window *window, GLfloat* proj_mat) {
 
     //create texture objects for water effects
     waterLoadTexture(water, DUDV_FILE, DUDV);
@@ -23,11 +23,11 @@ void waterInit(Water *water, Window *hardware, GLfloat* proj_mat) {
     water->reflectionFrameBuffer = createFrameBuffer();
     water->reflectionTexture = createTextureAttachment(REFLECTION_WIDTH, REFLECTION_HEIGHT);
     water->reflectionDepthBuffer = createDepthBufferAttachment(REFLECTION_WIDTH, REFLECTION_HEIGHT);
-    unbindCurrentFrameBuffer(hardware);
+    unbindCurrentFrameBuffer(window);
     water->refractionFrameBuffer = createFrameBuffer();
     water->refractionTexture = createTextureAttachment(REFRACTION_WIDTH, REFRACTION_HEIGHT);
     water->refractionDepthTexture = createDepthTextureAttachment(REFRACTION_WIDTH, REFRACTION_HEIGHT);
-    unbindCurrentFrameBuffer(hardware);
+    unbindCurrentFrameBuffer(window);
 
     //create shader
     water->shader = create_programme_from_files(WATER_VERTEX, WATER_FRAGMENT);

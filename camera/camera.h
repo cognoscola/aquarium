@@ -1,6 +1,13 @@
 //
 // Created by alvaregd on 02/12/15.
 //
+/**
+ * Camera
+ *
+ * An object that stores movement information about the camera.
+ * This can include the camera's angle, velocity, position etc.
+ */
+
 
 #ifndef WATER_REFLECTION_CAMERA_H
 #define WATER_REFLECTION_CAMERA_H

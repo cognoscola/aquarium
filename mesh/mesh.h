@@ -1,12 +1,12 @@
 //
 // Created by alvaregd on 06/12/15.
 //
-
 /**
  * Mesh
  *
+ * This object imports data from a .obj and creates a mesh to render to the scene.
+ * Unlike an animal object which animates, a mesh object does not.
  */
-
 
 #ifndef WATER_REFLECTION_MESH_H
 #define WATER_REFLECTION_MESH_H

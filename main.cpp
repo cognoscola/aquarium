@@ -98,15 +98,15 @@ int main() {
         //RENDER THE REFLECTION BUFFER
         bindFrameBufer(water.reflectionFrameBuffer, REFLECTION_WIDTH, REFLECTION_HEIGHT);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        water.reflectionDistance = 2 * (camera.pos[1] - water.waterHeight); //save the camera height
+        water.cameraToWaterDistance = 2 * (camera.pos[1] - water.waterHeight); //save the camera height
         calculateRotationMatrix(-camera.pitch, &camera.Rpitch, PITCH);
         calculateViewMatrices(&camera);
-        camera.viewMatrix.m[13] += (isAboveWater ? -1:1) *  water.reflectionDistance;
+        camera.viewMatrix.m[13] += (isAboveWater ? -1:1) *  water.cameraToWaterDistance;
 //        collectionRender(&collection, &camera, (isAboveWater ? -1 : 1) * 1000.0f, isAboveWater);
         skyUpdate(&sky);
         skyRender(&sky, &camera, isAboveWater,true);
         animalRender(&bird, &camera);
-        camera.viewMatrix.m[13] -=  (isAboveWater ? -1:1) * water.reflectionDistance;
+        camera.viewMatrix.m[13] -=  (isAboveWater ? -1:1) * water.cameraToWaterDistance;
         calculateRotationMatrix(camera.pitch, &camera.Rpitch,PITCH);
         calculateViewMatrices(&camera);
         unbindCurrentFrameBuffer(&hardware);
