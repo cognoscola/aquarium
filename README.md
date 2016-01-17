@@ -3,19 +3,19 @@
 Take a look at the scene here:
 https://www.instagram.com/p/_7-SQGNgRh/
 
-Install
-1. copy the entire project to any directory
-2. Go to install directory in a terminal
-3. type without quotes: "cmake ." to generate a makefile
-4. type without quotes: "make" to generate an executable
-5. run executable.
+How to install
+- copy the entire project to any directory\n
+- Go to install directory in a terminal
+- type without quotes: "cmake ." to generate a makefile
+- type without quotes: "make" to generate an executable
+- run executable.
 
 Controls
-a,s,d,w  - move camera
-mouse    - orient camera
-b        - take a snapshop (will freeze for a few seconds)
-spacebar - shatter the screen
-p        - record 10 seconds worth of frames
+- a,s,d,w  - move camera
+- mouse    - orient camera
+- b        - take a snapshop (will freeze for a few seconds)
+- spacebar - shatter the screen
+- p        - record 10 seconds worth of frames
 
 
 These are the steps I did to make the scene, feel free to replicate yourself.
