@@ -14,11 +14,11 @@
 #include <GL/gl.h>
 #include <utils/math_utils/maths_funcs.h>
 
-#define DUDV_FILE "/home/alvaregd/Documents/Games/aquarium/assets/waterDUDV.png"
-#define NORMALMAP_FILE "/home/alvaregd/Documents/Games/aquarium/assets/normalMap.png"
+#define DUDV_FILE "./assets/waterDUDV.png"
+#define NORMALMAP_FILE "./assets/normalMap.png"
 
-#define WATER_VERTEX "/home/alvaregd/Documents/Games/aquarium/water/water.vert"
-#define WATER_FRAGMENT "/home/alvaregd/Documents/Games/aquarium/water/water.frag"
+#define WATER_VERTEX "./water/water.vert"
+#define WATER_FRAGMENT "./water/water.frag"
 
 #define DUDV 0
 #define NORMAL 1

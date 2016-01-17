@@ -17,11 +17,11 @@
 #include <utils/math_utils/maths_funcs.h>
 #include <camera/camera.h>
 
-#define FLOOR_FILE "/home/alvaregd/Documents/Games/aquarium/assets/floor1.obj"
-#define FLOOR_TEXTURE "/home/alvaregd/Documents/Games/aquarium/assets/terrain_texture.png"
+#define FLOOR_FILE "./assets/floor1.obj"
+#define FLOOR_TEXTURE "./assets/terrain_texture.png"
 
-#define MESH_TERRAIN_UNDER_VERTEX "/home/alvaregd/Documents/Games/aquarium/terrain/terrain_underwater.vert"
-#define MESH_TERRAIN_UNDER_FRAG "/home/alvaregd/Documents/Games/aquarium/terrain/terrain_underwater.frag"
+#define MESH_TERRAIN_UNDER_VERTEX "./terrain/terrain_underwater.vert"
+#define MESH_TERRAIN_UNDER_FRAG "./terrain/terrain_underwater.frag"
 
 
 struct Terrain{

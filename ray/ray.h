@@ -18,13 +18,11 @@
 #ifndef AQUARIUM_LIGHTRAYS_H
 #define AQUARIUM_LIGHTRAYS_H
 
-
-
 #include <GL/gl.h>
 #include <utils/math_utils/maths_funcs.h>
 
-#define RAY_VERTEX "/home/alvaregd/Documents/Games/aquarium/ray/ray.vert"
-#define RAY_FRAGMENT "/home/alvaregd/Documents/Games/aquarium/ray/ray.frag"
+#define RAY_VERTEX "./ray/ray.vert"
+#define RAY_FRAGMENT "./ray/ray.frag"
 
 #define RAY_LIFE_SPAN 3.14     //amount of time (in seconds) for ray to shine
 #define RAY_COUNT 50           //number of rays quads to display

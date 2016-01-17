@@ -1,6 +1,14 @@
 //
 // Created by alvaregd on 30/12/15.
 //
+/**
+ * Breaking Glass
+ *
+ * As seen in Final Fantasy X by Square Enix, the glass objects captures a single frame and
+ * places it on a quad made out of many triangles. This quad is this animated out of the screen
+ * You can use anywhere
+ *
+ */
 
 #ifndef SCREEN_BREAK_EFFECT_GLASS_H
 #define SCREEN_BREAK_EFFECT_GLASS_H
@@ -11,17 +19,17 @@
 #define GLASS_REFLECTION_WIDTH  640
 #define GLASS_REFLECTION_HEIGHT 360
 
-#define GLASS_VERTEX "/home/alvaregd/Documents/Games/aquarium/glass/glass.vert"
-#define GLASS_FRAGMENT "/home/alvaregd/Documents/Games/aquarium/glass/glass.frag"
-#define GLASS_GEOMETRY "/home/alvaregd/Documents/Games/aquarium/glass/glass.geom"
+#define GLASS_VERTEX "./glass/glass.vert"
+#define GLASS_FRAGMENT "./glass/glass.frag"
+#define GLASS_GEOMETRY "./glass/glass.geom"
 
-#define vertex "/home/alvaregd/Documents/Games/aquarium/glass/debug.vert"
-#define fragment "/home/alvaregd/Documents/Games/aquarium/glass/debug.frag"
-#define dotgeometry "/home/alvaregd/Documents/Games/aquarium/glass/dot.geom"
-#define trigeometry "/home/alvaregd/Documents/Games/aquarium/glass/triangle.geom"
+#define vertex "./glass/debug.vert"
+#define fragment "./glass/debug.frag"
+#define dotgeometry "./glass/dot.geom"
+#define trigeometry "./glass/triangle.geom"
 
-#define SCREEN_VERTEX "/home/alvaregd/Documents/Games/aquarium/glass/screen.vert"
-#define SCREEN_FRAGMENT "/home/alvaregd/Documents/Games/aquarium/glass/screen.frag"
+#define SCREEN_VERTEX "./glass/screen.vert"
+#define SCREEN_FRAGMENT "./glass/screen.frag"
 
 #define DIMENSIONS 3
 #define POINTS 61
@@ -76,7 +84,6 @@ struct Glass {
     GLint location_viewMatrix;
     GLint location_projMatrix;
     GLint location_projMattrixTest;
-
 
     int location_model_matrices[MAX_TRIANGLES]; //shader locations for each triangle's model matrix
     mat4* modelMats;                            //model matrices for each triangle

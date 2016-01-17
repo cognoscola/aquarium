@@ -260,14 +260,12 @@ void glassGetUniforms(Glass* glass) {
     glass->location_viewMatrix           = glGetUniformLocation(glass->shader, "viewMatrix");
     glass->location_projMatrix           = glGetUniformLocation(glass->shader, "projectionMatrix");
 
-//    mat4 initial =
     char name[64];
     for (int k = 0; k < glass->num_triangles; k++) {
         sprintf(name, "modelMatrix[%i]",k);
         glass->location_model_matrices[k] = glGetUniformLocation(glass->shader, name);
         glUniformMatrix4fv(glass->location_model_matrices[k], 1, GL_FALSE, scale(identity_mat4(), vec3(1.78f,1.0f,1.0f)).m);
     }
-//    glUniformMatrix4fv(glass->location_model_matrices[0], glass->num_triangles, GL_FALSE, glass->modelMats[0].m);
 }
 
 void glassCreateRandomShardTransformations(Glass *glass){

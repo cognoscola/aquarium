@@ -17,10 +17,10 @@
 #include <camera/camera.h>
 #include <assimp/scene.h>
 
-#define TERRAIN_TEXTURE "/home/alvaregd/Documents/Games/aquarium/assets/ambient_oclusion.png"
-#define MESH_FILE "/home/alvaregd/Documents/Games/aquarium/assets/seagull.dae"
-#define ANIMAL_VERTEX "/home/alvaregd/Documents/Games/aquarium/animal/mesh.vert"
-#define ANIMAL_FRAGMENT "/home/alvaregd/Documents/Games/aquarium/animal/mesh.frag"
+#define TERRAIN_TEXTURE "./assets/ambient_oclusion.png"
+#define MESH_FILE "./assets/seagull.dae"
+#define ANIMAL_VERTEX "./animal/mesh.vert"
+#define ANIMAL_FRAGMENT "./animal/mesh.frag"
 
 /* max bones allowed in a mesh */
 #define MAX_BONES 32
@@ -130,7 +130,7 @@ void animalGetUniforms(Animal* mesh);
  * in camera: the view camera*/
 void animalRender(Animal* animal, Camera* camera);
 
- /** deletes the animal object and frees up memory*/
+/** deletes the animal object and frees up memory*/
 void animalCleanUp(Animal *mesh);
 
 /** import the bones and its children

@@ -490,7 +490,6 @@ void initMeshCollection(MeshCollection* col, GLfloat* proj_mat){
         meshInit(&col->mesh[i], col->meshObject[i].objfilename, NULL, proj_mat);
         meshSetInitialTransformation(&col->mesh[i], col->meshObject[i].T,col->meshObject[i].S,col->meshObject[i].R);
     }
-
     free(col->meshObject);
 }
 

@@ -15,13 +15,13 @@
 #include <utils/math_utils/maths_funcs.h>
 #include <camera/camera.h>
 
-#define MAP_TEXTURE "/home/alvaregd/Documents/Games/aquarium/assets/ambient_oclusion.png"
-#define MAP_FILE "/home/alvaregd/Documents/Games/aquarium/assets/map.obj"
+#define MAP_TEXTURE "./ambient_oclusion.png"
+#define MAP_FILE "./assets/map.obj"
 
-#define MESH_VERTEX "/home/alvaregd/Documents/Games/aquarium/mesh/mesh.vert"
-#define MESH_FRAGMENT "/home/alvaregd/Documents/Games/aquarium/mesh/mesh.frag"
+#define MESH_VERTEX "./mesh/mesh.vert"
+#define MESH_FRAGMENT "./mesh/mesh.frag"
 
-#define RED_CORAL "/home/alvaregd/Documents/Games/aquarium/assets/red_coral.obj"
+#define RED_CORAL "./assets/red_coral.obj"
 
 struct Mesh{
 
